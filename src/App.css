@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+body {
+  font-family: "Outfit", sans-serif;
+}
+
+.mantine-Accordion-panel > .mantine-Accordion-content {
+  padding: 0 !important;
+}
+
+.mantine-Accordion-item {
+  border: none !important;
+}
+
+.mantine-Table-thead > .mantine-Table-tr > .mantine-Table-th {
+  background-color: #26054b !important;
+  font-weight: 200 !important;
+  color: white;
+}
+.mrt-table-head-sort-button {
+  display: none !important;
+}
