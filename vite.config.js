@@ -3,13 +3,33 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  optimizeDeps: {
-    include: [],
-  },
-  build: {
-    commonjsOptions: {
-      include: [],
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      'react': 'react',
+      'react-dom': 'react-dom',
     },
   },
-  plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+    ],
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
+  build: {
+    target: 'esnext',
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
 });

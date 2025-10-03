@@ -22,6 +22,8 @@ const ListOfHorus = () => {
     }
   };
 
+  
+
   const handleItemHover = () => {
     setIsHovered(true);
   };
