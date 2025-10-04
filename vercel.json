@@ -1,9 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html",
-      "missing": [ { "type": "filesystem" } ]
-    }
+  "routes": [
+    { "src": "/(?!.*\\..*$).*", "dest": "/index.html" }
   ]
 }
