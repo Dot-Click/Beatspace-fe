@@ -85,10 +85,6 @@ jspm_packages/
 # Nuxt.js build / generate output
 .nuxt
 
-# Gatsby files
-.cache/
-public
-
 # Storybook build outputs
 .out
 .storybook-out
@@ -107,7 +103,7 @@ temp/
 *.sln
 *.sw?
 
-# Vite
+# Vite cache (keep this ignored)
 .vite/
 
 # TypeScript
@@ -115,8 +111,3 @@ temp/
 
 # Optional stylelint cache
 .stylelintcache
-
-# SvelteKit build / generate output
-.svelte-kit
-
-# End of https://www.gitignore.io/api/node
