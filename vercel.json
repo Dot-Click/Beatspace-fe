@@ -1,9 +1,9 @@
 {
   "rewrites": [
-    { "source": "/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/fonts/(.*)", "destination": "/fonts/$1" },
-    { "source": "/vite.svg", "destination": "/vite.svg" },
-    { "source": "/refresh-user-data.js", "destination": "/refresh-user-data.js" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html",
+      "missing": [ { "type": "filesystem" } ]
+    }
   ]
 }
