@@ -3,13 +3,11 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  optimizeDeps: {
-    include: [],
-  },
+  plugins: [react(), tailwindcss()],
+  // Ensure CommonJS packages in node_modules are transformed properly (e.g., react)
   build: {
     commonjsOptions: {
-      include: [],
+      include: [/node_modules/],
     },
   },
-  plugins: [react(), tailwindcss()],
 });
