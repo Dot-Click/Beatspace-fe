@@ -87,7 +87,6 @@ const Comics = () => {
         }}
       >
         <Text
-          className="pixel-font"
           style={{
             fontSize: '2rem',
             color: '#F6F4D3',
@@ -150,7 +149,6 @@ const Comics = () => {
               )}
               
               <Text
-                className="pixel-font"
                 style={{
                   fontSize: '1.4rem',
                   color: selectedItem === item ? '#F6F4D3' : '#9ca3af',

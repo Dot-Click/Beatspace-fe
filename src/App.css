@@ -1,6 +1,60 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: "Vision Font", monospace, sans-serif;
+  font-size: var(--font-size-default);
+  font-weight: bold;
+}
+
+/* Global font size and weight overrides for all text elements */
+*, *::before, *::after {
+  font-family: inherit;
+}
+
+/* Mantine component overrides */
+.mantine-Text-root,
+.mantine-Title-root,
+.mantine-Button-root,
+.mantine-TextInput-input,
+.mantine-Textarea-input,
+.mantine-Select-input,
+.mantine-NumberInput-input,
+.mantine-PasswordInput-input,
+.mantine-DatePickerInput-input,
+.mantine-Anchor-root,
+.mantine-NavLink-root,
+.mantine-Menu-item,
+.mantine-Tabs-tab,
+.mantine-Card-root,
+.mantine-Paper-root,
+.mantine-Group-root,
+.mantine-Stack-root,
+.mantine-Container-root,
+.mantine-Center-root,
+.mantine-Flex-root {
+  font-size: var(--font-size-default) !important;
+  font-weight: bold !important;
+  font-family: "Vision Font", monospace, sans-serif !important;
+}
+
+/* Specific overrides for different text sizes */
+.mantine-Title-root[data-order="1"] { font-size: var(--font-size-h1) !important; }
+.mantine-Title-root[data-order="2"] { font-size: var(--font-size-h2) !important; }
+.mantine-Title-root[data-order="3"] { font-size: var(--font-size-h3) !important; }
+.mantine-Title-root[data-order="4"] { font-size: var(--font-size-h4) !important; }
+.mantine-Title-root[data-order="5"] { font-size: var(--font-size-h5) !important; }
+.mantine-Title-root[data-order="6"] { font-size: var(--font-size-h6) !important; }
+
+/* General text elements */
+p, span, div, a, label, li, td, th, button {
+  font-size: var(--font-size-default) !important;
+  font-weight: bold !important;
+  font-family: "Vision Font", monospace, sans-serif !important;
+}
+
+/* Exclude pixel-font class from overrides (for Home page) */
+.pixel-font,
+.pixel-font * {
+  font-family: 'Press Start 2P', monospace !important;
+  font-weight: normal !important;
 }
 
 .mantine-Accordion-panel > .mantine-Accordion-content {

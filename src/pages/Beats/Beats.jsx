@@ -107,7 +107,6 @@ const Beats = () => {
          </Box>
         
         <Text
-          className="pixel-font"
           style={{
             fontSize: '1.4rem',
             color: '#F6F4D3',
@@ -170,7 +169,6 @@ const Beats = () => {
               )}
               
               <Text
-                className="pixel-font"
                 style={{
                   fontSize: '1.4rem',
                   color: selectedItem === item ? '#F6F4D3' : '#9ca3af',

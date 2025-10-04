@@ -1,6 +1,38 @@
 @import "tailwindcss";
 @import '@fontsource/press-start-2p';
 
+/* CSS Variables for Font Sizes */
+:root {
+  --font-size-xs: 14px;
+  --font-size-sm: 18px;
+  --font-size-md: 22px;
+  --font-size-lg: 28px;
+  --font-size-xl: 32px;
+  --font-size-xxl: 36px;
+  --font-size-default: var(--font-size-xxl);
+  
+  /* Heading font sizes */
+  --font-size-h1: 54px;
+  --font-size-h2: 48px;
+  --font-size-h3: 44px;
+  --font-size-h4: 40px;
+  --font-size-h5: 38px;
+  --font-size-h6: 36px;
+  
+  /* Special font sizes */
+  --font-size-pixel: 16px;
+  --font-size-modal: var(--font-size-sm); /* 16px for modals like support artist */
+}
+
+/* Vision Font Declaration */
+@font-face {
+  font-family: 'Vision Font';
+  src: url('/fonts/VisionFont-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer utilities {
   .text-shadow-sm {
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
@@ -10,7 +42,18 @@
     font-family: 'Press Start 2P', monospace;
     font-weight: normal;
     letter-spacing: 0px;
+    font-size: var(--font-size-pixel) !important;
   }
+
+  /* Font size utility classes */
+  .font-xs { font-size: var(--font-size-xs) !important; }
+  .font-sm { font-size: var(--font-size-sm) !important; }
+  .font-md { font-size: var(--font-size-md) !important; }
+  .font-lg { font-size: var(--font-size-lg) !important; }
+  .font-xl { font-size: var(--font-size-xl) !important; }
+  .font-xxl { font-size: var(--font-size-xxl) !important; }
+  .font-modal { font-size: var(--font-size-modal) !important; }
+  .font-default { font-size: var(--font-size-default) !important; }
   
   .crt-effect {
     background: linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.03) 50%);

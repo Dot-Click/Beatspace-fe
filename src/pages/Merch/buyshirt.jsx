@@ -70,9 +70,8 @@ const BuyShirt = () => {
         }}
       >
         <Text
-          className="pixel-font"
+          className="font-xxl"
           style={{
-            fontSize: '2.5rem',
             color: '#F6F4D3',
             textShadow: '0 0 10px #F6F4D3',
             letterSpacing: '6px'
@@ -141,9 +140,8 @@ const BuyShirt = () => {
             }}
           >
             <Text
-              className="pixel-font"
+              className="font-lg"
               style={{
-                fontSize: '1.8rem',
                 color: '#F6F4D3',
                 letterSpacing: '3px'
               }}
@@ -152,9 +150,8 @@ const BuyShirt = () => {
             </Text>
 
             <Text
-              className="pixel-font"
+              className="font-md"
               style={{
-                fontSize: '1.5rem',
                 color: '#00CED1',
                 letterSpacing: '2px'
               }}
@@ -171,9 +168,8 @@ const BuyShirt = () => {
               }}
             >
               <Text
-                className="pixel-font"
+                className="font-xs"
                 style={{
-                  fontSize: '0.9rem',
                   color: '#F6F4D3',
                   letterSpacing: '2px'
                 }}
@@ -188,15 +184,17 @@ const BuyShirt = () => {
                     backgroundColor: selectedSize === size ? '#F6F4D3' : 'transparent',
                     border: '2px solid #F6F4D3',
                     color: selectedSize === size ? '#111827' : '#F6F4D3',
-                    padding: '0.6rem 1.2rem',
-                    fontSize: '0.9rem',
                     fontFamily: 'inherit',
-                    letterSpacing: '2px',
+                    fontSize: '12px',
+                    letterSpacing: '1px',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    minWidth: '50px'
+                    minWidth: '40px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                  className="pixel-font"
                 >
                   {size}
                 </Button>
@@ -204,11 +202,11 @@ const BuyShirt = () => {
             </Box>
 
             <Button
+              className="font-md"
               style={{
                 backgroundColor: '#000000',
                 border: 'none',
                 color: '#FFFFFF',
-                fontSize: '1.1rem',
                 fontFamily: 'inherit',
                 letterSpacing: '3px',
                 cursor: 'pointer',
@@ -217,7 +215,6 @@ const BuyShirt = () => {
                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
                 marginTop: '1rem'
               }}
-              className="pixel-font"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.05)';
                 e.currentTarget.style.boxShadow = '0 6px 20px rgba(246, 244, 211, 0.4)';

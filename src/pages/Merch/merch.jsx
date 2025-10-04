@@ -66,9 +66,8 @@ const Merch = () => {
                 }}
             >
                 <Text
-                    className="pixel-font"
+                    className="font-xxl"
                     style={{
-                        fontSize: '2.5rem',
                         color: '#F6F4D3',
                         textShadow: '0 0 10px #F6F4D3',
                         letterSpacing: '6px'
@@ -140,9 +139,8 @@ const Merch = () => {
                     </Box>
 
                     <Text
-                        className="pixel-font"
+                        className="font-lg"
                         style={{
-                            fontSize: '1.5rem',
                             color: '#F6F4D3',
                             letterSpacing: '4px'
                         }}
@@ -152,11 +150,11 @@ const Merch = () => {
 
                     <Button
                         onClick={() => navigate('/buyshirt')}
+                        className="font-md"
                         style={{
                             backgroundColor: '#000000',
                             border: 'none',
                             color: '#FFFFFF',
-                            fontSize: '1.3rem',
                             fontFamily: 'inherit',
                             letterSpacing: '3px',
                             cursor: 'pointer',
@@ -164,7 +162,6 @@ const Merch = () => {
                             borderRadius: '10px',
                             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)'
                         }}
-                        className="pixel-font"
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
                             e.currentTarget.style.boxShadow = '0 6px 20px rgba(246, 244, 211, 0.4)';
@@ -198,9 +195,8 @@ const Merch = () => {
                     </Box>
 
                     <Text
-                        className="pixel-font"
+                        className="font-lg"
                         style={{
-                            fontSize: '1.5rem',
                             color: '#F6F4D3',
                             letterSpacing: '4px'
                         }}
@@ -210,11 +206,11 @@ const Merch = () => {
 
                     <Button
                         onClick={() => navigate('/buyshirt')}
+                        className="font-md"
                         style={{
                             backgroundColor: '#000000',
                             border: 'none',
                             color: '#FFFFFF',
-                            fontSize: '1.3rem',
                             fontFamily: 'inherit',
                             letterSpacing: '3px',
                             cursor: 'pointer',
@@ -222,7 +218,6 @@ const Merch = () => {
                             borderRadius: '10px',
                             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)'
                         }}
-                        className="pixel-font"
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'scale(1.05)';
                             e.currentTarget.style.boxShadow = '0 6px 20px rgba(246, 244, 211, 0.4)';

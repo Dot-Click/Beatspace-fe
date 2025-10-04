@@ -89,7 +89,7 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
               }}
             />
             <Text
-              className="pixel-font"
+              
               style={{
                 fontSize: '1.2rem',
                 color: '#FFFFFF',
@@ -107,9 +107,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
 
         {/* Title */}
         <Text
-          className="pixel-font"
+          className="font-modal"
           style={{
-            fontSize: '1.5rem',
             color: '#F6F4D3',
             textAlign: 'center',
             marginBottom: '1rem',
@@ -127,9 +126,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
           }}
         >
           <Text
-            className="pixel-font"
+            className="font-xs"
             style={{
-              fontSize: '0.9rem',
               color: '#F6F4D3',
               marginBottom: '0.5rem',
               letterSpacing: '1px'
@@ -138,9 +136,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
             BEAT: {beatName}
           </Text>
           <Text
-            className="pixel-font"
+            className="font-xs"
             style={{
-              fontSize: '0.9rem',
               color: '#F6F4D3',
               letterSpacing: '1px'
             }}
@@ -177,9 +174,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
           }}
         >
           <Text
-            className="pixel-font"
+            className="font-xs"
             style={{
-              fontSize: '0.8rem',
               color: '#F6F4D3',
               marginBottom: '0.5rem',
               letterSpacing: '1px',
@@ -189,9 +185,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
             THIS BEAT IS FREE TO DOWNLOAD.
           </Text>
           <Text
-            className="pixel-font"
+            className="font-xs"
             style={{
-              fontSize: '0.8rem',
               color: '#F6F4D3',
               letterSpacing: '1px',
               lineHeight: 1.4
@@ -208,9 +203,8 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
           }}
         >
           <Text
-            className="pixel-font"
+            className="font-xs"
             style={{
-              fontSize: '1rem',
               color: '#F6F4D3',
               marginBottom: '0.5rem',
               letterSpacing: '1px'
@@ -232,7 +226,7 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
                 backgroundColor: '#2D2D2D',
                 color: '#F6F4D3',
                 fontFamily: 'Press Start 2P',
-                fontSize: '0.8rem',
+                fontSize: '12px',
                 letterSpacing: '1px',
                 border: 'none'
               }
@@ -249,10 +243,10 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
             color: '#2D2D2D',
             border: 'none',
             borderRadius: '6px',
-            padding: '0.75rem',
-            fontSize: '1rem',
+  
+            fontSize: '14px',
             fontWeight: 'bold',
-            letterSpacing: '2px',
+            letterSpa: '2px',
             fontFamily: 'Press Start 2P',
             cursor: 'pointer',
             transition: 'all 0.3s ease'

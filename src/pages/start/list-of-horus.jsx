@@ -16,7 +16,7 @@ const ListOfHorus = () => {
     } else if (item === 'BEATS') {
       navigate('/beats');
     } else if (item === 'MERCH') {
-    //   navigate('/merch');
+      navigate('/merch');
     } else if (item === 'GAMES') {
     //   navigate('/games');
     }
@@ -139,7 +139,7 @@ const ListOfHorus = () => {
               )}
               
               <Text
-                className="pixel-font"
+                
                 style={{
                   fontSize: '1.4rem',
                   color: selectedItem === item ? '#F6F4D3' : '#9ca3af',

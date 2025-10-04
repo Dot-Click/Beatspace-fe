@@ -50,7 +50,15 @@ export const theme = createTheme({
     PasswordInput: PasswordInput.extend(globalInputStyle),
     Button: Button.extend(globalButtonStyles),
   },
-  fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif",
+  fontFamily: "Vision Font, monospace, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif",
+  fontSizes: {
+    xs: 'var(--font-size-xl)',
+    sm: 'var(--font-size-xxl)',
+    md: 'var(--font-size-default)',
+    lg: 'var(--font-size-h4)',
+    xl: 'var(--font-size-h3)',
+  },
+  defaultRadius: 'md',
   primaryColor: "indigo",
   colors: {
     dark: [

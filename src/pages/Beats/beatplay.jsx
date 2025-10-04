@@ -128,7 +128,7 @@ const BeatPlay = () => {
         </Box>
         
         <Text
-          className="pixel-font"
+          
           style={{
             fontSize: '1.4rem',
             color: '#F6F4D3',
@@ -203,7 +203,7 @@ const BeatPlay = () => {
                  }}
                >
                  <Text
-                   className="pixel-font"
+                   
                    style={{
                      fontSize: '0.9rem',
                      color: '#F6F4D3',
