@@ -12,13 +12,13 @@ const ListOfHorus = () => {
   const handleItemClick = (item) => {
     setSelectedItem(item);
     if (item === 'COMICS') {
-    //   navigate('/comics');
+       navigate('/comics');
     } else if (item === 'BEATS') {
       navigate('/beats');
     } else if (item === 'MERCH') {
       navigate('/merch');
     } else if (item === 'GAMES') {
-    //   navigate('/games');
+       navigate('/games');
     }
   };
 

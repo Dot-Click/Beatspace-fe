@@ -6,8 +6,12 @@ import Beats from "../pages/Beats/Beats";
 import BeatPlay from "../pages/Beats/beatplay";
 import Games from "../pages/Games/Games";
 import Comics from "../pages/Comics/comics";
+import Selectcomic from "../pages/Comics/Selectcomic";
+import Selectchapter from "../pages/Comics/Selectchapter";
 import Merch from "../pages/Merch/merch";
 import BuyShirt from "../pages/Merch/buyshirt";
+import Comicview from "../pages/Comics/comicview";
+import Comicread from "../pages/Comics/comicread";
 
 const Router = () => {
   return (
@@ -18,11 +22,16 @@ const Router = () => {
       <Route path="/beatplay" element={<BeatPlay />} />
       <Route path="/games" element={<Games />} />
       <Route path="/comics" element={<Comics />} />
+      <Route path="/comics/select" element={<Selectcomic />} />
+      <Route path="/comics/select-chapter" element={<Selectchapter />} />
+      {/* New comic reader routes */}
+      <Route path="/comics/chapter/:chapterNumber" element={<Comicview />} />
+      <Route path="/comics/read" element={<Comicread />} />
       <Route path="/merch" element={<Merch />} />
       <Route path="/buyshirt" element={<BuyShirt />} />
 
 
-      <Route path="/dashboard" element={<div />}>
+      <Route path="/dashboard" element={<div />}> 
         <Route path="/dashboard" element={<div />} />
       </Route>
 

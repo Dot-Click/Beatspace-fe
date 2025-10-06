@@ -11,6 +11,9 @@ const Comics = () => {
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    if (item === 'SPACE RACCOON') {
+      navigate('/comics/select');
+    }
   };
 
   const handleItemHover = () => {

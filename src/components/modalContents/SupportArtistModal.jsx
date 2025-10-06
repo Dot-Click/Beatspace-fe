@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, Image, TextInput, Button } from '@mantine/core';
 import { heartIcon } from '../../customIcons';
 
-const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
+const SupportArtistModal = ({ isOpen, onClose, beatName, artistName, imageSrc = '/assets/artist.png' }) => {
   const [donationAmount, setDonationAmount] = useState('');
 
   console.log('Modal props:', { isOpen, beatName, artistName });
@@ -79,7 +79,7 @@ const SupportArtistModal = ({ isOpen, onClose, beatName, artistName }) => {
             }}
           >
             <Image
-              src="/assets/artist.png"
+              src={imageSrc}
               alt="Artist"
               style={{
                 width: '100%',

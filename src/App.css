@@ -49,12 +49,24 @@ p, span, div, a, label, li, td, th, button {
   font-weight: bold !important;
   font-family: "Vision Font", monospace, sans-serif !important;
 }
+.vision-font-regular,
+.vision-font-regular * {
+  font-family: "Vision Font", monospace, sans-serif !important;
+  font-weight: normal !important;
+}
 
 /* Exclude pixel-font class from overrides (for Home page) */
 .pixel-font,
 .pixel-font * {
   font-family: 'Press Start 2P', monospace !important;
   font-weight: normal !important;
+}
+.alexandria-font,
+.alexandria-font * {
+  font-family: 'Alexandria', sans-serif !important;
+  font-weight: normal !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
 }
 
 .mantine-Accordion-panel > .mantine-Accordion-content {
