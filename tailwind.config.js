@@ -15,6 +15,11 @@ export default {
         borderRadius: {
           'xl': '1.5rem',
         },
+        fontFamily: {
+          'press-start': ['"Press Start 2P"', 'monospace'],
+          'vision': ['"Vision Font"', 'sans-serif'],
+          'alexandria': ['Alexandria', 'sans-serif'],
+        },
       },
     },
     plugins: [],

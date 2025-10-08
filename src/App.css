@@ -55,9 +55,24 @@ p, span, div, a, label, li, td, th, button {
   font-weight: normal !important;
 }
 
+/* Alexandria font override classes */
+.alexandria-font,
+.alexandria-font *,
+.alexandria-font .mantine-Text-root,
+.alexandria-font .mantine-Title-root,
+.alexandria-font .mantine-Button-root,
+.alexandria-font .mantine-TextInput-input,
+.alexandria-font .mantine-PasswordInput-input {
+  font-family: "Alexandria", sans-serif !important;
+}
+
 /* Exclude pixel-font class from overrides (for Home page) */
 .pixel-font,
-.pixel-font * {
+.pixel-font *,
+.alexandria-font .pixel-font,
+.alexandria-font .pixel-font *,
+.alexandria-font .mantine-Text-root.pixel-font,
+.alexandria-font .mantine-Title-root.pixel-font {
   font-family: 'Press Start 2P', monospace !important;
   font-weight: normal !important;
 }

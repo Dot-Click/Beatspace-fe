@@ -18,7 +18,7 @@ const Selectchapter = () => {
     const handleChapterClick = (chapterNumber) => {
         // Navigate to chapter reader
         // console.log(`Reading Chapter ${chapterNumber}`);
-        // navigate(`/comics/chapter/${chapterNumber}`);
+        navigate(`/comics/chapter/${chapterNumber}`);
     };
 
     const handleChapterHover = (chapterNumber) => {

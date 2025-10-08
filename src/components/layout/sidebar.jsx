@@ -1,251 +1,127 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { 
+  DashboardIcon, 
+  BeatmakerIcon, 
+  BeatIcon, 
+  MerchIcon, 
+  ComicsIcon, 
+  GamesIcon, 
+  DonationsIcon, 
+  AssessmentIcon, 
+  SettingsIcon 
+} from "../../customIcons";
 
-const menu = [
-  {
-    id: 0,
-    label: "Global Vision",
-    type: "label",
-    role: "admin",
-  },
+const adminMenu = [
   {
     id: 1,
-    label: "Global Vision",
-    type: "label",
-    role: "user",
-    subscription: [],
+    label: "Dashboard",
+    link: "/admin/dashboard",
+    type: "route",
+    icon: DashboardIcon,
   },
   {
     id: 2,
-    icon: null,
-    label: "Dashboard",
-    link: "/dashboard",
+    label: "Beatmaker",
+    link: "/admin/beatmaker",
     type: "route",
-    role: "user",
-    subscription: [],
+    icon: BeatmakerIcon,
   },
   {
     id: 3,
-    icon: null,
-    label: "Projects",
-    link: "/dashboard/projects",
+    label: "Beat",
+    link: "/admin/beat",
     type: "route",
-    role: "user",
-    subscription: [],
-    permissions: {},
-    childrens: [
-      {
-        id: 4,
-        label: "Active Projects",
-        link: "/dashboard/active-projects",
-        type: "route",
-        subscription: [],
-      },
-      {
-        id: 5,
-        label: "Project Templates",
-        link: "/dashboard/project-templates",
-        type: "route",
-        subscription: [],
-      },
-    ],
+    icon: BeatIcon,
+  },
+  {
+    id: 4,
+    label: "Merch Management",
+    link: "/admin/merch-management",
+    type: "route",
+    icon: MerchIcon,
+  },
+  {
+    id: 5,
+    label: "Comics Management",
+    link: "/admin/comics-management",
+    type: "route",
+    icon: ComicsIcon,
   },
   {
     id: 6,
-    icon: null,
-    label: "Analytics",
-    link: "/dashboard/analytics",
+    label: "Games",
+    link: "/admin/games",
     type: "route",
-    role: "user",
-    subscription: [],
-    permissions: {},
+    icon: GamesIcon,
   },
   {
     id: 7,
-    icon: null,
-    label: "Reports",
-    link: "/dashboard/reports",
+    label: "Donations & Analytics",
+    link: "/admin/donations-analytics",
     type: "route",
-    role: "user",
-    subscription: [],
+    icon: DonationsIcon,
   },
   {
     id: 8,
-    label: "Management",
-    type: "label",
-    role: "user",
-    subscription: [],
+    label: "Asset Management",
+    link: "/admin/asset-management",
+    type: "route",
+    icon: AssessmentIcon,
   },
   {
     id: 9,
-    icon: null,
-    label: "Team Management",
-    link: "/dashboard/team-management",
-    type: "route",
-    role: "user",
-    subscription: [],
-    permissions: {},
-  },
-  {
-    id: 10,
-    icon: null,
-    label: "Resources",
-    link: "/dashboard/resources",
-    type: "route",
-    role: "user",
-    subscription: [],
-    permissions: {},
-  },
-  {
-    id: 11,
-    icon: null,
     label: "Settings",
-    link: "/dashboard/settings",
+    link: "/admin/settings",
     type: "route",
-    role: "user",
-    subscription: [],
-  },
-  {
-    id: 12,
-    icon: null,
-    label: "Support",
-    link: "/dashboard/support",
-    type: "route",
-    role: "user",
-    subscription: [],
-  },
-  {
-    id: 13,
-    icon: null,
-    label: "Dashboard",
-    link: "/dashboard",
-    type: "route",
-    role: "admin",
-  },
-  {
-    id: 14,
-    icon: null,
-    label: "User Management",
-    link: "/dashboard/users",
-    type: "route",
-    role: "admin",
-  },
-  {
-    id: 15,
-    icon: null,
-    label: "System Analytics",
-    link: "/dashboard/system-analytics",
-    type: "route",
-    role: "admin",
-  },
-  {
-    id: 16,
-    icon: null,
-    label: "Support Tickets",
-    link: "/dashboard/admin-support",
-    type: "route",
-    role: "admin",
-  },
-  {
-    id: 17,
-    icon: null,
-    label: "Global Settings",
-    link: "/dashboard/global-settings",
-    type: "route",
-    role: "admin",
-  },
-  {
-    id: 18,
-    icon: null,
-    label: "Profile Settings",
-    link: "/dashboard/profile-settings",
-    type: "route",
-    role: "admin",
+    icon: SettingsIcon,
   },
 ];
 
 const Sidebar = ({ opened, toggle }) => {
-  const user = {};
-  const role = user?.role;
-  const isTeamMember = user?.isTeamMember;
-  const rawSubscriptionType = null;
-  const normalizeSubscriptionType = (type) => null;
-  const subscriptionType = normalizeSubscriptionType(rawSubscriptionType);
-  const [logoUrl] = React.useState(null);
-  const websiteSettings = {};
-  React.useEffect(() => {}, [websiteSettings]);
-  const pathname = "";
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isActive = (path) => {
+    return location.pathname === path;
+  };
 
   return (
-    <div className="">
-      <div className="">
-        <button />
-        <div>
-          <a href="/dashboard">
-            {logoUrl ? (
-              <img src={logoUrl} alt="Global Vision Logo" width={220} />
-            ) : (
-              <div className="text-2xl font-bold text-indigo-600">
-                Global Vision
-              </div>
-            )}
-          </a>
+    <div className="h-screen bg-[#D4C5A0] flex flex-col">
+      {/* Logo Section */}
+      <div className="p-6 border-b border-[#B8A882]">
+        <div className="flex items-center justify-center">
+          <img 
+            src="/assets/logo1.png" 
+            alt="Global Vision Logo" 
+            className="h-16 w-auto object-contain"
+          />
         </div>
-        <div>
-          {menu
-            ?.filter((item) => {
-              if (role === "admin" && role === item.role) return true;
-              if (role === "user" && role === item.role) {
-                if (isTeamMember) {
-                  if (!item.permissions) return true;
-                  return Object.entries(item.permissions).every(
-                    ([key, value]) => {
-                      return user?.permission?.[key] === value;
-                    }
-                  );
-                }
-                const isIncluded = item?.subscription?.includes(subscriptionType);
-                return isIncluded;
-              }
-              return false;
-            })
-            ?.map((item, i) => {
-              if (item?.type === "label") {
-                return (
-                  <p key={i}>{item?.label}</p>
-                );
-              } else {
-                if (item?.childrens) {
-                  return (
-                    <div key={i}>
-                      <div>
-                        <a href={item?.link}>
-                          <span>{item?.icon}</span>
-                          {item?.label}
-                        </a>
-                      </div>
-                      <div>
-                        {item?.childrens?.map((elem, j) => (
-                          <a key={j} href={elem?.link}>
-                            <p key={j}>
-                              <span></span>
-                              {elem.label}
-                            </p>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <a key={i} href={item?.link}>
-                      <span>{item?.icon}</span>
-                      {item?.label}
-                    </a>
-                  );
-                }
-              }
-            })}
-        </div>
+      </div>
+
+      {/* Navigation Menu */}
+      <div className="flex-1 py-6">
+        <nav className="space-y-2 px-4">
+          {adminMenu.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => navigate(item.link)}
+                className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 alexandria-font flex items-center gap-3 ${
+                  isActive(item.link)
+                    ? 'bg-[#191A22] text-[#C1BE91] font-semibold'
+                    : 'text-[#25262F] hover:bg-[#C4B594] hover:text-[#25262F]'
+                }`}
+              >
+                <div className="flex-shrink-0">
+                  <IconComponent color={isActive(item.link) ? '#C1BE91' : '#25262F'} />
+                </div>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
     </div>
   );

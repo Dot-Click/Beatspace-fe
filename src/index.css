@@ -20,7 +20,7 @@
   --font-size-h6: 36px;
   
   /* Special font sizes */
-  --font-size-pixel: 16px;
+  --font-size-pixel: 12px;
   --font-size-modal: var(--font-size-sm); /* 16px for modals like support artist */
 }
 

@@ -17,17 +17,23 @@ const DashboardLayout = () => {
           {/* Loader Placeholder */}
         </div>
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-5 relative duration-700 h-screen ">
-          <Sidebar opened={opened} toggle={toggle} />
-          <div
-            className={
-              "xl:col-span-4 bg-slate-100 duration-700"
-            }
-          >
+        <div className="flex h-screen bg-gray-100">
+          {/* Sidebar */}
+          <div className="w-64 flex-shrink-0">
+            <Sidebar opened={opened} toggle={toggle} />
+          </div>
+          
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Topbar */}
             <Navbar opened={opened} toggle={toggle} />
-            <div className="lg:min-h-[76vh] lg:max-h-[76vh] overflow-auto mx-3  ">
+            
+            {/* Page Content */}
+            <div className="flex-1 overflow-auto bg-white p-6">
               <Outlet />
             </div>
+            
+            {/* Footer */}
             <Footer />
           </div>
         </div>

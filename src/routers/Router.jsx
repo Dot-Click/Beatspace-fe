@@ -12,6 +12,10 @@ import Merch from "../pages/Merch/merch";
 import BuyShirt from "../pages/Merch/buyshirt";
 import Comicview from "../pages/Comics/comicview";
 import Comicread from "../pages/Comics/comicread";
+import AdminLogin from "../pages/admin/AdminLogin";
+import DashboardLayout from "../layouts/DashboardLayout";
+import Dashboard from "../pages/admin/Dashboard";
+import AdminProfileSettings from "../pages/admin/AdminProfileSettings";
 
 const Router = () => {
   return (
@@ -30,10 +34,14 @@ const Router = () => {
       <Route path="/merch" element={<Merch />} />
       <Route path="/buyshirt" element={<BuyShirt />} />
 
-
-      <Route path="/dashboard" element={<div />}> 
-        <Route path="/dashboard" element={<div />} />
-      </Route>
+      {/* Admin Routes */}
+      {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+      
+      {/* Admin Dashboard Routes with Layout */}
+      {/* <Route path="/admin" element={<DashboardLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="settings" element={<AdminProfileSettings />} />
+      </Route> */}
 
       <Route path="*" element={<div />} />
     </Routes>

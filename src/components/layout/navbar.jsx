@@ -1,161 +1,60 @@
-import {
-  Avatar,
-  Burger,
-  ActionIcon,
-  useMantineColorScheme,
-  useComputedColorScheme,
-} from "@mantine/core";
-import React, { useState, useEffect } from "react";
-import { FaBell, FaMoon, FaSun } from "react-icons/fa";
-import { IoEye, IoEyeOffSharp, IoWallet } from "react-icons/io5";
-import ProfileMenu from "./profileMenu";
-import Notifications from "./notifications";
-import { useLocation } from "react-router-dom";
-// TEMPLATE: Import your custom hooks here
-// import { useGetMyWallet } from "../../hooks/useWallet";
-// import { useGetMyAccounts } from "../../hooks/usePlaid";
-import { cn } from "../../utils/cn";
-import { useColorScheme } from "../../contexts/ColorSchemeContext";
+import React from "react";
+import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 
-// TEMPLATE: Custom component example - Wallet/Balance display
-// Replace this with your own custom components
-export const Wallet = () => {
-  // TEMPLATE: Replace with your data fetching logic
-  // const { wallet } = useGetMyWallet();
-  // const { accounts } = useGetMyAccounts();
-  const [accountSum, setAccountSum] = useState(0);
-  const { colorScheme } = useColorScheme();
 
-  // TEMPLATE: Replace with your data processing logic
-  // useEffect(() => {
-  //   if (accounts?.length > 0) {
-  //     const totalSum = accounts?.reduce((acc, item) => {
-  //       const accountSum = item?.accounts?.reduce((subAcc, single) => {
-  //         return subAcc + (single?.balances?.current ?? 0);
-  //       }, 0);
-  //       return acc + accountSum;
-  //     }, 0);
-  //     setAccountSum(totalSum);
-  //   }
-  // }, [accounts]);
-
-  const [isShown, setIsShown] = useState(false);
-  const isDark = colorScheme === "dark";
-
-  const handleSwitchShownState = () => {
-    setIsShown(!isShown);
-  };
-  
-  return (
-    <div
-      className={cn(
-        "items-center hidden gap-3 px-6 py-3 border md:flex bg-slate-100 rounded-xl border-slate-300",
-        isDark ? "bg-[#1d1e30]" : "bg-slate-100"
-      )}
-    >
-      <IoWallet size={24} color="#21BED7" />
-      <p className="text-xl font-semibold min-w-[130px]">
-        {/* TEMPLATE: Replace with your data display logic */}
-        {isShown
-          ? `$ ${Math.round((0 || 0) + (accountSum || 0)).toLocaleString()}`
-          : "*******"}
-      </p>
-      {isShown ? (
-        <IoEyeOffSharp
-          size={20}
-          color="#7184B4"
-          cursor="pointer"
-          onClick={handleSwitchShownState}
-        />
-      ) : (
-        <IoEye
-          size={20}
-          color="#7184B4"
-          cursor="pointer"
-          onClick={handleSwitchShownState}
-        />
-      )}
-    </div>
-  );
-};
 
 const Navbar = ({ opened, toggle }) => {
-  const location = useLocation();
-  // TEMPLATE: Uncomment and customize these if needed
-  // const { setColorScheme, colorScheme } = useMantineColorScheme();
-  // const computedColorScheme = useComputedColorScheme("light");
+  // Get current date
+  const getCurrentDate = () => {
+    const now = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit'
+    };
+    return now.toLocaleDateString('en-US', options);
+  };
 
-  // TEMPLATE: Replace with your user role logic
-  const userRole = JSON.parse(localStorage?.getItem("user"))?.role || "user";
-
-  let routeName;
-  const currentPath = location.pathname;
-
-  // TEMPLATE: Customize route name logic for your application
-  if (currentPath === "/dashboard/manage-monthly-expenses" || currentPath.startsWith("/dashboard/add-expense") || currentPath.startsWith("/dashboard/edit-expense")) {
-    routeName = "Monthly Expenses";
-  } else {
-    if (location.pathname?.split("/")[3]?.split("-")?.length === 3) {
-      var routeNameArr = location.pathname?.split("/")[3]?.split("-");
-    } else if (location.pathname?.split("/")[3]?.split("-")?.length === 2) {
-      var routeNameArr = location.pathname?.split("/")[3]?.split("-");
-    } else if (location.pathname?.split("/")[2]) {
-      var routeNameArr = location.pathname?.split("/")[2]?.split("-");
-    } else {
-      var routeNameArr = location.pathname?.split("/")[1]?.split("-");
-    }
-    routeName = routeNameArr?.length > 2
-      ? routeNameArr[0] + " " + routeNameArr[1] + " " + routeNameArr[2]
-      : routeNameArr?.length > 1
-      ? routeNameArr[0] + " " + routeNameArr[1]
-      : routeNameArr;
-  }
-
-  const { toggleColorScheme, colorScheme } = useColorScheme();
-  const isDark = colorScheme === "dark";
-  
   return (
-    <div
-      className={cn(
-        "h-[12vh] flex justify-between p-4 m-3 rounded-2xl border border-slate-200",
-        isDark ? "bg-[#1d1e30]" : "bg-white"
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <Burger
-          className="block xl:hidden"
-          opened={opened}
-          onClick={toggle}
-          aria-label="Toggle Sidebar"
-        />
+    <div className="bg-[#D4C5A0] border-b border-[#B8A882] px-6 py-4">
+      <div className="flex justify-between items-center">
+        {/* Left side - Title and subtitle */}
         <div>
-          <p className="text-2xl font-medium capitalize">
-            {routeName}
-          </p>
-          <p className="hidden text-sm lg:block ">
-            {/* TEMPLATE: Replace with your application name */}
-            Welcome to Global Vision
+          <h1 className="text-2xl font-bold text-black pixel-font mb-1">
+            ADMIN DASHBOARD
+          </h1>
+          <p className="text-sm text-black/80 alexandria-font">
+            SYSTEM CONTROL INTERFACE - {getCurrentDate()}
           </p>
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <ActionIcon
-          variant="outline"
-          onClick={toggleColorScheme}
-          aria-label="Toggle color scheme"
-        >
-          {colorScheme === "light" ? <FaMoon size={18} /> : <FaSun size={18} />}
-        </ActionIcon>
-        {/* TEMPLATE: Customize conditional rendering based on your user roles */}
-        {userRole !== "admin" && <Wallet />}
-        {userRole == "admin" && (
-          <div className="relative">
-            <Notifications>
-              <FaBell size={20} color="#7184B4" />
-            </Notifications>
-          </div>
-        )}
-        <ProfileMenu />
+
+        {/* Right side - User controls */}
+        <div className="flex items-center space-x-4">
+          <button>
+            <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" fill="#191A22" fill-opacity="0.12" />
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" stroke="#191A22" stroke-width="1.5" />
+              <path d="M22 27.5V29.5H21V30.5H17V29.5H16V27.5H22ZM29 24.5V25.5H28V26.5H10V25.5H9V24.5H10V23.5H11V21.5H12V15.5H13V13.5H14V12.5H15V11.5H17V10.5H18V8.5H20V10.5H21V11.5H23V12.5H24V13.5H25V15.5H26V21.5H27V23.5H28V24.5H29Z" fill="#191A22" />
+            </svg>
+
+          </button>
+          <button>
+            <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" fill="#191A22" fill-opacity="0.12" />
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" stroke="#191A22" stroke-width="1.5" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M19.0001 8.98535C18.3421 8.98535 17.7701 9.40635 16.6271 10.2494L14.9061 11.5184C14.7261 11.6514 14.6361 11.7174 14.5391 11.7734C14.4421 11.8294 14.3391 11.8734 14.1341 11.9634L12.1751 12.8194C10.8731 13.3894 10.2221 13.6734 9.89308 14.2424C9.56408 14.8114 9.64308 15.5184 9.80208 16.9304L10.0401 19.0554C10.0651 19.2774 10.0771 19.3884 10.0771 19.5004C10.0771 19.6124 10.0651 19.7234 10.0401 19.9454L9.80208 22.0704C9.64408 23.4824 9.56508 24.1884 9.89308 24.7584C10.2231 25.3284 10.8731 25.6124 12.1751 26.1814L14.1351 27.0374C14.3391 27.1274 14.4421 27.1714 14.5391 27.2274C14.6351 27.2833 14.7261 27.3494 14.9061 27.4824L16.6261 28.7514C17.7711 29.5944 18.3431 30.0154 19.0001 30.0154C19.6571 30.0154 20.2301 29.5944 21.3731 28.7514L23.0941 27.4824C23.2741 27.3494 23.3641 27.2833 23.4611 27.2274C23.5581 27.1714 23.6611 27.1274 23.8661 27.0374L25.8251 26.1814C27.1271 25.6114 27.7781 25.3274 28.1071 24.7584C28.4361 24.1894 28.3571 23.4824 28.1971 22.0704L27.9601 19.9454C27.9351 19.7234 27.9221 19.6124 27.9221 19.5004C27.9221 19.3884 27.9351 19.2774 27.9601 19.0554L28.1981 16.9304C28.3561 15.5184 28.4351 14.8124 28.1071 14.2424C27.7771 13.6724 27.1271 13.3884 25.8251 12.8194L23.8651 11.9634C23.727 11.9076 23.5921 11.8442 23.4611 11.7734C23.3341 11.6953 23.2116 11.6101 23.0941 11.5184L21.3741 10.2494C20.2281 9.40635 19.6561 8.98535 19.0001 8.98535ZM19.0001 23.5004C20.0609 23.5004 21.0784 23.0789 21.8285 22.3288C22.5787 21.5786 23.0001 20.5612 23.0001 19.5004C23.0001 18.4395 22.5787 17.4221 21.8285 16.6719C21.0784 15.9218 20.0609 15.5004 19.0001 15.5004C17.9392 15.5004 16.9218 15.9218 16.1717 16.6719C15.4215 17.4221 15.0001 18.4395 15.0001 19.5004C15.0001 20.5612 15.4215 21.5786 16.1717 22.3288C16.9218 23.0789 17.9392 23.5004 19.0001 23.5004Z" fill="#191A22" />
+            </svg>
+          </button>
+          <button>
+            <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" fill="#191A22" fill-opacity="0.12" />
+              <rect x="0.75" y="1.25" width="36.5" height="36.5" stroke="#191A22" stroke-width="1.5" />
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M15 14.5C15 13.4391 15.4214 12.4217 16.1716 11.6716C16.9217 10.9214 17.9391 10.5 19 10.5C20.0609 10.5 21.0783 10.9214 21.8284 11.6716C22.5786 12.4217 23 13.4391 23 14.5C23 15.5609 22.5786 16.5783 21.8284 17.3284C21.0783 18.0786 20.0609 18.5 19 18.5C17.9391 18.5 16.9217 18.0786 16.1716 17.3284C15.4214 16.5783 15 15.5609 15 14.5ZM15 20.5C13.6739 20.5 12.4021 21.0268 11.4645 21.9645C10.5268 22.9021 10 24.1739 10 25.5C10 26.2956 10.3161 27.0587 10.8787 27.6213C11.4413 28.1839 12.2044 28.5 13 28.5H25C25.7956 28.5 26.5587 28.1839 27.1213 27.6213C27.6839 27.0587 28 26.2956 28 25.5C28 24.1739 27.4732 22.9021 26.5355 21.9645C25.5979 21.0268 24.3261 20.5 23 20.5H15Z" fill="#191A22" />
+            </svg>
+
+          </button>
+        </div>
       </div>
     </div>
   );
