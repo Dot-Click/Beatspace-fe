@@ -84,6 +84,20 @@ p, span, div, a, label, li, td, th, button {
   line-height: 1.2 !important;
 }
 
+/* Force Alexandria for Mantine React Table when wrapped with alexandria-font */
+.alexandria-font .mantine-Table-root,
+.alexandria-font .mantine-Table-tr,
+.alexandria-font .mantine-Table-th,
+.alexandria-font .mantine-Table-td,
+.alexandria-font .mrt-table,
+.alexandria-font .mrt-table-row,
+.alexandria-font .mrt-table-head-cell,
+.alexandria-font .mrt-table-head-cell-label,
+.alexandria-font .mrt-table-head-cell-content,
+.alexandria-font .mrt-table-head-sort-button,
+.alexandria-font .mrt-table-body-cell {
+  font-family: 'Alexandria', sans-serif !important;
+}
 .mantine-Accordion-panel > .mantine-Accordion-content {
   padding: 0 !important;
 }

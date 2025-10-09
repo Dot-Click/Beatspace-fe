@@ -27,13 +27,13 @@ const adminMenu = [
     type: "route",
     icon: BeatmakerIcon,
   },
-  {
-    id: 3,
-    label: "Beat",
-    link: "/admin/beat",
-    type: "route",
-    icon: BeatIcon,
-  },
+  // {
+  //   id: 3,
+  //   label: "Beat",
+  //   link: "/admin/beat",
+  //   type: "route",
+  //   icon: BeatIcon,
+  // },
   {
     id: 4,
     label: "Merch Management",
@@ -44,7 +44,8 @@ const adminMenu = [
   {
     id: 5,
     label: "Comics Management",
-    link: "/admin/comics-management",
+    // Fix route to match router path
+    link: "/admin/comic-management",
     type: "route",
     icon: ComicsIcon,
   },
@@ -55,13 +56,13 @@ const adminMenu = [
     type: "route",
     icon: GamesIcon,
   },
-  {
-    id: 7,
-    label: "Donations & Analytics",
-    link: "/admin/donations-analytics",
-    type: "route",
-    icon: DonationsIcon,
-  },
+  // {
+  //   id: 7,
+  //   label: "Donations & Analytics",
+  //   link: "/admin/donations-analytics",
+  //   type: "route",
+  //   icon: DonationsIcon,
+  // },
   {
     id: 8,
     label: "Asset Management",

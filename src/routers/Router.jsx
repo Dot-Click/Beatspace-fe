@@ -16,6 +16,12 @@ import AdminLogin from "../pages/admin/AdminLogin";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import AdminProfileSettings from "../pages/admin/AdminProfileSettings";
+import Beatmaker from "../pages/admin/Beatmaker";
+import MerchManagement from "../pages/admin/MerchManagement";
+import ComicManagment from "../pages/admin/ComicManagment";
+import AdminGames from "../pages/admin/Games";
+import UploadAssets from "../pages/admin/UploadAssets";
+
 
 const Router = () => {
   return (
@@ -35,13 +41,19 @@ const Router = () => {
       <Route path="/buyshirt" element={<BuyShirt />} />
 
       {/* Admin Routes */}
-      {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+      <Route path="/admin/login" element={<AdminLogin />} />
       
       {/* Admin Dashboard Routes with Layout */}
-      {/* <Route path="/admin" element={<DashboardLayout />}>
+      <Route path="/admin" element={<DashboardLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="settings" element={<AdminProfileSettings />} />
-      </Route> */}
+        {/* <Route path="settings" element={<AdminProfileSettings />} />
+        <Route path="beatmaker" element={<Beatmaker />} />
+        <Route path="merch-management" element={<MerchManagement />} />
+        <Route path="comic-management" element={<ComicManagment />} />
+        <Route path="games" element={<AdminGames />} />
+        <Route path="upload-assets" element={<UploadAssets />} />
+        <Route path="asset-management" element={<UploadAssets />} /> */}
+      </Route>
 
       <Route path="*" element={<div />} />
     </Routes>
