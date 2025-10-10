@@ -55,6 +55,8 @@ const Router = () => {
         <Route path="asset-management" element={<UploadAssets />} /> */}
       </Route>
 
+      
+
       <Route path="*" element={<div />} />
     </Routes>
   );
