@@ -22,7 +22,6 @@ import ComicManagment from "../pages/admin/ComicManagment";
 import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
 
-
 const Router = () => {
   return (
     <Routes>
@@ -46,9 +45,9 @@ const Router = () => {
       {/* Admin Dashboard Routes with Layout */}
       <Route path="/admin" element={<DashboardLayout />}>
         <Route path="dashboard" element={<Dashboard />} />
-        {/* <Route path="settings" element={<AdminProfileSettings />} />
         <Route path="beatmaker" element={<Beatmaker />} />
         <Route path="merch-management" element={<MerchManagement />} />
+        {/* <Route path="settings" element={<AdminProfileSettings />} />
         <Route path="comic-management" element={<ComicManagment />} />
         <Route path="games" element={<AdminGames />} />
         <Route path="upload-assets" element={<UploadAssets />} />

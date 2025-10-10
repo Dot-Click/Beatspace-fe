@@ -167,12 +167,13 @@ const RecentActivityTable = () => {
     },
     mantineTableHeadProps: {
       style: {
-        backgroundColor: '#2A2B35',
+        backgroundColor: '#000000',
+        borderRadius: '0',
       },
     },
     mantineTableHeadCellProps: {
       style: {
-        backgroundColor: '#2A2B35',
+        backgroundColor: '#000000',
         color: '#C1BE91',
         fontSize: '12px',
         fontWeight: 600,
@@ -181,6 +182,7 @@ const RecentActivityTable = () => {
         padding: '16px 12px',
         borderBottom: '1px solid #3A3B45',
         textAlign: 'left',
+        borderRadius: '0',
       },
     },
     mantineTableBodyProps: {

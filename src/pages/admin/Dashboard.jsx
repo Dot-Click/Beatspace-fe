@@ -3,33 +3,33 @@ import StatCard from '../../components/StatCard';
 import BarChart from '../../components/BarChart';
 import DonutChart from '../../components/DonutChart';
 import RecentActivityTable from '../../components/tables/admin/RecentActivityTable';
-import { FaMusic, FaShoppingBag, FaDollarSign, FaDownload } from 'react-icons/fa';
+import { MusicIcon1, ClothesIcon, DollarIcon, DownloadIcon } from '../../customIcons';
 
 const Dashboard = () => {
   const stats = [
     {
       title: 'Tracks',
       value: '1,247',
-      subtitle: '12 files uploaded',
-      icon: FaMusic
+      subtitle: '+12 this week',
+      icon: MusicIcon1
     },
     {
       title: 'Products',
       value: '1,247',
-      subtitle: 'Merch Items',
-      icon: FaShoppingBag
+      subtitle: '+3 new items',
+      icon: ClothesIcon
     },
     {
       title: 'This Month',
       value: '€ 2,847',
-      subtitle: '€ 5,847 last month',
-      icon: FaDollarSign
+      subtitle: '+ €340 this week',
+      icon: DollarIcon
     },
     {
       title: 'Total',
       value: '45,892',
-      subtitle: '4,567 this month',
-      icon: FaDownload
+      subtitle: '+1,247 this week',
+      icon: DownloadIcon
     }
   ];
 

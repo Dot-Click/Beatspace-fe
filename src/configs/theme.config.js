@@ -58,7 +58,7 @@ export const theme = createTheme({
     lg: 'var(--font-size-h4)',
     xl: 'var(--font-size-h3)',
   },
-  defaultRadius: 'md',
+  defaultRadius: 0,
   primaryColor: "indigo",
   colors: {
     dark: [

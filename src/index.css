@@ -54,6 +54,14 @@
     font-size: var(--font-size-pixel) !important;
   }
 
+  .alexandria-font {
+    font-family: 'Alexandria', sans-serif !important;
+  }
+
+  .alexandria-font * {
+    font-family: 'Alexandria', sans-serif !important;
+  }
+
   /* Font size utility classes */
   .font-xs { font-size: var(--font-size-xs) !important; }
   .font-sm { font-size: var(--font-size-sm) !important; }

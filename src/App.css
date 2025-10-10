@@ -107,7 +107,7 @@ p, span, div, a, label, li, td, th, button {
 }
 
 .mantine-Table-thead > .mantine-Table-tr > .mantine-Table-th {
-  background-color: #26054b !important;
+  background-color: #000000 !important;
   font-weight: 200 !important;
   color: white;
 }

@@ -107,7 +107,7 @@ export default function MerchManagement() {
           background:var(--olive);
           color:var(--text);
         }
-        .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+        .container{max-width:1200px;margin:0 auto;}
         .pixel{font-family:"Press Start 2P", monospace}
         .upload{
           border:3px dashed var(--tan);
