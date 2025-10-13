@@ -1,66 +1,85 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, memo } from 'react';
+import { UploadIcon1, MusicIcons1 } from '../../customIcons';
+
+// Constants for better maintainability
+const VALID_FILE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'audio/mp3', 'audio/wav'];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Simple SVG icons
+const ChevronDownIcon = () => (
+  <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const ThreeDotsIcon = () => (
+  <svg width="4" height="16" viewBox="0 0 4 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="2" cy="2" r="2" fill="currentColor"/>
+    <circle cx="2" cy="8" r="2" fill="currentColor"/>
+    <circle cx="2" cy="14" r="2" fill="currentColor"/>
+  </svg>
+);
 
 // AssetUpload Component
-const AssetUpload = ({ onFileUpload }) => {
+const AssetUpload = memo(({ onFileUpload }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef(null);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = useCallback((e) => {
     e.preventDefault();
     setIsDragOver(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     setIsDragOver(false);
-  };
+  }, []);
 
-  const handleDrop = (e) => {
+  const handleDrop = useCallback((e) => {
     e.preventDefault();
     setIsDragOver(false);
     
     const files = Array.from(e.dataTransfer.files);
     const validFiles = files.filter(file => {
-      const validTypes = ['image/png', 'image/jpeg', 'audio/mp3', 'audio/wav'];
-      return validTypes.includes(file.type) && file.size <= 50 * 1024 * 1024;
+      return VALID_FILE_TYPES.includes(file.type) && file.size <= MAX_FILE_SIZE;
     });
     
     if (validFiles.length > 0) {
       onFileUpload(validFiles);
     }
-  };
+  }, [onFileUpload]);
 
-  const handleFileSelect = () => {
+  const handleFileSelect = useCallback(() => {
     fileInputRef.current?.click();
-  };
+  }, []);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = useCallback((e) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       onFileUpload(files);
     }
-  };
+  }, [onFileUpload]);
 
   return (
-    <section className="bg-[rgba(181,179,135,0.16)] border w-full px-[23px] py-[29px] border-[rgba(203,200,149,1)] border-solid max-md:max-w-full max-md:px-5">
-      <div className="flex w-full items-stretch gap-5 flex-wrap justify-between max-md:max-w-full max-md:mr-1">
-        <h1 className="text-[rgba(223,215,79,1)] text-[23px] font-normal leading-none my-auto">
+    <section className="bg-[rgba(181,179,135,0.16)] border w-full px-4 sm:px-6 lg:px-[23px] py-6 sm:py-7 lg:py-[29px] border-[rgba(203,200,149,1)] border-solid overflow-hidden">
+      <div className="flex w-full items-center gap-4 sm:gap-5 flex-col sm:flex-row justify-between">
+        <h1 className="text-[rgba(223,215,79,1)] text-lg sm:text-xl lg:text-[23px] font-normal leading-tight">
           Upload Assets
         </h1>
-        <button className="bg-[rgba(203,200,149,1)] shadow-[0px_7px_2px_rgba(0,0,0,1)] flex min-h-[53px] items-center gap-2.5 text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose justify-center p-[13px] rounded-lg hover:bg-[rgba(213,210,159,1)] transition-colors">
+        <button className="bg-[rgba(203,200,149,1)] shadow-[0px_7px_2px_rgba(0,0,0,1)] flex min-h-[45px] sm:min-h-[53px] items-center gap-2 sm:gap-2.5 text-base sm:text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose justify-center px-3 sm:px-[13px] py-2 sm:py-[13px] rounded-lg hover:bg-[rgba(213,210,159,1)] transition-colors">
           <img
             src="https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/9befb545c1f7036df55ef6ec8d09750635d056d2?placeholderIfAbsent=true"
             alt="Add icon"
-            className="aspect-[1.07] object-contain w-4 self-stretch shrink-0 my-auto"
+            className="aspect-[1.07] object-contain w-3 sm:w-4 shrink-0"
           />
-          <span className="self-stretch my-auto">
+          <span className="whitespace-nowrap">
             Add New Merch Item
           </span>
         </button>
       </div>
       
       <div 
-        className={`bg-[rgba(82,81,50,1)] flex flex-col items-center font-normal mt-[31px] pt-[250px] pb-[81px] px-20 border-[rgba(203,200,149,1)] border-dashed border-[3px] max-md:max-w-full max-md:pt-[100px] max-md:px-5 transition-colors ${
+        className={`bg-[rgba(82,81,50,1)] flex flex-col items-center font-normal mt-6 sm:mt-7 lg:mt-[31px] py-12 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-20 border-[rgba(203,200,149,1)] border-dashed border-2 sm:border-[3px] transition-colors ${
           isDragOver ? 'bg-[rgba(102,101,70,1)]' : ''
         }`}
         onDragOver={handleDragOver}
@@ -69,20 +88,23 @@ const AssetUpload = ({ onFileUpload }) => {
         role="region"
         aria-label="File upload area"
       >
-        <div className="flex w-[535px] max-w-full flex-col items-stretch">
-          <div className="text-[rgba(235,226,60,1)] text-[22px] leading-none text-center border border-black border-solid max-md:max-w-full max-md:mr-[3px]">
+        <div className="flex w-full max-w-lg flex-col items-center">
+          <div className="mb-6">
+            <UploadIcon1 />
+          </div>
+          <div className="text-[rgba(235,226,60,1)] text-lg sm:text-xl lg:text-[22px] leading-tight text-center border border-black border-solid px-2 py-1">
             Drop files here to upload
           </div>
-          <div className="text-white text-xl leading-none text-center mt-4 max-md:max-w-full">
+          <div className="text-white text-base sm:text-lg lg:text-xl leading-tight text-center mt-3 sm:mt-4">
             Supports PNG, JPEG, MP3, WAV files up to 50MB each
           </div>
           <button 
             onClick={handleFileSelect}
-            className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_2px_rgba(0,0,0,1)] self-center flex min-h-[53px] w-[202px] max-w-full items-center gap-[5px] text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose justify-center mt-[60px] p-[13px] rounded-lg max-md:mt-10 hover:bg-[rgba(231,219,187,1)] transition-colors"
+            className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_2px_rgba(0,0,0,1)] flex min-h-[45px] sm:min-h-[53px] w-full sm:w-auto sm:min-w-[180px] lg:w-[202px] items-center gap-2 sm:gap-[5px] text-base sm:text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose justify-center mt-8 sm:mt-12 lg:mt-[60px] px-3 sm:px-[13px] py-2 sm:py-[13px] rounded-lg hover:bg-[rgba(231,219,187,1)] transition-colors"
             type="button"
             aria-label="Select files to upload"
           >
-            <span className="self-stretch my-auto">Select Files</span>
+            <span>Select Files</span>
           </button>
         </div>
         
@@ -98,21 +120,23 @@ const AssetUpload = ({ onFileUpload }) => {
       </div>
     </section>
   );
-};
+});
+
+AssetUpload.displayName = 'AssetUpload';
 
 // AssetFilters Component
-const AssetFilters = ({ onSearchChange, onTypeFilter, onCategoryFilter }) => {
+const AssetFilters = memo(({ onSearchChange, onTypeFilter, onCategoryFilter }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = useCallback((e) => {
     const value = e.target.value;
     setSearchTerm(value);
     onSearchChange(value);
-  };
+  }, [onSearchChange]);
 
   return (
-    <section className="flex gap-5 text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose flex-wrap mt-[18px] max-md:max-w-full">
-      <div className="flex min-w-60 flex-col text-[rgba(156,150,58,1)] font-medium justify-center w-[1096px] px-[27px] py-[18px] max-md:max-w-full max-md:px-5">
+    <section className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-5 text-base sm:text-lg text-[rgba(25,26,34,1)] font-semibold leading-loose mt-4 sm:mt-[18px]">
+      <div className="bg-[rgba(156,150,58,1)] flex flex-col font-medium justify-center flex-1 min-w-0 px-4 sm:px-6 lg:px-[27px] py-3 sm:py-4 lg:py-[18px] rounded-lg">
         <label htmlFor="asset-search" className="sr-only">Search assets</label>
         <input
           id="asset-search"
@@ -120,15 +144,15 @@ const AssetFilters = ({ onSearchChange, onTypeFilter, onCategoryFilter }) => {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search assets..."
-          className="bg-transparent border-none outline-none text-[rgba(156,150,58,1)] placeholder-[rgba(156,150,58,1)] w-full"
+          className="bg-transparent border-none outline-none text-[rgba(25,26,34,1)] placeholder-[rgba(25,26,34,1)] w-full font-semibold"
           aria-label="Search through uploaded assets"
         />
       </div>
       
-      <div className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_0px_rgba(140,129,0,1)] flex min-h-[60px] items-center gap-[18px] justify-center w-[201px] px-[13px] py-4 rounded-lg">
+      <div className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_0px_rgba(140,129,0,1)] flex min-h-[50px] sm:min-h-[60px] items-center gap-3 sm:gap-[18px] justify-center w-full sm:w-auto sm:min-w-[180px] lg:w-[201px] px-3 sm:px-[13px] py-3 sm:py-4 rounded-lg relative">
         <select 
           onChange={(e) => onTypeFilter(e.target.value)}
-          className="bg-transparent border-none outline-none text-[rgba(25,26,34,1)] font-semibold cursor-pointer appearance-none w-full text-center"
+          className="bg-transparent border-none outline-none text-[rgba(25,26,34,1)] font-semibold cursor-pointer appearance-none w-full text-center pr-6"
           aria-label="Filter by file type"
         >
           <option value="">All Types</option>
@@ -136,12 +160,15 @@ const AssetFilters = ({ onSearchChange, onTypeFilter, onCategoryFilter }) => {
           <option value="image">Images</option>
           <option value="other">Other</option>
         </select>
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <ChevronDownIcon />
+        </div>
       </div>
       
-      <div className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_0px_rgba(140,129,0,1)] flex min-h-[60px] items-center gap-[18px] justify-center w-[201px] px-[13px] py-4 rounded-lg">
+      <div className="bg-[rgba(221,209,177,1)] shadow-[0px_7px_0px_rgba(140,129,0,1)] flex min-h-[50px] sm:min-h-[60px] items-center gap-3 sm:gap-[18px] justify-center w-full sm:w-auto sm:min-w-[180px] lg:w-[201px] px-3 sm:px-[13px] py-3 sm:py-4 rounded-lg relative">
         <select 
           onChange={(e) => onCategoryFilter(e.target.value)}
-          className="bg-transparent border-none outline-none text-[rgba(25,26,34,1)] font-semibold cursor-pointer appearance-none w-full text-center"
+          className="bg-transparent border-none outline-none text-[rgba(25,26,34,1)] font-semibold cursor-pointer appearance-none w-full text-center pr-6"
           aria-label="Filter by category"
         >
           <option value="">All Categories</option>
@@ -149,118 +176,170 @@ const AssetFilters = ({ onSearchChange, onTypeFilter, onCategoryFilter }) => {
           <option value="Merch">Merch</option>
           <option value="Beats">Beats</option>
         </select>
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <ChevronDownIcon />
+        </div>
       </div>
     </section>
   );
-};
+});
+
+AssetFilters.displayName = 'AssetFilters';
 
 // AssetRow Component
-const AssetRow = ({ asset, onAction }) => {
-  const handleDownload = () => {
-    onAction(asset.id, 'download');
-  };
+const AssetRow = memo(({ asset, onAction }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
-  const handleDelete = () => {
-    onAction(asset.id, 'delete');
-  };
+  const handleMenuToggle = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
 
-  const handleEdit = () => {
-    onAction(asset.id, 'edit');
-  };
+  const handleAction = useCallback((action) => {
+    onAction(asset.id, action);
+    setIsMenuOpen(false);
+  }, [asset.id, onAction]);
+
+  // Close menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   return (
     <div 
-      className="bg-[rgba(197,194,116,0.16)] border flex w-full items-stretch gap-[40px_53px] text-xl text-white font-normal leading-none px-[30px] py-10 border-[rgba(203,200,149,1)] border-solid max-md:max-w-full max-md:mr-2 max-md:px-5"
+      className="bg-[rgba(197,194,116,0.16)] border flex w-full items-center gap-2 sm:gap-4 lg:gap-[40px] text-sm sm:text-base lg:text-xl text-white font-normal leading-tight px-3 sm:px-6 lg:px-[30px] py-4 sm:py-6 lg:py-10 border-[rgba(203,200,149,1)] border-solid"
       role="row"
     >
-      <div className="flex items-center" role="cell">
-        <img
-          src={asset.previewUrl}
-          alt={`Preview of ${asset.fileName}`}
-          className="aspect-[0.93] object-contain w-[27px] shrink-0"
-        />
+      <div className="flex items-center flex-shrink-0" role="cell">
+        <div className="w-5 sm:w-6 lg:w-[27px] h-5 sm:h-6 lg:h-[27px] flex items-center justify-center">
+          <MusicIcons1 />
+        </div>
       </div>
       
-      <div className="grow shrink min-w-[166px]" role="cell">
-        {asset.fileName}
+      <div className="flex-1 min-w-0 truncate" role="cell" title={asset.fileName}>
+        <span className="truncate block">{asset.fileName}</span>
       </div>
       
-      <div role="cell">
+      <div className="hidden sm:block flex-shrink-0" role="cell">
         {asset.category}
       </div>
       
-      <div role="cell">
+      <div className="hidden lg:block flex-shrink-0" role="cell">
         {asset.size}
       </div>
       
-      <div className="grow shrink w-[204px]" role="cell">
+      <div className="hidden lg:block flex-shrink-0" role="cell">
         {asset.uploadedBy}
       </div>
       
-      <div className="grow shrink w-[184px]" role="cell">
+      <div className="hidden lg:block flex-shrink-0" role="cell">
         {asset.dateAdded}
       </div>
       
-      <div className="grow shrink w-[136px] flex gap-2" role="cell">
+      <div className="flex gap-2 flex-shrink-0 relative" role="cell" ref={menuRef}>
         <button
-          onClick={handleDownload}
-          className="text-[rgba(203,200,149,1)] hover:text-[rgba(223,220,169,1)] transition-colors text-sm"
-          aria-label={`Download ${asset.fileName}`}
-          title="Download file"
+          onClick={handleMenuToggle}
+          className="text-[rgba(203,200,149,1)] hover:text-[rgba(223,220,169,1)] transition-colors p-1"
+          aria-label={`Actions for ${asset.fileName}`}
+          title="More actions"
         >
-          ↓
+          <ThreeDotsIcon />
         </button>
-        <button
-          onClick={handleEdit}
-          className="text-[rgba(203,200,149,1)] hover:text-[rgba(223,220,169,1)] transition-colors text-sm"
-          aria-label={`Edit ${asset.fileName}`}
-          title="Edit file"
-        >
-          ✎
-        </button>
-        <button
-          onClick={handleDelete}
-          className="text-red-400 hover:text-red-300 transition-colors text-sm"
-          aria-label={`Delete ${asset.fileName}`}
-          title="Delete file"
-        >
-          ✕
-        </button>
+        
+        {isMenuOpen && (
+          <div className="absolute right-0 top-full mt-1 bg-[rgba(19,19,25,1)] border border-[rgba(203,200,149,1)] rounded-lg shadow-lg z-10 min-w-[120px]">
+            <button
+              onClick={() => handleAction('download')}
+              className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[rgba(197,194,116,0.16)] transition-colors first:rounded-t-lg"
+            >
+              Download
+            </button>
+            <button
+              onClick={() => handleAction('edit')}
+              className="w-full text-left px-3 py-2 text-sm text-white hover:bg-[rgba(197,194,116,0.16)] transition-colors"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleAction('delete')}
+              className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-[rgba(197,194,116,0.16)] transition-colors last:rounded-b-lg"
+            >
+              Remove
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
-};
+});
+
+AssetRow.displayName = 'AssetRow';
 
 // AssetTable Component
-const AssetTable = ({ assets, onAssetAction }) => {
+const AssetTable = memo(({ assets, onAssetAction }) => {
   return (
-    <div className="mt-[17px]" role="region" aria-label="Asset management table">
-      <div className="bg-[rgba(19,19,25,1)] flex items-stretch gap-[40px_53px] text-xl text-[rgba(203,200,149,1)] font-normal leading-none px-[26px] py-[22px] max-md:max-w-full max-md:mr-[9px] max-md:px-5">
-        <div className="grow">PREVIEW</div>
-        <div className="grow shrink w-[184px]">File Name</div>
-        <div className="grow shrink w-36">Category</div>
-        <div>Size</div>
-        <div className="grow shrink w-[204px]">Uploaded By</div>
-        <div className="grow shrink w-[184px]">Date Added</div>
-        <div className="grow shrink w-[136px]">ACTIONS</div>
+    <div className="mt-4 sm:mt-[17px]" role="region" aria-label="Asset management table">
+      <div className="bg-[rgba(19,19,25,1)] flex items-center gap-2 sm:gap-4 lg:gap-[40px] text-sm sm:text-base lg:text-xl text-[rgba(203,200,149,1)] font-normal leading-tight px-3 sm:px-6 lg:px-[26px] py-3 sm:py-4 lg:py-[22px]">
+        <div className="flex-shrink-0">PREVIEW</div>
+        <div className="flex-1 min-w-0">File Name</div>
+        <div className="hidden sm:block flex-shrink-0">Category</div>
+        <div className="hidden lg:block flex-shrink-0">Size</div>
+        <div className="hidden lg:block flex-shrink-0">Uploaded By</div>
+        <div className="hidden lg:block flex-shrink-0">Date Added</div>
+        <div className="flex-shrink-0">ACTIONS</div>
       </div>
       
       <div role="table" aria-label="Asset list">
-        {assets.map((asset) => (
-          <AssetRow 
-            key={asset.id} 
-            asset={asset} 
-            onAction={onAssetAction}
-          />
-        ))}
+        {assets.length === 0 ? (
+          <div className="bg-[rgba(197,194,116,0.16)] border border-[rgba(203,200,149,1)] border-solid px-3 sm:px-6 lg:px-[30px] py-8 sm:py-10 lg:py-12 text-center text-white">
+            <p className="text-lg sm:text-xl">No assets found</p>
+            <p className="text-sm sm:text-base text-gray-300 mt-2">Upload some files to get started</p>
+          </div>
+        ) : (
+          assets.map((asset) => (
+            <AssetRow 
+              key={asset.id} 
+              asset={asset} 
+              onAction={onAssetAction}
+            />
+          ))
+        )}
       </div>
     </div>
   );
+});
+
+AssetTable.displayName = 'AssetTable';
+
+// Utility functions
+const formatFileSize = (bytes) => {
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
+
+const getFileType = (file) => {
+  if (file.type.startsWith('image/')) return 'image';
+  if (file.type.startsWith('audio/')) return 'audio';
+  return 'other';
+};
+
+const generateAssetId = () => `asset-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 // Main Assets Component
 const Assets = () => {
-  const [assets, setAssets] = useState([
+  // Initial mock data
+  const initialAssets = [
     {
       id: '1',
       fileName: 'game_soundtrack.wav',
@@ -269,7 +348,6 @@ const Assets = () => {
       uploadedBy: 'Producer',
       dateAdded: '2024-01-13',
       fileType: 'audio',
-      previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/152128324cfd42b713d866a5d7a58a35171867e9?placeholderIfAbsent=true'
     },
     {
       id: '2',
@@ -279,7 +357,6 @@ const Assets = () => {
       uploadedBy: 'Designer',
       dateAdded: '2024-01-13',
       fileType: 'image',
-      previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/53eaaf72e1067d4736d4466c8932c0bfe6d6e353?placeholderIfAbsent=true'
     },
     {
       id: '3',
@@ -289,7 +366,6 @@ const Assets = () => {
       uploadedBy: 'Admin',
       dateAdded: '2024-01-13',
       fileType: 'audio',
-      previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/bf6389270235da1e30c42841360b75bec0cc83c3?placeholderIfAbsent=true'
     },
     {
       id: '4',
@@ -299,7 +375,6 @@ const Assets = () => {
       uploadedBy: 'Producer',
       dateAdded: '2024-01-13',
       fileType: 'audio',
-      previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/30e22b5aa0e27a7e559db3ff87b6f07e2aa469a7?placeholderIfAbsent=true'
     },
     {
       id: '5',
@@ -309,23 +384,24 @@ const Assets = () => {
       uploadedBy: 'Designer',
       dateAdded: '2024-01-13',
       fileType: 'image',
-      previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/e099248c8445cc60243503779e3516a2aef050dc?placeholderIfAbsent=true'
     }
-  ]);
+  ];
 
-  const [filteredAssets, setFilteredAssets] = useState(assets);
+  const [assets, setAssets] = useState(initialAssets);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
 
-  const applyFilters = useCallback(() => {
+  // Memoized filtered assets calculation
+  const filteredAssets = React.useMemo(() => {
     let filtered = assets;
 
-    if (searchTerm) {
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(asset =>
-        asset.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.uploadedBy.toLowerCase().includes(searchTerm.toLowerCase())
+        asset.fileName.toLowerCase().includes(searchLower) ||
+        asset.category.toLowerCase().includes(searchLower) ||
+        asset.uploadedBy.toLowerCase().includes(searchLower)
       );
     }
 
@@ -337,27 +413,21 @@ const Assets = () => {
       filtered = filtered.filter(asset => asset.category === categoryFilter);
     }
 
-    setFilteredAssets(filtered);
+    return filtered;
   }, [assets, searchTerm, typeFilter, categoryFilter]);
 
-  React.useEffect(() => {
-    applyFilters();
-  }, [applyFilters]);
-
   const handleFileUpload = useCallback((files) => {
-    const newAssets = files.map((file, index) => {
-      const fileType = file.type.startsWith('image/') ? 'image' : 
-                      file.type.startsWith('audio/') ? 'audio' : 'other';
+    const newAssets = files.map((file) => {
+      const fileType = getFileType(file);
       
       return {
-        id: `new-${Date.now()}-${index}`,
+        id: generateAssetId(),
         fileName: file.name,
         category: 'Uncategorized',
-        size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+        size: formatFileSize(file.size),
         uploadedBy: 'Current User',
         dateAdded: new Date().toISOString().split('T')[0],
-        fileType,
-        previewUrl: 'https://api.builder.io/api/v1/image/assets/8194e458f3d34aa4833822b7adb041ea/152128324cfd42b713d866a5d7a58a35171867e9?placeholderIfAbsent=true'
+        fileType
       };
     });
 
@@ -376,27 +446,28 @@ const Assets = () => {
     setCategoryFilter(category);
   }, []);
 
-  // FIX: Pure JS version without TypeScript annotations
   const handleAssetAction = useCallback((assetId, action) => {
     switch (action) {
       case 'download':
         console.log(`Downloading asset ${assetId}`);
+        // TODO: Implement actual download functionality
         break;
       case 'edit':
         console.log(`Editing asset ${assetId}`);
+        // TODO: Implement edit functionality
         break;
       case 'delete':
         setAssets(prev => prev.filter(asset => asset.id !== assetId));
         break;
       default:
-        console.log(`Unknown action ${action} for asset ${assetId}`);
+        console.warn(`Unknown action ${action} for asset ${assetId}`);
     }
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-900 p-4 alexandria-font">
+    <main className="min-h-screen bg-gray-900 p-2 sm:p-4 alexandria-font overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="rounded-[0px_0px_0px_0px]">
+        <div className="space-y-4 sm:space-y-6">
           <AssetUpload onFileUpload={handleFileUpload} />
           
           <AssetFilters

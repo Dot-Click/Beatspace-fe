@@ -215,17 +215,17 @@ const ComicUploadArea = ({ onFileSelected }) => {
         tabIndex={0}
         aria-label="Upload comic book cover"
       >
-        <div className="text-center">
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/94153a1d557d70a8557c1256de9fa83cebdb9e69?width=1100"
-            alt="Upload area placeholder"
-            className="w-48 h-32 md:w-64 md:h-40 lg:w-80 lg:h-48 object-contain mx-auto mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          />
-          <div className="text-[#CBC895] text-sm md:text-base font-medium">
-            <p className="mb-2">Click to upload or drag and drop</p>
-            <p className="text-xs md:text-sm opacity-75">PNG, JPG, GIF up to 10MB</p>
-          </div>
-        </div>
+         <div className="text-center">
+           <img
+             src="/assets/uploadicon.png"
+             alt="Upload area placeholder"
+             className="w-48 h-32 md:w-64 md:h-40 lg:w-80 lg:h-48 object-contain mx-auto mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+           />
+           <div className="text-[#CBC895] text-sm md:text-base font-medium">
+             <p className="mb-2">Click to upload or drag and drop</p>
+             <p className="text-xs md:text-sm opacity-75">PNG, JPG, GIF up to 10MB</p>
+           </div>
+         </div>
         
         <input
           ref={fileInputRef}
@@ -432,7 +432,7 @@ const Comic = () => {
       id: '1',
       title: 'Me and the Boys',
       author: 'SpaceRacoon',
-      coverImage: 'https://api.builder.io/api/v1/image/assets/TEMP/1d61e7154e7109ee7fa82b469c3c5e078388e405?width=506',
+      coverImage: '/assets/Me-and-the-boys.png',
       chapters: 2,
       status: 'active'
     },
@@ -440,7 +440,7 @@ const Comic = () => {
       id: '2',
       title: 'Spiderman',
       author: 'Marvel',
-      coverImage: 'https://api.builder.io/api/v1/image/assets/TEMP/e3d0c214bc8edf6c9287418e41fe65dd79f8516f?width=506',
+      coverImage: '/assets/spiderman.png',
       chapters: 2,
       status: 'active'
     },
@@ -448,7 +448,7 @@ const Comic = () => {
       id: '3',
       title: 'Iron man',
       author: 'Marvel',
-      coverImage: 'https://api.builder.io/api/v1/image/assets/TEMP/dfa1fdb231cd9b7b4a7d7f5a6f57c609914ccc9b?width=506',
+      coverImage: '/assets/iron-man.png',
       chapters: 2,
       status: 'active'
     },
@@ -456,7 +456,7 @@ const Comic = () => {
       id: '4',
       title: 'Spuerman 1',
       author: 'DC',
-      coverImage: 'https://api.builder.io/api/v1/image/assets/TEMP/07f5be5c70f63892b5a59cdc9c8ea1415ddc709f?width=506',
+      coverImage: '/assets/superman.png',
       chapters: 2,
       status: 'active'
     },
@@ -464,7 +464,7 @@ const Comic = () => {
       id: '5',
       title: 'Duck Walt',
       author: 'Disney',
-      coverImage: 'https://api.builder.io/api/v1/image/assets/TEMP/8a97220af60b1a25107ebdcb549385353fd5c71d?width=506',
+      coverImage: '/assets/walt-disney.png',
       chapters: 2,
       status: 'active'
     }

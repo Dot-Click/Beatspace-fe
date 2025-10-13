@@ -48,10 +48,10 @@ const Router = () => {
         <Route path="beatmaker" element={<Beatmaker />} />
         <Route path="merch-management" element={<MerchManagement />} />
         <Route path="comic-management" element={<ComicManagment />} />
-        {/* <Route path="settings" element={<AdminProfileSettings />} />
+        <Route path="settings" element={<AdminProfileSettings />} />
         <Route path="games" element={<AdminGames />} />
         <Route path="upload-assets" element={<UploadAssets />} />
-        <Route path="asset-management" element={<UploadAssets />} /> */}
+        <Route path="asset-management" element={<UploadAssets />} />
       </Route>
 
       
