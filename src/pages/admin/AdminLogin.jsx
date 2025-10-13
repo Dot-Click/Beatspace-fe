@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, Text, TextInput, PasswordInput, Button, Group, Image, Alert } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser, FaExclamationTriangle } from 'react-icons/fa';
-import { useAuthContext } from '../../contexts/AuthContext';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -12,7 +11,6 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuthContext();
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -26,10 +24,7 @@ const AdminLogin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Set user as authenticated (frontend only)
-    login();
-    
-    // Navigate to dashboard
+    // Direct navigation to dashboard - no authentication needed
     navigate('/admin/dashboard');
   };
 
