@@ -76,6 +76,16 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     ...authState,
+    login: () => {
+      setAuthState({
+        isAuthenticated: true,
+        isLoading: false,
+        lastCheck: Date.now()
+      });
+      setTimeout(() => {
+        window.dispatchEvent(new Event('authChange'));
+      }, 100);
+    },
     refreshAuth: () => {
       setAuthState(prev => ({ ...prev, lastCheck: 0 }));
     },

@@ -21,6 +21,8 @@ import MerchManagement from "../pages/admin/MerchManagement";
 import ComicManagment from "../pages/admin/ComicManagment";
 import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
+import AdminRoute from "./AdminRoute";
+import AdminIndex from "../components/AdminIndex";
 
 const Router = () => {
   return (
@@ -33,28 +35,82 @@ const Router = () => {
       <Route path="/comics" element={<Comics />} />
       <Route path="/comics/select" element={<Selectcomic />} />
       <Route path="/comics/select-chapter" element={<Selectchapter />} />
-      {/* New comic reader routes */}
       <Route path="/comics/chapter/:chapterNumber" element={<Comicview />} />
       <Route path="/comics/read" element={<Comicread />} />
       <Route path="/merch" element={<Merch />} />
       <Route path="/buyshirt" element={<BuyShirt />} />
 
       {/* Admin Routes */}
+      {/* Redirect /admin based on auth status */}
+      <Route path="/admin" element={<AdminIndex />} />
+      
+      {/* Public admin login route */}
       <Route path="/admin/login" element={<AdminLogin />} />
       
-      {/* Admin Dashboard Routes with Layout */}
-      <Route path="/admin" element={<DashboardLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="beatmaker" element={<Beatmaker />} />
-        <Route path="merch-management" element={<MerchManagement />} />
-        <Route path="comic-management" element={<ComicManagment />} />
-        <Route path="settings" element={<AdminProfileSettings />} />
-        <Route path="games" element={<AdminGames />} />
-        <Route path="upload-assets" element={<UploadAssets />} />
-        <Route path="asset-management" element={<UploadAssets />} />
+      {/* Protected Admin Dashboard Routes */}
+      <Route path="/admin/dashboard" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<Dashboard />} />
       </Route>
-
       
+      <Route path="/admin/beatmaker" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<Beatmaker />} />
+      </Route>
+      
+      <Route path="/admin/merch-management" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<MerchManagement />} />
+      </Route>
+      
+      <Route path="/admin/comic-management" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<ComicManagment />} />
+      </Route>
+      
+      <Route path="/admin/settings" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<AdminProfileSettings />} />
+      </Route>
+      
+      <Route path="/admin/games" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<AdminGames />} />
+      </Route>
+      
+      <Route path="/admin/upload-assets" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<UploadAssets />} />
+      </Route>
+      
+      <Route path="/admin/asset-management" element={
+        <AdminRoute>
+          <DashboardLayout />
+        </AdminRoute>
+      }>
+        <Route index element={<UploadAssets />} />
+      </Route>
 
       <Route path="*" element={<div />} />
     </Routes>
