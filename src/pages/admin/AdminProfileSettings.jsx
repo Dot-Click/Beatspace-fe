@@ -655,7 +655,7 @@ const Settings = () => {
                   Higher quality uses more bandwidth but provides better audio experience
                 </p>
               </div>
-
+              
               <div className="text-left mt-[57px] -mb-6 max-md:mt-10 max-md:mb-2.5">
                 <h3 className="text-[rgba(255,239,46,1)] text-xl font-normal leading-none">
                   Audio visualizer preview
