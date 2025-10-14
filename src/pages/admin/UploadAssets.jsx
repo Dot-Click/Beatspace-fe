@@ -219,36 +219,36 @@ const AssetRow = memo(({ asset, onAction }) => {
 
   return (
     <div 
-      className="bg-[rgba(197,194,116,0.16)] border flex w-full items-center gap-2 sm:gap-4 lg:gap-[40px] text-sm sm:text-base lg:text-xl text-white font-normal leading-tight px-3 sm:px-6 lg:px-[30px] py-4 sm:py-6 lg:py-10 border-[rgba(203,200,149,1)] border-solid"
+      className="bg-[rgba(197,194,116,0.16)] border grid grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 w-full items-center text-sm sm:text-base lg:text-xl text-white font-normal leading-tight px-3 sm:px-6 lg:px-[30px] py-4 sm:py-6 lg:py-10 border-[rgba(203,200,149,1)] border-solid"
       role="row"
     >
-      <div className="flex items-center flex-shrink-0" role="cell">
-        <div className="w-5 sm:w-6 lg:w-[27px] h-5 sm:h-6 lg:h-[27px] flex items-center justify-center">
+      <div className="flex items-center justify-start" role="cell">
+        <div className="w-5 sm:w-6 lg:w-[27px] h-5 sm:h-6 lg:h-[27px] flex items-center justify-start">
           <MusicIcons1 />
         </div>
       </div>
       
-      <div className="flex-1 min-w-0 truncate" role="cell" title={asset.fileName}>
+      <div className="truncate text-left" role="cell" title={asset.fileName}>
         <span className="truncate block">{asset.fileName}</span>
       </div>
       
-      <div className="hidden sm:block flex-shrink-0" role="cell">
+      <div className="hidden sm:block text-left" role="cell">
         {asset.category}
       </div>
       
-      <div className="hidden lg:block flex-shrink-0" role="cell">
+      <div className="hidden lg:block text-left" role="cell">
         {asset.size}
       </div>
       
-      <div className="hidden lg:block flex-shrink-0" role="cell">
+      <div className="hidden lg:block text-left" role="cell">
         {asset.uploadedBy}
       </div>
       
-      <div className="hidden lg:block flex-shrink-0" role="cell">
+      <div className="hidden lg:block text-left" role="cell">
         {asset.dateAdded}
       </div>
       
-      <div className="flex gap-2 flex-shrink-0 relative" role="cell" ref={menuRef}>
+      <div className="flex items-center justify-start relative" role="cell" ref={menuRef}>
         <button
           onClick={handleMenuToggle}
           className="text-[rgba(203,200,149,1)] hover:text-[rgba(223,220,169,1)] transition-colors p-1"
@@ -291,14 +291,14 @@ AssetRow.displayName = 'AssetRow';
 const AssetTable = memo(({ assets, onAssetAction }) => {
   return (
     <div className="mt-4 sm:mt-[17px]" role="region" aria-label="Asset management table">
-      <div className="bg-[rgba(19,19,25,1)] flex items-center gap-2 sm:gap-4 lg:gap-[40px] text-sm sm:text-base lg:text-xl text-[rgba(203,200,149,1)] font-normal leading-tight px-3 sm:px-6 lg:px-[26px] py-3 sm:py-4 lg:py-[22px]">
-        <div className="flex-shrink-0">PREVIEW</div>
-        <div className="flex-1 min-w-0">File Name</div>
-        <div className="hidden sm:block flex-shrink-0">Category</div>
-        <div className="hidden lg:block flex-shrink-0">Size</div>
-        <div className="hidden lg:block flex-shrink-0">Uploaded By</div>
-        <div className="hidden lg:block flex-shrink-0">Date Added</div>
-        <div className="flex-shrink-0">ACTIONS</div>
+      <div className="bg-[rgba(19,19,25,1)] grid grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 text-sm sm:text-base lg:text-xl text-[rgba(203,200,149,1)] font-normal leading-tight px-3 sm:px-6 lg:px-[26px] py-3 sm:py-4 lg:py-[22px]">
+        <div className="text-left">PREVIEW</div>
+        <div className="text-left">File Name</div>
+        <div className="hidden sm:block text-left">Category</div>
+        <div className="hidden lg:block text-left">Size</div>
+        <div className="hidden lg:block text-left">Uploaded By</div>
+        <div className="hidden lg:block text-left">Date Added</div>
+        <div className="text-left">ACTIONS</div>
       </div>
       
       <div role="table" aria-label="Asset list">
