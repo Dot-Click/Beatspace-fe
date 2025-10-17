@@ -57,7 +57,7 @@ const BeatPlay = () => {
         position: "relative",
         overflow: "hidden",
       }}
-      className="!flex !items-center !justify-center"
+      className=""
     >
       <Image
         src="/assets/Frame.png"
@@ -73,14 +73,14 @@ const BeatPlay = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-52 max-lg:!h-[55%]"
+        className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
       />
 
       <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/dark-bg.png")',
+          backgroundImage: 'url("/assets/dark-bg.png")', 
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -97,7 +97,7 @@ const BeatPlay = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="max-sm:!top-[4%]  max-sm:!right-[9%]  max-lg:!top-[9%]  "
+        className="max-sm:!top-[39%]  max-sm:!right-[9%]  max-lg:!top-[33%]"
       >
         <Image
           src="/assets/logo.png"
@@ -122,7 +122,7 @@ const BeatPlay = () => {
           alignItems: "center",
           gap: "1rem",
         }}
-        className="max-sm:!top-[4%] max-sm:!right-[9%] max-lg:!top-[9%]"
+        className="max-sm:!top-[39%] max-sm:!right-[9%] max-lg:!top-[32%]"
       >
         <Box
           style={{
@@ -154,7 +154,7 @@ const BeatPlay = () => {
       </Box>
 
       <Box
-        className="custom-scrollbar max-sm:!top-[12%] max-sm:!h-[15%] max-lg:!top-[19%] max-lg:!h-[26%] "
+        className="custom-scrollbar max-sm:!top-[45%] max-sm:!h-[15%] max-lg:!top-[42%] max-lg:!h-[26%]"
         style={{
           position: "absolute",
           // left: "12rem",
@@ -190,7 +190,8 @@ const BeatPlay = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
                 cursor: "pointer",
-                height: "70px",
+                height: "70px",  
+                
               }}
               className="max-sm:!h-12"
               onMouseEnter={handleItemHover}
@@ -241,9 +242,9 @@ const BeatPlay = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: "4px",
+                    borderRadius: "4px", 
                   }}
-                >
+                > 
                   {streamIcon()}
                 </Box>
               </Box>

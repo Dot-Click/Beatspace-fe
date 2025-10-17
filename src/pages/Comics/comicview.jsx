@@ -27,7 +27,7 @@ const Comicview = () => {
 
     return (
         <Box style={{ minHeight: '100vh', backgroundColor: '#111827', position: 'relative', overflow: 'hidden' }}>
-            <Image src="/assets/Frame.png" alt="TV Frame" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 2, pointerEvents: 'none' }} />
+            <Image src="/assets/Frame.png" alt="TV Frame" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
             <Box style={{ position: 'absolute', inset: 0, backgroundImage: 'url("/assets/dark-bg.png")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', zIndex: 1, pointerEvents: 'none' }} />
 
             {/* Top-right GLOBAL VISION logo */}

@@ -47,7 +47,7 @@ const Selectchapter = () => {
                     inset: 0,
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover',
+                    objectFit: 'fill',
                     zIndex: 2,
                     pointerEvents: 'none'
                 }}
@@ -420,12 +420,13 @@ const Selectchapter = () => {
                 }}
             >
                 <Text
-                     className="alexandria-font"
+                     className="alexandria-font translate-y-6"
                      style={{
                          fontSize: '0.9rem',
                          color: '#9ca3af',
                          letterSpacing: '1px',
-                         textAlign: 'center'
+                         textAlign: 'center',
+                         
                      }}
                 >
                     Click on a chapter to start reading

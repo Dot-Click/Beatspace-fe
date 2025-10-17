@@ -24,16 +24,16 @@ const Comicread = () => {
     return (
         <Box style={{ minHeight: '100vh', backgroundColor: '#111827', position: 'relative', overflow: 'hidden' }}>
             {/* Screen Frame and BG */}
-            <Image src="/assets/Frame.png" alt="TV Frame" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 2, pointerEvents: 'none' }} />
+            <Image src="/assets/Frame.png" alt="TV Frame" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill', zIndex: 2, pointerEvents: 'none' }} />
             <Box style={{ position: 'absolute', inset: 0, backgroundImage: 'url("/assets/dark-bg.png")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', zIndex: 1, pointerEvents: 'none' }} />
 
             {/* Top-right GLOBAL VISION logo */}
-            <Box style={{ position: 'absolute', top: '8rem', right: '12rem', zIndex: 3 }}>
+            <Box style={{ position: 'absolute', top: '20%', right: '13%', zIndex: 3 }}>
                 <Image src="/assets/logo.png" alt="GLOBAL VISION" style={{ width: '120px', height: 'auto', filter: 'brightness(1.2)' }} />
             </Box>
 
             {/* Header */}
-            <Box style={{ position: 'absolute', top: '8rem', left: '12rem', zIndex: 5, display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
+            <Box style={{ position: 'absolute', top: '20%', left: '13%', zIndex: 5, display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
                 <Box style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Box role="button" aria-label="Back" onClick={handleBack} style={{ cursor: 'pointer' }}>
                         <BackButtonIcon />
@@ -46,14 +46,14 @@ const Comicread = () => {
             {/* Viewer Area */}
             <Box style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}>
                 {/* Chapter badge left */}
-                <Box style={{ position: 'absolute', left: '12rem', top: '16rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <Box style={{ position: 'absolute', left: '13%', top: '35%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <Box style={{ width: '48px', height: '28px', backgroundColor: '#d1c676', borderRadius: '2px', border: '2px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Text className="alexandria-font" style={{ fontSize: '0.9rem', color: '#000', fontWeight: 'bold' }}>01</Text>
                     </Box>
                 </Box>
 
                 {/* Scroll container using global custom scrollbar */}
-                <Box className="custom-scrollbar" style={{ position: 'absolute', left: '12rem', top: '30%', zIndex: 3, pointerEvents: 'auto', width: 'calc(100% - 12rem)', maxWidth: '1150px', height: '480px', overflowY: 'scroll' }}>
+                <Box className="custom-scrollbar" style={{ position: 'absolute', left: '3%', top: '35%', zIndex: 3, pointerEvents: 'auto', width: 'calc(100% - 13%)', height: '46%', overflowY: 'scroll' }}>
                     {/* Ensure scroll area does not allow children to bleed horizontally */}
                     {/* Overflow hidden is handled per card; keeping vertical scroll only here */}
                      <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
