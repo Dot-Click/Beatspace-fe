@@ -13,6 +13,7 @@ const isValidJWT = (token) => {
   return true;
 };
 
+
 export const attachToken = () => {
   const user = {};
   const isTeamMember = false;
