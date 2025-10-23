@@ -73,14 +73,14 @@ const BeatPlay = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
+        className="max-sm:!h-72 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
       />
 
       <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/dark-bg.png")', 
+          backgroundImage: 'url("/assets/dark-bg.png")',
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -190,8 +190,7 @@ const BeatPlay = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
                 cursor: "pointer",
-                height: "70px",  
-                
+                height: "70px",
               }}
               className="max-sm:!h-12"
               onMouseEnter={handleItemHover}
@@ -207,7 +206,7 @@ const BeatPlay = () => {
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                 }}
-                className="max-sm:!h-7 max-sm:!w-7"
+                className="max-sm:!h-7 max-sm:!w-7 max-sm:translate-y-3 min-md:translate-y-5 "
                 onClick={() => handlePlay(beat.name)}
               >
                 {playIcon()}
@@ -242,9 +241,9 @@ const BeatPlay = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: "4px", 
+                    borderRadius: "4px",
                   }}
-                > 
+                >
                   {streamIcon()}
                 </Box>
               </Box>
@@ -260,7 +259,7 @@ const BeatPlay = () => {
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                 }}
-                className="max-sm:!h-7 max-sm:!w-7"
+                className="max-sm:!h-7 max-sm:!w-7 max-sm:translate-y-3 min-md:translate-y-5"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleBeatNameClick(beat);
