@@ -95,7 +95,7 @@ const Sidebar = ({ opened, toggle }) => {
           <img 
             src="/assets/logo1.png" 
             alt="Global Vision Logo" 
-            className="h-16 w-auto object-contain"
+            className="hidden lg:inline h-16 w-auto object-contain"
           />
         </div>
       </div>
@@ -118,7 +118,7 @@ const Sidebar = ({ opened, toggle }) => {
                 <div className="flex-shrink-0">
                   <IconComponent color={isActive(item.link) ? '#C1BE91' : '#25262F'} />
                 </div>
-                <span>{item.label}</span>
+                <span className="lg:inline hidden">{item.label}</span>
               </button>
             );
           })}
