@@ -673,10 +673,10 @@ const Comicread = () => {
                   justifyContent: "center",
                   cursor: "pointer",
                 }}
-                className="max-sm:!w-40 max-sm:!translate-x-4 max-sm:!py-[0.2rem]"
+                className="max-sm:!w-fit !w-full max-sm:!translate-x-4 max-sm:!py-3 !py-4 pixel-font"
               >
                 <Text
-                  className="vision-font-regular"
+                  className=" max-sm:!text-[0.4rem] !font-bold !text-[0.67rem]"
                   style={{ fontWeight: "bold", letterSpacing: "2px" }}
                 >
                   Support the Artist: 0,00€ »
@@ -687,7 +687,10 @@ const Comicread = () => {
         </Box>
         {/* Small UI icons top-right inside viewer */}
         <Box
-          className="max-sm:!top-52 max-sm:!right-10 min-md:!top-[40%] min-md:!right-32 min-xl:!top-60 min-xl:!right-40"
+          className="max-sm:!top-52 max-sm:!right-10 min-md:!top-[40%] min-md:!right-32
+          min-lg:!top-[30%] min-lg:!right-44
+           min-xl:!top-[33%] min-xl:!right-48
+          "
           style={{
             position: "absolute",
             top: "12rem",

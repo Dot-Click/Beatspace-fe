@@ -662,12 +662,14 @@
 import React, { useState } from "react";
 import { Box, Text, Button, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { planetIcon, cartIcon } from "../../customIcons";
+import { planetIcon } from "../../customIcons";
+import cartIcon from "../../assets/Vector.png";
+
 
 const BuyShirt = () => {
   const [selectedSize, setSelectedSize] = useState("M");
   const navigate = useNavigate();
-  const sizes = ["S", "M", "L"];
+  const sizes = ["S", "M", "L","E"];
 
   return (
     <Box
@@ -742,7 +744,7 @@ const BuyShirt = () => {
             textShadow: "0 0 10px #F6F4D3",
             letterSpacing: "6px",
           }}
-          className="max-sm:!text-2xl md:!text-3xl lg:!text-5xl"
+          className="max-sm:!text-2xl md:!text-3xl lg:!text-5xl xl:!text-6xl "
         >
           MERCH
         </Text>
@@ -750,7 +752,7 @@ const BuyShirt = () => {
 
       {/* Cart Icon */}
       <Box
-        onClick={() => navigate("/cart")}
+        // onClick={() => navigate("/cart")}
         className="
           absolute z-[3] cursor-pointer
           max-sm:!top-[35%] max-sm:!right-10
@@ -759,7 +761,7 @@ const BuyShirt = () => {
           xl:!top-[8rem] xl:!right-[10%]
         "
       >
-        {cartIcon()}
+        <img src={cartIcon} alt="Cart Icon" className="!h-5 md:!h-8 lg:!h-8 xl:!h-12" />
       </Box>
 
       {/* Scrollable Content */}
@@ -785,8 +787,8 @@ const BuyShirt = () => {
         {/* Main Section */}
         <Box
           className="
-            flex flex-col items-center gap-8 w-full pb-8
-            md:!flex-row md:!items-center md:!justify-center md:!gap-20
+            flex flex-col items-center gap-8 xl:-translate-y-5 w-full 
+            md:!flex-row md:!items-center md:!justify-center md:!gap-12 xl:!gap-14
           "
         >
           {/* Shirt Image */}
@@ -822,7 +824,7 @@ const BuyShirt = () => {
                 color: "#F6F4D3",
                 letterSpacing: "3px",
               }}
-              className="!text-xl md:!text-2xl"
+              className="!text-xl md:!text-2xl lg:!text-3xl xl:!text-4xl "
             >
               VISION SHIRT
             </Text>
@@ -832,19 +834,19 @@ const BuyShirt = () => {
                 color: "#00CED1",
                 letterSpacing: "2px",
               }}
-              className="!text-lg md:!text-xl"
+              className="!text-lg md:!text-xl lg:!text-2xl xl:!text-3xl "
             >
               €25
             </Text>
 
             {/* Size Options */}
-            <Box className="flex gap-2 items-center justify-center md:!justify-start">
+            <Box className="flex gap-1 lg:gap-2  items-center justify-center md:!justify-start">
               <Text
                 style={{
                   color: "#F6F4D3",
                   letterSpacing: "2px",
                 }}
-                className="!text-sm"
+                className="!text-sm md:!text-lg lg:!text-xl xl:!text-2xl "
               >
                 SIZE:
               </Text>
@@ -852,38 +854,36 @@ const BuyShirt = () => {
                 <Button
                   key={size}
                   onClick={() => setSelectedSize(size)}
+                  className=" pixel-font"
                   style={{
                     backgroundColor:
-                      selectedSize === size ? "#F6F4D3" : "transparent",
-                    border: "2px solid #F6F4D3",
-                    color: selectedSize === size ? "#111827" : "#F6F4D3",
+                      selectedSize === size ? "#F6F4D3" : "#1e1e1f",
+                    color: selectedSize === size ? "#111827" : "#fff",
                     fontFamily: "inherit",
                     letterSpacing: "1px",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
-                    minWidth: "40px",
-                    height: "36px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                 >
-                  {size}
+                  <span className="!text-xs lg:!text-base">{size}</span>
                 </Button>
               ))}
             </Box>
 
             {/* Add to Cart Button */}
             <Button
+              className="pixel-font !border !border-white py-1.5 px-2"
               style={{
                 backgroundColor: "#000000",
-                border: "none",
                 color: "#FFFFFF",
                 fontFamily: "inherit",
                 letterSpacing: "3px",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
-                borderRadius: "10px",
+                borderRadius: "7px",
                 boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)",
                 marginTop: "0.5rem",
               }}
@@ -898,7 +898,7 @@ const BuyShirt = () => {
                   "0 4px 15px rgba(0, 0, 0, 0.5)";
               }}
             >
-              Add To Cart
+              <span className="!text-xs  lg:!text-base">Add To Cart</span>
             </Button>
 
             {/* Variants */}

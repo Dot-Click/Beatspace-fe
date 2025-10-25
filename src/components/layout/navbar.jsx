@@ -18,9 +18,9 @@ const Navbar = ({ opened, toggle }) => {
 
   return (
     <div className="bg-[#D4C5A0] border-b border-[#B8A882] px-2 py-3  md:px-6 md:py-4">
-      <div className="flex flex-col w-full lg:flex-row justify-between md:gap-3 items-center">
+      <div className="flex flex-col w-full lg:flex-row justify-between   md:gap-3 items-center">
         {/* Left side - Title and subtitle */}
-        <div className="md:flex md:flex-col md:items-start md:gap-2 lg:block">
+        <div className="md:flex md:flex-col md:items-start md:gap-2 lg:translate-x-24 lg:block">
           <h1 className="scale-[1] md:scale-[1.5] font-bold text-black pixel-font mb-1">
             ADMIN DASHBOARD
           </h1>

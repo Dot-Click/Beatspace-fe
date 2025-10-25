@@ -293,7 +293,7 @@ const Selectcomic = () => {
           pointerEvents: "none",
         }}
         className="
-          max-sm:!h-[30rem] max-sm:!top-[10%]
+          max-sm:!h-[35rem] max-sm:!top-[10%]
           min-md:!h-[34rem] min-md:!top-[25%]
           lg:!h-full lg:!w-full lg:!top-0
         "
@@ -390,7 +390,7 @@ const Selectcomic = () => {
           padding: "2rem",
           zIndex: 5, // 🔥 increased so it stays above frame
         }}
-        className="max-sm:!-mt-[24rem]"
+        className="max-sm:!-mt-[15rem]"
       >
         {/* Scrollable Comic Frame */}
         <Box

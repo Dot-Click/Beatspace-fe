@@ -66,7 +66,7 @@ const DonutChart = ({ title = "MOST PLAYED GENRES" }) => {
   ];
 
   return (
-    <div className="bg-[#2A2B35] border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font">
+    <div className="bg-[#2A2B35]  border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font">
       {/* Header */}
       <div className="mb-4">
         <h3 className="text-[#C1BE91] text-sm font-semibold uppercase tracking-wide">
