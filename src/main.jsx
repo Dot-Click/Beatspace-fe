@@ -6,15 +6,19 @@ import { theme } from "./configs/theme.config.js";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import { Provider } from "react-redux";
+import store from "../store/store.js";
 import "mantine-react-table/styles.css";
 import QueryProvider from "./configs/query.config.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <MantineProvider theme={theme}>
-      <QueryProvider>
-        <App />
-      </QueryProvider>
-    </MantineProvider>
+    <Provider store={store}>
+      <MantineProvider theme={theme}>
+        <QueryProvider>
+          <App />
+        </QueryProvider>
+      </MantineProvider>
+    </Provider>
   </StrictMode>
 );
