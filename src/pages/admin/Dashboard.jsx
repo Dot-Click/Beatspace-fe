@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import StatCard from '../../components/StatCard';
 import BarChart from '../../components/BarChart';
 import DonutChart from '../../components/DonutChart';
 import RecentActivityTable from '../../components/tables/admin/RecentActivityTable';
 import { MusicIcon1, ClothesIcon, DollarIcon, DownloadIcon } from '../../customIcons';
+import { useDispatch, useSelector } from 'react-redux';
+import { me } from '../../../store/actions/authActions';
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    dispatch(me());
+  }, []);
   const stats = [
     {
       title: 'Tracks',

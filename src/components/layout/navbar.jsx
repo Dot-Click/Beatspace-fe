@@ -1,9 +1,15 @@
-import React from "react";
-import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
-
-
+import React, { useState, useRef, useEffect } from "react";
+import { FaSignOutAlt, FaUser, FaCog } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logoutAction } from "../../../store/actions/authActions";
 
 const Navbar = ({ opened, toggle }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   // Get current date
   const getCurrentDate = () => {
     const now = new Date();
@@ -16,6 +22,36 @@ const Navbar = ({ opened, toggle }) => {
     return now.toLocaleDateString('en-US', options);
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  const handleOpenDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutAction());
+      setIsDropdownOpen(false);
+      navigate('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
   return (
     <div className="bg-[#D4C5A0] border-b border-[#B8A882] px-2 py-3  md:px-6 md:py-4">
       <div className="flex flex-col w-full lg:flex-row justify-between   md:gap-3 items-center">
@@ -30,8 +66,8 @@ const Navbar = ({ opened, toggle }) => {
         </div>
 
         {/* Right side - User controls */}
-        <div className="flex items-center space-x-2 lg:space-x-4">
-          <button>
+        <div className="flex items-center space-x-2 lg:space-x-4 relative" ref={dropdownRef}>
+          <button className="transition-opacity hover:opacity-80">
             <svg
               className="!h-7 md:!h-9"
               width="38"
@@ -62,7 +98,7 @@ const Navbar = ({ opened, toggle }) => {
               />
             </svg>
           </button>
-          <button>
+          <button className="transition-opacity hover:opacity-80">
             <svg
               className="!h-7 md:!h-9"
               width="38"
@@ -95,7 +131,10 @@ const Navbar = ({ opened, toggle }) => {
               />
             </svg>
           </button>
-          <button>
+          <button 
+            onClick={handleOpenDropdown}
+            className="transition-opacity hover:opacity-80 relative z-10"
+          >
             <svg
               className="!h-7 md:!h-9"
               width="38"
@@ -128,6 +167,24 @@ const Navbar = ({ opened, toggle }) => {
               />
             </svg>
           </button>
+          
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <div 
+              className="absolute top-full right-0 mt-2 w-56 bg-[#2A2B35] border-2 border-[#C1BE91] rounded-lg shadow-2xl overflow-hidden z-50 opacity-100 transform translate-y-0 transition-all duration-200 ease-out"
+            >
+              {/* Dropdown Items */}
+              <div className="py-2">
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-4 py-3 text-left flex items-center space-x-3 text-[#C1BE91] hover:bg-[#C1BE91] hover:text-[#111827] transition-all duration-200 group alexandria-font"
+                >
+                  <FaSignOutAlt className="text-base group-hover:scale-110 transition-transform duration-200" />
+                  <span className="font-semibold text-sm">Logout</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

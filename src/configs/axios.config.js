@@ -1,5 +1,5 @@
 import axios from "axios";
-export const baseURL = "";
+export const baseURL = "http://localhost:8000/api";
 
 const custAxios = axios.create({
   baseURL: baseURL,
@@ -9,39 +9,95 @@ const custAxios = axios.create({
   },
 });
 
-const isValidJWT = (token) => {
-  return true;
-};
-
-
-export const attachToken = () => {
-  const user = {};
-  const isTeamMember = false;
-  const token = "";
-
-  if (token) {
-    const bearerToken = token;
-    custAxios.defaults.headers.common["Authorization"] = bearerToken;
-    if (!isValidJWT(token)) {
-    }
-  } else {
-  }
-};
-
-export const attachTokenWithFormAxios = () => {
-  const token = "";
-  if (token) {
-    const bearerToken = token;
-    formAxios.defaults.headers.common["Authorization"] = bearerToken;
-  }
-};
-
-export const formAxios = axios.create({
+const formAxios = axios.create({
   baseURL: baseURL,
   headers: {
     "Content-Type": "multipart/form-data",
     Accept: "application/json",
   },
 });
+
+
+custAxios.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
+formAxios.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
+custAxios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear session storage on unauthorized
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      // Dispatch auth change event to notify app
+      window.dispatchEvent(new Event('authChange'));
+    }
+    return Promise.reject(error);
+  }
+);
+
+
+formAxios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear session storage on unauthorized
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      // Dispatch auth change event to notify app
+      window.dispatchEvent(new Event('authChange'));
+    }
+    return Promise.reject(error);
+  }
+);
+
+
+export const attachToken = () => {
+  const token = sessionStorage.getItem('token');
+  if (token) {
+    custAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete custAxios.defaults.headers.common["Authorization"];
+  }
+};
+
+export const attachTokenWithFormAxios = () => {
+  const token = sessionStorage.getItem('token');
+  if (token) {
+    formAxios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete formAxios.defaults.headers.common["Authorization"];
+  }
+};
+
+export { formAxios };
 
 export default custAxios;

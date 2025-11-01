@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Box, Text, TextInput, PasswordInput, Button, Group, Image, Alert } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser, FaExclamationTriangle } from 'react-icons/fa';
+import { loginAction } from '../../../store/actions/authActions';
+import { useDispatch } from 'react-redux';
 
 const AdminLogin = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    username: '',
-    password: ''
+    username: 'admin@beatspace.com',
+    password: 'testing1234'
   });
   const [error, setError] = useState('');
   const [isHovered, setIsHovered] = useState(false);
@@ -21,11 +24,27 @@ const AdminLogin = () => {
     if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Direct navigation to dashboard - no authentication needed
-    navigate('/admin/dashboard');
+    try {
+      const res = await dispatch(loginAction({email: formData.username, password: formData.password}));
+      if (res && res.success) {
+        console.log(res);
+        const role = res.data.user.role;
+        console.log(role);
+        if(role === 'admin'){
+          navigate('/admin/dashboard');
+          return;
+        }
+        navigate('/admin/login');
+        setError('You are not authorized to access this page.');
+        
+      } else {
+        setError(res?.error || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      setError(error.message || 'An error occurred during login.');
+    }
   };
 
   return (
