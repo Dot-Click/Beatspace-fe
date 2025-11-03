@@ -5,7 +5,7 @@ import DonutChart from '../../components/DonutChart';
 import RecentActivityTable from '../../components/tables/admin/RecentActivityTable';
 import { MusicIcon1, ClothesIcon, DollarIcon, DownloadIcon } from '../../customIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import { me } from '../../../store/actions/authActions';
+import { me } from '../../store/actions/authActions';
 
 const Dashboard = () => {
   const dispatch = useDispatch();

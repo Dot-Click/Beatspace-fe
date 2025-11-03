@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaSignOutAlt, FaUser, FaCog } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logoutAction } from "../../../store/actions/authActions";
+import { logoutAction } from "../../store/actions/authActions";
 
 const Navbar = ({ opened, toggle }) => {
   const dispatch = useDispatch();

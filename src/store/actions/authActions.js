@@ -1,5 +1,5 @@
+import custAxios from '../../configs/axios.config';
 import { AUTH_CONSTANTS } from '../constants/authConstants';
-import custAxios from '../../src/configs/axios.config';
 
 // Login Action
 export const loginAction = (values) => {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Text, TextInput, PasswordInput, Button, Group, Image, Alert } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { FaLock, FaUser, FaExclamationTriangle } from 'react-icons/fa';
-import { loginAction } from '../../../store/actions/authActions';
+import { loginAction } from '../../store/actions/authActions';
 import { useDispatch } from 'react-redux';
 
 const AdminLogin = () => {
