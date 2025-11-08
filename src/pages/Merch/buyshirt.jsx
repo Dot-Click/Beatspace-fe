@@ -110,7 +110,7 @@ const BuyShirt = () => {
       >
         <div className="relative">
           <img src={cartIcon} alt="Cart Icon" className="!h-5 md:!h-8 lg:!h-8 xl:!h-12" />
-          <h1 className="bg-red-500  absolute -top-2 -right-3 text-white text-base rounded-full px-3 py-1">{cartCount}</h1>
+          <h1 className="bg-red-500  absolute -top-2 -right-3 text-white text-xs md:text-base px-1 py-1 rounded-full md:px-3 md:py-1">{cartCount}</h1>
 
         </div>
       </Box>
