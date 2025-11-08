@@ -264,8 +264,11 @@ const Selectcomic = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/comics");
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/comics");
+    }
   };
 
   const handleComicClick = () => navigate("/comics/select-chapter");
@@ -304,7 +307,8 @@ const Selectcomic = () => {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/dark-bg.png")',
+          backgroundColor: 'black',
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -339,7 +343,8 @@ const Selectcomic = () => {
       <Box
         style={{
           position: "absolute",
-          zIndex: 5,
+          zIndex: 10,        // 🔼 Make sure it stays above everything
+          pointerEvents: "auto", // ✅ Ensure interactions work
           display: "flex",
           flexDirection: "column",
         }}
@@ -351,7 +356,7 @@ const Selectcomic = () => {
             role="button"
             aria-label="Back to Comics"
             onClick={handleBack}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", pointerEvents: "auto" }}
             className="max-sm:!scale-[0.7]"
           >
             <BackButtonIcon />

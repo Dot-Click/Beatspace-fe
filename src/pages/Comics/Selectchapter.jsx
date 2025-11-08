@@ -63,7 +63,8 @@ const Selectchapter = () => {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/dark-bg.png")',
+          backgroundColor: 'black',
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
