@@ -166,17 +166,24 @@ const Beats = () => {
               onMouseLeave={handleItemLeave}
             >
               {selectedItem === item && (
-                <Box
+                <svg
+                  viewBox="0 0 16 16"
                   style={{
-                    width: 0,
-                    height: 0,
-                    borderLeft: "8px solid transparent",
-                    borderRight: "8px solid transparent",
-                    borderTop: "8px solid #F6F4D3",
+                    width: "16px",
+                    height: "16px",
                     marginRight: "1rem",
-                    transform: "rotate(-90deg)",
+                    imageRendering: "pixelated",
+                    flexShrink: 0,
                   }}
-                />
+                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                >
+                  {/* Left chevron (<) */}
+                  <rect x="2" y="2" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="4" y="4" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="6" y="6" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="4" y="8" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="2" y="10" width="2" height="2" fill="#F6F4D3" />
+                </svg>
               )}
 
               <Text
@@ -193,17 +200,24 @@ const Beats = () => {
               </Text>
 
               {selectedItem === item && (
-                <Box
+                <svg
+                  viewBox="0 0 16 16"
                   style={{
-                    width: 0,
-                    height: 0,
-                    borderLeft: "8px solid transparent",
-                    borderRight: "8px solid transparent",
-                    borderTop: "8px solid #F6F4D3",
+                    width: "16px",
+                    height: "16px",
                     marginLeft: "1rem",
-                    transform: "rotate(90deg)",
+                    imageRendering: "pixelated",
+                    flexShrink: 0,
                   }}
-                />
+                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                >
+                  {/* Right chevron (>) */}
+                  <rect x="12" y="4" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="10" y="6" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="8" y="8" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="12" y="10" width="2" height="2" fill="#F6F4D3" />
+                  <rect x="10" y="8" width="2" height="2" fill="#F6F4D3" />
+                </svg>
               )}
             </div>
           ))}
