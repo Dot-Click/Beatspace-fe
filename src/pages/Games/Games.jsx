@@ -8,8 +8,7 @@ const Games = () => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    setIsHovered(true);
-    navigate("/menu");
+   
   };
 
   const handleHover = () => {
@@ -92,8 +91,8 @@ const Games = () => {
 
 
           <Text
-            className="pixel-font hover:max-sm:!scale-[0.7] max-sm:!scale-[1.1]
-                 hover:min-md:!scale-[1.3] min-md:!scale-[3]
+            className="pixel-font max-sm:!scale-[1.1]
+                  min-md:!scale-[3]
                   min-md:!mt-28"
             style={{
               color: "#1f2937",
