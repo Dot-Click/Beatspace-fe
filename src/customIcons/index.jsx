@@ -246,6 +246,59 @@ export const playIcon = () => {
   );
 };
 
+export const pauseIcon = () => {
+  return (
+    <svg
+      width="84"
+      height="82"
+      viewBox="0 0 84 82"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M33.1789 28.7955H40.2187V56.9543H33.1789V28.7955Z"
+        fill="#57530E"
+      />
+      <path
+        d="M48.0345 28.7955H55.0743V56.9543H48.0345V28.7955Z"
+        fill="#57530E"
+      />
+      <path
+        d="M30.7708 25.7365H42.6268V59.0133H30.7708V25.7365Z"
+        fill="#C0BC75"
+      />
+      <path
+        d="M46.4263 25.7365H58.2823V59.0133H46.4263V25.7365Z"
+        fill="#C0BC75"
+      />
+      <path
+        d="M23.5888 3.41267H6.4486C5.09627 3.41267 4 4.50895 4 5.86127V18.7164"
+        stroke="#C0BC75"
+        strokeWidth="6.1215"
+        strokeLinecap="round"
+      />
+      <path
+        d="M23.5888 78.9127H6.4486C5.09627 78.9127 4 77.8164 4 76.4641V63.6089"
+        stroke="#C0BC75"
+        strokeWidth="6.1215"
+        strokeLinecap="round"
+      />
+      <path
+        d="M60.9298 3.41267H78.07C79.4223 3.41267 80.5186 4.50895 80.5186 5.86127V18.7164"
+        stroke="#C0BC75"
+        strokeWidth="6.1215"
+        strokeLinecap="round"
+      />
+      <path
+        d="M60.93 78.9127H78.0702C79.4225 78.9127 80.5188 77.8164 80.5188 76.4641V63.6089"
+        stroke="#C0BC75"
+        strokeWidth="6.1215"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+
 export const streamIcon = () => {
   return (
     <svg

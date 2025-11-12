@@ -1,26 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
 import {
   beatsIcon,
   playIcon,
+  pauseIcon,
   downloadIcon,
-  streamIcon,
 } from "../../customIcons";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
+import AudioWaveform from "../../components/AudioWaveform";
 
 const BeatPlay = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBeat, setSelectedBeat] = useState(null);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
+  const [audioProgress, setAudioProgress] = useState({});
+  const [audioCurrentTime, setAudioCurrentTime] = useState({});
+  const [audioDuration, setAudioDuration] = useState({});
+  const audioRefs = useRef({});
 
-  const beatItems = [
-    { name: "eFELKIT", waveform: "audio-waveform-1" },
-    { name: "eFELKIT", waveform: "audio-waveform-2" },
-    { name: "eFELKIT", waveform: "audio-waveform-3" },
-    { name: "eFELKIT", waveform: "audio-waveform-4" },
-    { name: "eFELKIT", waveform: "audio-waveform-5" },
-    { name: "eFELKIT", waveform: "audio-waveform-6" },
-  ];
+  const beatItems = useMemo(() => [
+    { 
+      id: 0,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-1",
+      audioUrl: "/assets/audio.wav"
+    },
+    { 
+      id: 1,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-2",
+      audioUrl: "/assets/sample-9s.mp3"
+    },
+    { 
+      id: 2,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-3",
+      audioUrl: "/assets/sample-6s.mp3"
+    },
+    { 
+      id: 3,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-4",
+      audioUrl: "/assets/audio.wav"
+    },
+    { 
+      id: 4,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-5",
+      audioUrl: "/assets/sample-9s.mp3"
+    },
+    { 
+      id: 5,
+      name: "eFELKIT", 
+      waveform: "audio-waveform-6",
+      audioUrl: "/assets/sample-6s.mp3"
+    },
+  ], []);
 
   const handleItemHover = () => {
     setIsHovered(true);
@@ -30,8 +66,245 @@ const BeatPlay = () => {
     setIsHovered(false);
   };
 
-  const handlePlay = (beatName) => {
-    console.log(`Playing: ${beatName}`);
+
+  const formatTime = (seconds) => {
+    if (!seconds || isNaN(seconds)) return "0.00";
+    return seconds.toFixed(2);
+  };
+
+  // Initialize audio elements
+  useEffect(() => {
+    beatItems.forEach((beat) => {
+      // Only create audio element if audioUrl is provided and not empty
+      if (!audioRefs.current[beat.id] && beat.audioUrl && beat.audioUrl.trim() !== "") {
+        const audio = new Audio();
+        audio.preload = "metadata";
+        audio.crossOrigin = "anonymous";
+        
+        // Set up error handling
+        audio.addEventListener("error", (e) => {
+          console.error(`Error loading audio for ${beat.name}:`, e);
+          console.error("Audio error details:", {
+            code: audio.error?.code,
+            message: audio.error?.message,
+            src: beat.audioUrl,
+          });
+        });
+
+        // Get duration when metadata is loaded
+        audio.addEventListener("loadedmetadata", () => {
+          if (audio.duration && !isNaN(audio.duration)) {
+            setAudioDuration((prev) => ({
+              ...prev,
+              [beat.id]: audio.duration,
+            }));
+          }
+        });
+
+        // Update progress and current time on timeupdate
+        audio.addEventListener("timeupdate", () => {
+          if (audio.duration && !isNaN(audio.duration)) {
+            const progress = audio.currentTime / audio.duration;
+            setAudioProgress((prev) => ({
+              ...prev,
+              [beat.id]: progress,
+            }));
+            setAudioCurrentTime((prev) => ({
+              ...prev,
+              [beat.id]: audio.currentTime,
+            }));
+          }
+        });
+
+        // Reset when audio ends
+        audio.addEventListener("ended", () => {
+          setCurrentlyPlaying(null);
+          setAudioProgress((prev) => ({
+            ...prev,
+            [beat.id]: 0,
+          }));
+          setAudioCurrentTime((prev) => ({
+            ...prev,
+            [beat.id]: 0,
+          }));
+        });
+
+        // Load the audio source
+        audio.addEventListener("canplaythrough", () => {
+          console.log(`Audio loaded for ${beat.name}`);
+        });
+
+        // Set the source after setting up listeners
+        audio.src = beat.audioUrl;
+        audioRefs.current[beat.id] = audio;
+      }
+    });
+
+    return () => {
+      // Cleanup audio elements
+      Object.values(audioRefs.current).forEach((audio) => {
+        if (audio) {
+          audio.pause();
+          audio.src = "";
+          audio.load(); // Reset the audio element
+        }
+      });
+    };
+  }, [beatItems]);
+
+  const handlePlay = async (beat) => {
+    const beatId = beat.id;
+    
+    // Check if audio URL is provided
+    if (!beat.audioUrl || beat.audioUrl.trim() === "") {
+      alert(`No audio URL provided for ${beat.name}. Please add an audio URL in the beatItems array.`);
+      return;
+    }
+
+    const audio = audioRefs.current[beatId];
+
+    // If audio element doesn't exist, create it
+    if (!audio) {
+      // Create audio element on the fly
+      const newAudio = new Audio();
+      newAudio.preload = "metadata";
+      newAudio.crossOrigin = "anonymous";
+      newAudio.src = beat.audioUrl;
+
+      // Set up event listeners
+      newAudio.addEventListener("loadedmetadata", () => {
+        if (newAudio.duration && !isNaN(newAudio.duration)) {
+          setAudioDuration((prev) => ({
+            ...prev,
+            [beatId]: newAudio.duration,
+          }));
+        }
+      });
+
+      newAudio.addEventListener("timeupdate", () => {
+        if (newAudio.duration && !isNaN(newAudio.duration)) {
+          const progress = newAudio.currentTime / newAudio.duration;
+          setAudioProgress((prev) => ({
+            ...prev,
+            [beatId]: progress,
+          }));
+          setAudioCurrentTime((prev) => ({
+            ...prev,
+            [beatId]: newAudio.currentTime,
+          }));
+        }
+      });
+
+      newAudio.addEventListener("ended", () => {
+        setCurrentlyPlaying(null);
+        setAudioProgress((prev) => ({
+          ...prev,
+          [beatId]: 0,
+        }));
+        setAudioCurrentTime((prev) => ({
+          ...prev,
+          [beatId]: 0,
+        }));
+      });
+
+      newAudio.addEventListener("error", (e) => {
+        console.error(`Error loading audio for ${beat.name}:`, e);
+        alert(`Failed to load audio for ${beat.name}. Please check if the URL is valid and accessible.`);
+        setCurrentlyPlaying(null);
+      });
+
+      audioRefs.current[beatId] = newAudio;
+      
+      // Try to play the newly created audio
+      try {
+        await newAudio.play();
+        setCurrentlyPlaying(beatId);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        alert(`Error playing ${beat.name}: ${error.message}`);
+      }
+      return;
+    }
+
+    // Check if audio has a valid source
+    // Note: audio.src might be the full URL, so we check if it contains the audioUrl
+    const hasValidSource = audio.src && 
+                          audio.src !== window.location.href && 
+                          audio.src.trim() !== "" &&
+                          (audio.src.includes(beat.audioUrl) || audio.readyState > 0);
+    
+    if (!hasValidSource) {
+      console.error(`No valid audio source for ${beat.name}`, {
+        audioSrc: audio.src,
+        expectedUrl: beat.audioUrl,
+        readyState: audio.readyState
+      });
+      
+      // Try to reload the audio source
+      audio.src = beat.audioUrl;
+      audio.load();
+      
+      // Wait a bit and try again
+      setTimeout(async () => {
+        try {
+          await audio.play();
+          setCurrentlyPlaying(beatId);
+        } catch (err) {
+          alert(`Audio source not available for ${beat.name}. Please check if the file exists at ${beat.audioUrl}`);
+        }
+      }, 100);
+      return;
+    }
+
+    // If this beat is currently playing, pause it
+    if (currentlyPlaying === beatId && !audio.paused) {
+      audio.pause();
+      setCurrentlyPlaying(null);
+    } else {
+      // Pause all other audio
+      Object.keys(audioRefs.current).forEach((id) => {
+        if (id !== beatId.toString() && audioRefs.current[id]) {
+          audioRefs.current[id].pause();
+          audioRefs.current[id].currentTime = 0;
+        }
+      });
+
+      // Check if audio is ready to play
+      try {
+        // If audio hasn't loaded, wait for it
+        if (audio.readyState < 2) {
+          await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+              reject(new Error("Audio loading timeout"));
+            }, 5000);
+
+            audio.addEventListener("canplay", () => {
+              clearTimeout(timeout);
+              resolve();
+            }, { once: true });
+
+            audio.addEventListener("error", (e) => {
+              clearTimeout(timeout);
+              reject(e);
+            }, { once: true });
+
+            audio.load();
+          });
+        }
+
+        // Play this audio
+        await audio.play();
+        setCurrentlyPlaying(beatId);
+      } catch (error) {
+        console.error("Error playing audio:", error);
+        if (error.name === "NotSupportedError" || error.name === "NotAllowedError") {
+          alert(`Cannot play audio for ${beat.name}. Please check if the audio format is supported and if autoplay is allowed.`);
+        } else {
+          alert(`Error playing ${beat.name}: ${error.message}`);
+        }
+        setCurrentlyPlaying(null);
+      }
+    }
   };
 
   const handleDownload = (beatName) => {
@@ -190,7 +463,8 @@ const BeatPlay = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
                 cursor: "pointer",
-                height: "70px",
+                width: "60%",
+                height: "100px",
               }}
               className="max-sm:!h-12"
               onMouseEnter={handleItemHover}
@@ -207,9 +481,13 @@ const BeatPlay = () => {
                   transition: "all 0.3s ease",
                 }}
                 className="max-sm:!h-7 max-sm:!w-7 max-sm:translate-y-3 min-md:translate-y-5 "
-                onClick={() => handlePlay(beat.name)}
+                onClick={() => handlePlay(beat)}
               >
-                {playIcon()}
+                {currentlyPlaying === beat.id && 
+                 audioRefs.current[beat.id] && 
+                 !audioRefs.current[beat.id].paused
+                  ? pauseIcon()
+                  : playIcon()}
               </Box>
 
               <Box
@@ -217,11 +495,14 @@ const BeatPlay = () => {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
-                  gap: "0.8rem",
-                  minWidth: "120px",
+                  gap: "0.5rem",
+                  flex: 1,
+                  minWidth: "300px",
                   height: "70px",
                 }}
+                className="max-sm:!min-w-[200px]"
               >
+                {/* Artist name on top */}
                 <Text
                   style={{
                     fontSize: "0.9rem",
@@ -235,16 +516,80 @@ const BeatPlay = () => {
                   {beat.name}
                 </Text>
 
+                {/* Waveform */}
                 <Box
                   style={{
-                    height: "10px",
+                    height: "43px",
+                    width: "100%",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: "4px",
                   }}
                 >
-                  {streamIcon()}
+                  <AudioWaveform
+                    isPlaying={
+                      currentlyPlaying === beat.id &&
+                      audioRefs.current[beat.id] &&
+                      !audioRefs.current[beat.id].paused
+                    }
+                    progress={audioProgress[beat.id] || 0}
+                    audioRef={
+                      currentlyPlaying === beat.id ? audioRefs.current[beat.id] : null
+                    }
+                  />
+                </Box>
+                
+                {/* Time duration at edges beneath waveform */}
+                <Box
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    marginTop: "-5px",
+                    height: "12px",
+                    paddingLeft: "0px",
+                    paddingRight: "0px",
+                  }}
+                >
+                  {/* Current time at left edge */}
+                  <span
+                    style={{
+                      fontSize: "0.32rem",
+                      color: "#F6F4D3",
+                      letterSpacing: "0.1px",
+                      margin: 0,
+                      padding: 0,
+                      opacity: 0.6,
+                      lineHeight: 1,
+                      display: "inline-block",
+                      transform: "scale(0.8)",
+                      transformOrigin: "left center",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {formatTime(audioCurrentTime[beat.id] || 0)}
+                  </span>
+                  
+                  {/* Total duration at right edge */}
+                  <span
+                    style={{
+                      fontSize: "0.32rem",
+                      color: "#F6F4D3",
+                      letterSpacing: "0.1px",
+                      margin: 0,
+                      padding: 0,
+                      opacity: 0.6,
+                      lineHeight: 1,
+                      display: "inline-block",
+                      transform: "scale(0.8)",
+                      transformOrigin: "right center",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {formatTime(audioDuration[beat.id] || 0)}
+                  </span>
                 </Box>
               </Box>
 
