@@ -8,7 +8,7 @@ const Beats = () => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-  const menuItems = ["SAPHire", "PHONiX", "HORUS", "SPALE RALOOON"];
+  const menuItems = ["SAPHIRE", "PHONiX", "HORUS", "SPALE RALOOON"];
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -160,7 +160,8 @@ const Beats = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
               }}
-              className="max-sm:!px-0 max-sm:!py-0"
+              className="max-sm:!px-0  pixel-font max-sm:!scale-[0.6]
+                  min-md:!scale-[0.5] max-sm:!py-0"
               onClick={() => handleItemClick(item)}
               onMouseEnter={handleItemHover}
               onMouseLeave={handleItemLeave}

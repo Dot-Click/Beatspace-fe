@@ -230,7 +230,8 @@ const BeatPlay = () => {
                     margin: 0,
                     lineHeight: 1,
                   }}
-                  className="max-sm:!text-[1.2rem]"
+                  className="max-sm:!text-[1.2rem] pixel-font max-sm:!scale-[0.9]
+                  min-md:!scale-[1] min-md:!mb-5"
                 >
                   {beat.name}
                 </Text>
