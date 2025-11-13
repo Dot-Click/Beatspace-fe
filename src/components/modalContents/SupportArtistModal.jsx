@@ -892,7 +892,7 @@ const SupportArtistModal = ({
 
           {/* Title */}
           <Text
-            className="max-sm:!font-modal  min-md:!text-3xl min-lg:text-4xl"
+            className="max-sm:!font-modal pixel-font  min-md:!text-3xl min-lg:text-4xl"
             style={{
               color: "#F6F4D3",
               marginBottom: "1rem",
@@ -904,7 +904,7 @@ const SupportArtistModal = ({
 
           {/* Beat Info */}
           <Text
-            className="max-sm:!font-xs min-md:!text-lg min-lg:!text-xl"
+            className="max-sm:!font-xs min-md:!text-lg min-lg:!text-xl pixel-font"
             style={{
               color: "#F6F4D3",
               lineHeight: 1.3,
@@ -931,7 +931,7 @@ const SupportArtistModal = ({
 
           {/* Message */}
           <Text
-            className="font-xs"
+            className="font-xs pixel-font max-sm:scale-[0.7] min-md:scale-[0.8]"
             style={{
               color: "#F6F4D3",
               fontSize: "0.7rem",
@@ -946,7 +946,7 @@ const SupportArtistModal = ({
           {/* Donation Section */}
           <Box style={{ width: "100%", marginBottom: "1rem" }}>
             <Text
-              className="max-sm:font-xs min-md:!text-2xl min-lg:!text-3xl"
+              className="max-sm:font-xs pixel-font min-md:!text-2xl min-lg:!text-3xl"
               style={{
                 color: "#F6F4D3",
                 marginBottom: "0.5rem",
