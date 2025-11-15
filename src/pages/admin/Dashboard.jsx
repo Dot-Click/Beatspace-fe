@@ -78,6 +78,7 @@ const Dashboard = () => {
           <BarChart monthlyDonations={dashboardData?.charts?.monthlyDonations} />
         </div>
         
+        
         {/* Donut Chart - Takes 1 column (1/4 width) */}
         <div className="lg:col-span-1">
           <DonutChart genreDistribution={dashboardData?.charts?.genreDistribution} />
