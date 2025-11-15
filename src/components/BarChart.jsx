@@ -124,18 +124,34 @@
 
 // export default BarChart;
 
-import React from "react";
+import React, { useMemo } from "react";
 import Chart from "react-apexcharts";
 
-const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025" }) => {
-  const chartData = {
-    series: [
-      {
-        name: "Donations",
-        data: [850, 750, 900, 800, 950, 1100, 750, 800, 850, 1000, 1200, 1150],
-      },
-    ],
-    options: {
+const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025", monthlyDonations = [] }) => {
+  // Transform monthly donations data to match chart format
+  const chartData = useMemo(() => {
+    // Initialize array with 12 months (0-11), all starting at 0
+    const monthlyData = new Array(12).fill(0);
+    
+    if (monthlyDonations && monthlyDonations.length > 0) {
+      monthlyDonations.forEach((item) => {
+        // month is 0-indexed in JavaScript Date, but API uses 1-indexed (1-12)
+        // So we subtract 1 to convert to 0-indexed array
+        const monthIndex = item.month - 1;
+        if (monthIndex >= 0 && monthIndex < 12) {
+          monthlyData[monthIndex] = item.amount || 0;
+        }
+      });
+    }
+
+    return {
+      series: [
+        {
+          name: "Donations",
+          data: monthlyData,
+        },
+      ],
+      options: {
       chart: {
         type: "bar",
         height: 300,
@@ -205,6 +221,7 @@ const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025" }) => {
       legend: { show: false },
     },
   };
+  }, [monthlyDonations]);
 
   return (
     <div className="bg-[#2A2B35] border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font max-sm:w-[280px]">

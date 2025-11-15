@@ -1,54 +1,46 @@
 import React, { useMemo } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 import { Box, Badge, Text } from '@mantine/core';
-import { MusicIcon, ShirtIcon, UploadIcon, EditIcon, DeleteIcon } from '../../../customIcons';
+import { MusicIcon, ShirtIcon, ComicsIcon, UploadIcon, EditIcon, DeleteIcon } from '../../../customIcons';
 
-const RecentActivityTable = () => {
-  // Sample data based on the design
-  const data = useMemo(() => [
-    {
-      type: 'BEAT',
-      itemName: 'Dark Trap Beat #47',
-      category: 'BEAT',
-      action: 'UPLOADED',
-      timestamp: '2025-08-27 14:32'
-    },
-    {
-      type: 'MERCH',
-      itemName: 'Beatspace Hoodie - Black',
-      category: 'MERCH',
-      action: 'EDITED',
-      timestamp: '2025-08-27 13:45'
-    },
-    {
-      type: 'BEAT',
-      itemName: 'Lo-Fi Chill Vibes',
-      category: 'BEAT',
-      action: 'DELETED',
-      timestamp: '2025-08-27 12:18'
-    },
-    {
-      type: 'MERCH',
-      itemName: 'Producer Sticker Pack',
-      category: 'MERCH',
-      action: 'UPLOADED',
-      timestamp: '2025-08-27 11:55'
-    },
-    {
-      type: 'BEAT',
-      itemName: 'Melodic Rap Beat',
-      category: 'BEAT',
-      action: 'EDITED',
-      timestamp: '2025-08-27 10:30'
-    },
-    {
-      type: 'MERCH',
-      itemName: 'Studio T-Shirt - White',
-      category: 'MERCH',
-      action: 'UPLOADED',
-      timestamp: '2025-08-27 09:15'
-    }
-  ], []);
+const RecentActivityTable = ({ activity = [] }) => {
+  // Transform activity data from API to table format
+  const data = useMemo(() => {
+    if (!activity || activity.length === 0) return [];
+
+    return activity.map((item) => {
+      // Determine type based on category
+      const categoryUpper = item.category?.toUpperCase() || '';
+      let type = 'MERCH'; // default
+      if (categoryUpper === 'BEATS' || categoryUpper === 'BEAT') {
+        type = 'BEAT';
+      } else if (categoryUpper === 'COMICS' || categoryUpper === 'COMIC') {
+        type = 'COMIC';
+      } else if (categoryUpper === 'MERCH' || categoryUpper === 'MERCHANDISE') {
+        type = 'MERCH';
+      }
+
+      // Format timestamp
+      let formattedTimestamp = '';
+      if (item.timestamp) {
+        const date = new Date(item.timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+
+      return {
+        type: type,
+        itemName: item.item_name || '',
+        category: categoryUpper,
+        action: item.action?.toUpperCase() || '',
+        timestamp: formattedTimestamp
+      };
+    });
+  }, [activity]);
 
   const columns = useMemo(() => [
     {
@@ -57,9 +49,17 @@ const RecentActivityTable = () => {
       size: 60,
       Cell: ({ row }) => {
         const type = row.original.type;
+        let IconComponent = ShirtIcon; // default
+        if (type === 'BEAT') {
+          IconComponent = MusicIcon;
+        } else if (type === 'COMIC') {
+          IconComponent = ComicsIcon;
+        } else if (type === 'MERCH') {
+          IconComponent = ShirtIcon;
+        }
         return (
           <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            {type === 'BEAT' ? <MusicIcon /> : <ShirtIcon />}
+            <IconComponent />
           </Box>
         );
       },
