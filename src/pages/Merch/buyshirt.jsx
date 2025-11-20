@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Box, Text, Button, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { planetIcon } from "../../customIcons";
+import { BackButtonIcon, planetIcon } from "../../customIcons";
 import cartIcon from "../../assets/Vector.png";
 
 
@@ -17,6 +17,10 @@ const BuyShirt = () => {
   setCartCount(prev => prev + 1);
 };
 
+const handleBack = () => {
+  if (window.history.length > 1) navigate(-1);
+  else navigate("/menu");
+};
 
   return (
     <Box
@@ -62,15 +66,25 @@ const BuyShirt = () => {
 
       {/* Planet Icon */}
       <Box
-        onClick={() => navigate("/menu")}
         className="
           absolute z-[3] cursor-pointer
           max-sm:!top-[35%] max-sm:!left-10
           md:!top-[32%] md:!left-20
           lg:!top-[7rem] lg:!left-[9%]
-          xl:!top-[8rem] xl:!left-[10%]
+          xl:!top-[8rem] xl:!left-[10%] 
+          flex items-center gap-2
         "
       >
+      <Box>
+        <Box
+          role="button"
+          aria-label="Back"
+          onClick={handleBack}
+          style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+        >
+          <BackButtonIcon />
+        </Box>
+      </Box>
         {planetIcon()}
       </Box>
 

@@ -322,7 +322,8 @@ const Selectcomic = () => {
           position: "absolute",
           top: "8rem",
           right: "12rem",
-          zIndex: 3,
+          zIndex: 4,
+          pointerEvents: "auto",
         }}
         className="max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[34%] min-md:!right-20
         min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
@@ -343,8 +344,8 @@ const Selectcomic = () => {
       <Box
         style={{
           position: "absolute",
-          zIndex: 10,        // 🔼 Make sure it stays above everything
-          pointerEvents: "auto", // ✅ Ensure interactions work
+          zIndex: 6,
+          pointerEvents: "auto",
           display: "flex",
           flexDirection: "column",
         }}
@@ -356,7 +357,7 @@ const Selectcomic = () => {
             role="button"
             aria-label="Back to Comics"
             onClick={handleBack}
-            style={{ cursor: "pointer", pointerEvents: "auto" }}
+            style={{ cursor: "pointer", position: "relative", zIndex: 6 }}
             className="max-sm:!scale-[0.7]"
           >
             <BackButtonIcon />

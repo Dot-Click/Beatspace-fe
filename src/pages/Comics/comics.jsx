@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { BackButtonIcon } from "../../customIcons";
 
 const Comics = () => {
   const [selectedItem, setSelectedItem] = useState("SPACE RACCOON");
@@ -23,6 +24,11 @@ const Comics = () => {
   const handleItemLeave = () => {
     setIsHovered(false);
   };
+
+  const handleBack = () => {
+   if (window.history.length > 1) navigate(-1);
+    else navigate("/menu");
+  }; 
 
   return (
     <Box
@@ -94,12 +100,21 @@ const Comics = () => {
           position: "absolute",
           top: "8rem",
           left: "12rem",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "auto",
         }}
         className="max-sm:!top-[34%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem] flex items-center gap-2"
       >
+        <Box
+            role="button"
+            aria-label="Back to Comics"
+            onClick={handleBack}
+            style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+            className="max-sm:!scale-[0.7]"
+          >
+            <BackButtonIcon />
+          </Box>
         <Text
           style={{
             fontSize: "2rem",

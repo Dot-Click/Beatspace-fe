@@ -5,8 +5,11 @@ import {
   playIcon,
   pauseIcon,
   downloadIcon,
+  streamIcon,
+  BackButtonIcon,
 } from "../../customIcons";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
+import { useNavigate } from "react-router-dom";
 import AudioWaveform from "../../components/AudioWaveform";
 
 const BeatPlay = () => {
@@ -18,7 +21,7 @@ const BeatPlay = () => {
   const [audioCurrentTime, setAudioCurrentTime] = useState({});
   const [audioDuration, setAudioDuration] = useState({});
   const audioRefs = useRef({});
-
+  const navigate = useNavigate();
   const beatItems = useMemo(() => [
     { 
       id: 0,
@@ -321,7 +324,11 @@ const BeatPlay = () => {
     setIsModalOpen(false);
     setSelectedBeat(null);
   };
-
+  
+  const handleBack = () => {
+    if (window.history.length > 1) navigate(-1);
+     else navigate("/menu");
+   }; 
   return (
     <Box
       style={{
@@ -389,7 +396,7 @@ const BeatPlay = () => {
           position: "absolute",
           top: "13%",
           left: "15%",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "auto",
           display: "flex",
           alignItems: "center",
@@ -397,6 +404,15 @@ const BeatPlay = () => {
         }}
         className="max-sm:!top-[39%] max-sm:!right-[9%] max-lg:!top-[32%]"
       >
+        <Box
+        role="button"
+        aria-label="Back to Comics"
+        onClick={handleBack}
+        style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+        className="max-sm:!scale-[0.7]"
+      >
+        <BackButtonIcon />
+      </Box>
         <Box
           style={{
             width: "40px",

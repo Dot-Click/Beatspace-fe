@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
-import { beatsIcon } from "../../customIcons";
+import { BackButtonIcon, beatsIcon } from "../../customIcons";
 import { useNavigate } from "react-router-dom";
 
 const Beats = () => {
@@ -22,6 +22,11 @@ const Beats = () => {
   const handleItemLeave = () => {
     setIsHovered(false);
   };
+
+  const handleBack = () => {
+    if (window.history.length > 1) navigate(-1);
+     else navigate("/menu");
+   }; 
 
   return (
     <Box
@@ -66,7 +71,7 @@ const Beats = () => {
           position: "absolute",
           top: "8rem",
           right: "12rem",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "auto",
         }}
         className="max-sm:!top-[35%] max-sm:!right-12 min-md:!top-[32%] min-md:!right-20
@@ -89,7 +94,7 @@ const Beats = () => {
           position: "absolute",
           top: "8rem",
           left: "12rem",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "auto",
           display: "flex",
           alignItems: "center",
@@ -98,6 +103,15 @@ const Beats = () => {
         className="max-sm:!top-[35%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
         min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
       >
+      <Box
+        role="button"
+        aria-label="Back to Comics"
+        onClick={handleBack}
+        style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+        className="max-sm:!scale-[0.7]"
+      >
+        <BackButtonIcon />
+      </Box>
         <Box
           style={{
             width: "40px",

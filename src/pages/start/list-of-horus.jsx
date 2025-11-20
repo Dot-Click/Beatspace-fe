@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { BackButtonIcon } from "../../customIcons";
 
 const ListOfHorus = () => {
   const [selectedItem, setSelectedItem] = useState("BEATS");
@@ -28,6 +29,11 @@ const ListOfHorus = () => {
 
   const handleItemLeave = () => {
     setIsHovered(false);
+  };
+
+  const handleBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate("/start");
   };
 
   return (
@@ -73,7 +79,7 @@ const ListOfHorus = () => {
           position: "absolute",
           top: "8rem",
           right: "12rem",
-          zIndex: 3,
+          zIndex: 4,
           pointerEvents: "auto",
         }}
         className="max-sm:!top-[35%] max-sm:!right-12 min-md:!top-[32%] min-md:!right-20
@@ -89,6 +95,31 @@ const ListOfHorus = () => {
           }}
           className="max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-44"
         />
+      </Box>
+
+      <Box
+        style={{
+          position: "absolute",
+          top: "8rem",
+          left: "12rem",
+          zIndex: 5,
+          pointerEvents: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+        }}
+        className="max-sm:!top-[35%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
+        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+      >
+        <Box
+          role="button"
+          aria-label="Back"
+          onClick={handleBack}
+          style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+          className="max-sm:!scale-[0.7]"
+        >
+          <BackButtonIcon />
+        </Box>
       </Box>
 
       <Box

@@ -253,11 +253,15 @@
 import React from "react";
 import { Box, Text, Button, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { planetIcon, cartIcon } from "../../customIcons";
+import { planetIcon, cartIcon, BackButtonIcon } from "../../customIcons";
 
 const Merch = () => {
   const navigate = useNavigate();
-
+  
+  const handleBack = () => {
+   if (window.history.length > 1) navigate(-1);
+    else navigate("/menu");
+  }; 
   return (
     <Box
       style={{
@@ -305,7 +309,7 @@ const Merch = () => {
       <Box
         style={{
           position: "absolute",
-          zIndex: 3,
+          zIndex: 4,
           cursor: "pointer",
         }}
         onClick={() => navigate("/menu")}
@@ -313,12 +317,20 @@ const Merch = () => {
           max-sm:!top-[35%] max-sm:!left-12
           min-md:!top-[32%] min-md:!left-20
           lg:!top-[7rem] lg:!left-[9%]
-          xl:!top-[8rem] xl:!left-[10%]
+          xl:!top-[8rem] xl:!left-[10%] flex items-center gap-2
         "
       >
+      <Box
+            role="button"
+            aria-label="Back to Comics"
+            onClick={handleBack}
+            style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+            className="max-sm:!scale-[0.7]"
+          >
+            <BackButtonIcon />
+          </Box>
         {planetIcon()}
       </Box>
-
       {/* Title MERCH */}
       <Box
         style={{
