@@ -47,7 +47,7 @@ const Home = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
+        className="max-sm:!h-screen max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
       />
 
       <Box
