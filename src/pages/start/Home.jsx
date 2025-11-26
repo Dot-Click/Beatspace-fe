@@ -261,7 +261,7 @@ const Home = () => {
 
   return (
     <Box
-    className=" max-sm:h-screen max-sm:!w-screen "
+      className=" max-sm:h-screen max-sm:!w-screen "
       style={{
         minHeight: "100vh",
         backgroundColor: "#111827",
@@ -299,10 +299,9 @@ const Home = () => {
         }}
       />
 
-      <Box
+    <Box
         style={{
           position: "absolute",
-
           inset: 0,
           display: "flex",
           flexDirection: "column",
@@ -330,7 +329,6 @@ const Home = () => {
             alt="GLOBAL VISION"
             style={{
               width: "100%",
-
               height: "auto",
               filter:
                 "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))",
@@ -338,7 +336,7 @@ const Home = () => {
               position: "relative",
               zIndex: 10,
             }}
-            className="max-sm:!mb-0 !h-20 min-md:!h-20 min-lg:!h-40  "
+            className="max-sm:!mb-0 !h-20 min-md:!h-20 min-lg:!h-40"
           />
 
           <Image
