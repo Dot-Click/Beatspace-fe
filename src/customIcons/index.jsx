@@ -792,7 +792,7 @@ export const heartIcon = () => {
 export const planetIcon = () => {
   return (
     <svg
-      className="max-sm:!h-8 min-md:!h-12 min-lg:!h-16 min-xl:!h-20"
+      className="min-sm:!h-10 max-sm:!h-8 min-md:!h-12 min-lg:!h-16 min-xl:!h-20"
       width="74"
       height="74"
       viewBox="0 0 74 74"
@@ -3709,7 +3709,7 @@ export const planetIcon = () => {
 export const cartIcon = () => {
   return (
     <svg
-      className="max-sm:!h-6 min-md:!h-9 min-lg:!h-12 min-xl:!h-16"
+      className="min-sm:!h-6 max-sm:!h-6 min-md:!h-9 min-lg:!h-12 min-xl:!h-16"
       width="53"
       height="49"
       viewBox="0 0 53 49"

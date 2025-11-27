@@ -49,7 +49,7 @@ const Beats = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-72 max-sm:!top-[30%] min-md:!h-[27rem] min-md:!top-[25%]
+        className="!h-full  min-md:!h-full
         min-lg:!h-full min-lg:!w-full min-lg:!top-0 "
       />
 
@@ -74,8 +74,8 @@ const Beats = () => {
           zIndex: 4,
           pointerEvents: "auto",
         }}
-        className="max-sm:!top-[35%] max-sm:!right-12 min-md:!top-[32%] min-md:!right-20
-        min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
+        className="!top-[16%] !right-[12%] min-md:!top-[16%] min-md:!right-[12%]
+        min-lg:!top-[16%] min-lg:!right-[12%] min-xl:!top-[16%] min-xl:!right-[12%]"
       >
         <Image
           src="/assets/logo.png"
@@ -85,7 +85,7 @@ const Beats = () => {
             height: "auto",
             filter: "brightness(1.2)",
           }}
-          className="max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-36"
+          className="!w-16 min-md:!w-20 min-lg:!w-28 min-xl:!w-36"
         />
       </Box>
 
@@ -100,15 +100,15 @@ const Beats = () => {
           alignItems: "center",
           gap: "1rem",
         }}
-        className="max-sm:!top-[35%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className="!top-[15%] !gap-[0.4rem] min-lg:!gap-[1rem]  !left-[12%] min-md:!top-[15%] min-md:!left-[12%]
+        min-lg:!top-[15%] min-lg:!left-[12%] min-xl:!top-[15%] min-xl:!left-[12%]"
       >
       <Box
         role="button"
         aria-label="Back to Comics"
         onClick={handleBack}
         style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
-        className="max-sm:!scale-[0.7]"
+        className="!scale-[0.5] min-lg:!scale-[0.7]"
       >
         <BackButtonIcon />
       </Box>
@@ -123,7 +123,7 @@ const Beats = () => {
             justifyContent: "center",
             position: "relative",
           }}
-          className="max-sm:!w-7 max-sm:!h-5"
+          className="!w-7 !h-5 min-lg:!w-9 min-lg:!h-7"
         >
           {beatsIcon()}
         </Box>
@@ -135,7 +135,7 @@ const Beats = () => {
             letterSpacing: "2px",
             textShadow: "0 0 10px #F6F4D3",
           }}
-          className="max-sm:!text-base"
+          className="!text-base min-lg:!text-2xl"
         >
           BE★TS
         </Text>
@@ -152,7 +152,7 @@ const Beats = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="max-sm:!p-0"
+        className="!p-0 "
       >
         <Box
           style={{
@@ -161,7 +161,7 @@ const Beats = () => {
             alignItems: "center",
             gap: "1.5rem",
           }}
-          className="max-sm:!gap-0 min-md:!gap-0 min-md:-mt-28 min-lg:-mt-1"
+          className="!gap-0 min-md:!gap-3  min-lg:!gap-10 mix-2xl:!gap-6"
         >
           {menuItems.map((item, index) => (
             <div
@@ -174,8 +174,8 @@ const Beats = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
               }}
-              className="max-sm:!px-0  pixel-font max-sm:!scale-[0.6]
-                  min-md:!scale-[0.5] max-sm:!py-0"
+              className="!px-0  pixel-font !scale-[0.3]
+                  min-md:!scale-[0.4] min-lg:!scale-[0.6] !py-0"
               onClick={() => handleItemClick(item)}
               onMouseEnter={handleItemHover}
               onMouseLeave={handleItemLeave}
@@ -190,7 +190,7 @@ const Beats = () => {
                     imageRendering: "pixelated",
                     flexShrink: 0,
                   }}
-                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                  className="!w-3 !h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
                 >
                   {/* Left chevron (<) */}
                   <rect x="2" y="2" width="2" height="2" fill="#F6F4D3" />
@@ -209,7 +209,7 @@ const Beats = () => {
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
-                className="max-sm:!text-lg min-lg:text-xl"
+                className="!text-4xl min-md:!text-4xl min-lg:text-7xl"
               >
                 {item}
               </Text>
@@ -224,7 +224,7 @@ const Beats = () => {
                     imageRendering: "pixelated",
                     flexShrink: 0,
                   }}
-                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                  className="!w-3 !h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
                 >
                   {/* Right chevron (>) */}
                   <rect x="12" y="4" width="2" height="2" fill="#F6F4D3" />
