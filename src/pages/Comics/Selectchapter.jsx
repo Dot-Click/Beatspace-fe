@@ -53,7 +53,8 @@ const Selectchapter = () => {
         }}
         className="
           max-sm:!h-[30rem] max-sm:!top-[10%]
-          min-md:!h-[34rem] min-md:!top-[25%]
+          !h-full !top-[0%]
+          min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
       />
@@ -82,8 +83,8 @@ const Selectchapter = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[34%] min-md:!right-20
-        min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
+        className="!top-[17%] !right-[13%]  max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[17%] min-md:!right-[13%]
+        min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
           src="/assets/logo.png"
@@ -108,8 +109,8 @@ const Selectchapter = () => {
           display: "flex",
           flexDirection: "column",
         }}
-        className="max-sm:!top-[18%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className=" !top-[17%] min-lg:!left-[13%] max-sm:!top-[17%]  max-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
+        min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
       >
         <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <Box
@@ -144,7 +145,9 @@ const Selectchapter = () => {
         </Text>
       </Box>
 
+
       {/* Main Content Area */}
+
       <Box
         style={{
           position: "absolute",
