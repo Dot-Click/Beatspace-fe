@@ -38,8 +38,9 @@ const Comicview = () => {
         src="/assets/Frame.png"
         alt="TV Frame"
         className="
+        !h-full !top-0
           max-sm:!h-[30rem] max-sm:!top-[10%]
-          min-md:!h-[34rem] min-md:!top-[25%]
+          min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
         style={{
@@ -70,14 +71,14 @@ const Comicview = () => {
       {/* Top-right GLOBAL VISION logo */}
       <Box
         style={{ position: "absolute", top: "8rem", right: "12rem", zIndex: 3 }}
-        className="max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[34%] min-md:!right-20
-        min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
+        className="min-sm:!top-[20%] min-sm:!right-[13%] min-md:!top-[17%] min-md:!right-[13%]
+        min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
           src="/assets/logo.png"
           alt="GLOBAL VISION"
           style={{ width: "120px", height: "auto", filter: "brightness(1.2)" }}
-          className="max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
+          className="!w-14 max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
         />
       </Box>
 
@@ -92,29 +93,29 @@ const Comicview = () => {
           flexDirection: "column",
           pointerEvents: "auto",
         }}
-        className="max-sm:!top-[18%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className="min-sm:!top-[17%]  min-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
+        min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
       >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className="min-md:!gap-0">
           <Box
             role="button"
             aria-label="Back"
             onClick={handleBack}
             style={{ cursor: "pointer" }}
-            className="max-sm:!scale-[0.7]"
+            className="min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7]"
           >
             <BackButtonIcon />
           </Box>
           <Text
             style={{ fontSize: "2rem", color: "#F6F4D3", letterSpacing: "3px" }}
-            className="max-sm:!scale-[0.7]"
+            className="min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-5"
           >
             COMICS
           </Text>
         </Box>
         <Text
           style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
-          className="alexandria-font max-sm:!scale-[0.5] max-sm:-translate-x-8 max-sm:-translate-y-4"
+          className="alexandria-font min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-8 min-sm:-translate-y-4"
         >
           Me and the Boys - The Beginning
         </Text>
@@ -141,8 +142,8 @@ const Comicview = () => {
             flexDirection: "column",
             gap: "1rem",
           }}
-          className="max-sm:!left-12 max-sm:!top-60 min-md:!left-20 min-md:!top-[29rem] 
-           min-lg:!top-52 min-lg:!left-28 min-xl:!top-64 min-xl:!left-40"
+          className="min-sm:!left-[13%] min-sm:!top-[35%] min-md:!left-[13%] min-md:!top-[35%] 
+           min-lg:!top-[35%] min-lg:!left-[13%] min-xl:!top-[35%] min-xl:!left-[13%]"
         >
           <Box
             style={{
@@ -174,7 +175,7 @@ const Comicview = () => {
           onClick={prev}
           style={{
             position: "absolute",
-            left: "30%",
+            left: "35%",
             transform: "translateX(-160px)",
             cursor: "pointer",
           }}
@@ -207,7 +208,7 @@ const Comicview = () => {
             cursor: "pointer",
             overflow: "hidden",
           }}
-          className="max-sm:!w-[130px] max-sm:!-mt-4 max-sm:!h-[160px]
+          className="min-sm:!w-[130px] min-sm:!mt-10 min-sm:!h-[160px]
            min-md:!w-[160px] min-md:!mt-14 min-md:!h-[230px] min-xl:!w-[200px] min-xl:!mt-0 min-xl:!h-[300px]"
         >
           <Image
@@ -230,10 +231,11 @@ const Comicview = () => {
           onClick={next}
           style={{
             position: "absolute",
-            right: "30%",
+            right: "35%",
             transform: "translateX(160px)",
             cursor: "pointer",
           }}
+        
         >
           <Box
             style={{
@@ -257,8 +259,8 @@ const Comicview = () => {
             alignItems: "center",
             gap: "0.8rem",
           }}
-          className="max-sm:!right-10 max-sm:!top-60 min-md:!top-[28rem]  min-md:!right-20 min-lg:!top-48
-           min-lg:!right-28 min-xl:!right-[10rem] min-xl:!top-64"
+          className="min-sm:!right-[13%] min-sm:!top-[35%] min-md:!top-[35%]  min-md:!right-[13%] min-lg:!top-[35%]
+           min-lg:!right-[13%] min-xl:!right-[13%] min-xl:!top-[35%]"
         >
           <BookreadIcon />
           <SliderIcon />

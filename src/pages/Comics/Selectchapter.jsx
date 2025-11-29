@@ -83,7 +83,7 @@ const Selectchapter = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="!top-[17%] !right-[13%]  max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[17%] min-md:!right-[13%]
+        className="min-sm:!top-[17%] min-sm:!right-[13%]  max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[17%] min-md:!right-[13%]
         min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
@@ -109,16 +109,16 @@ const Selectchapter = () => {
           display: "flex",
           flexDirection: "column",
         }}
-        className=" !top-[17%] min-lg:!left-[13%] max-sm:!top-[17%]  max-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
+        className=" !top-[12%]  !left-[13%] min-lg:!left-[13%] max-sm:!top-[17%]  max-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
         min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
       >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className=" !w-fit !gap-0">
           <Box
             role="button"
             aria-label="Back to Comics"
             onClick={handleBack}
             style={{ cursor: "pointer" }}
-            className="max-sm:!scale-[0.7]"
+            className="!scale-[0.4]  min-md:!scale-[0.6] max-sm:!scale-[0.7] min-lg:!scale-[0.9]"
           >
             <BackButtonIcon />
           </Box>
@@ -128,7 +128,7 @@ const Selectchapter = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className="max-sm:!scale-[0.7]"
+            className=" !scale-[0.4]  min-md:!scale-[0.6] max-sm:!scale-[0.7] min-lg:!scale-[0.9]"
           >
             COMICS
           </Text>
@@ -139,7 +139,8 @@ const Selectchapter = () => {
             color: "#F6F4D3",
             letterSpacing: "2px",
           }}
-          className="max-sm:!scale-[0.5] min-md:!scale-[0.8] max-sm:-translate-x-8 max-sm:-translate-y-6 min-md:-translate-y-5"
+          className="!scale-[0.5] max-sm:!scale-[0.5] min-md:!scale-[0.6]  min-lg:!scale-[0.9]
+          !-translate-y-8 max-sm:-translate-x-8 max-sm:-translate-y-6 min-md:-translate-y-5 min-lg:!-translate-y-3"
         >
           SPACERACOON
         </Text>
@@ -158,7 +159,7 @@ const Selectchapter = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="!w-full"
+        className="!w-full "
       >
         {/* Content Container */}
         <Box
@@ -168,8 +169,17 @@ const Selectchapter = () => {
             alignItems: "center",
             gap: "1rem",
           }}
-          className="  max-sm:!h-[25%] max-sm:!-mt-40 min-md:!mt-7 max-md:!mt-2 min-md:!ml-10 max-sm:!w-[80%] max-sm:!overflow-scroll"
+          className="
+     !absolute top-[25%] min-md:!top-[15%] min-lg:!top-[25%]
+    min-sm:!custom-scrollbar min-sm:!overflow-y-auto min-sm:!h-[55%]
+
+    max-sm:!h-[25%] max-sm:!-mt-40 max-sm:!w-[80%] max-sm:!overflow-scroll
+
+    min-md:!mt-0 max-md:!mt-2 
+    min-md:!ml-10 min-md:!h-fit
+  "
         >
+
           {/* Comic Book Cover */}
           <Box
             style={{
@@ -178,6 +188,7 @@ const Selectchapter = () => {
               alignItems: "center",
               gap: "1rem",
             }}
+            className=" h-full "
           >
             {/* Comic Cover Image */}
             <Box
@@ -190,7 +201,7 @@ const Selectchapter = () => {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                 order: 1,
               }}
-              className="max-sm:!h-[100px] max-sm:!w-[100px] min-md:!h-[120px] min-md:!w-[120px]"
+              className="!h-[60px] !w-[60px] max-sm:!h-[100px] max-sm:!w-[100px] min-md:!h-[90px] min-md:!w-[90px]"
             >
               <Image
                 src="/assets/comic.png"
@@ -198,7 +209,7 @@ const Selectchapter = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  objectFit: "cover",
+                  objectFit: "fill",
                 }}
               />
             </Box>
@@ -215,6 +226,7 @@ const Selectchapter = () => {
                   letterSpacing: "0.5px",
                   marginBottom: "0.2rem",
                 }}
+                className="min-md:!mb-0"
               >
                 M€ and th€ Boys
               </Text>
@@ -244,7 +256,7 @@ const Selectchapter = () => {
           >
             {/* Chapter 1 */}
             <Box
-              className="alexandria-font"
+              className="alexandria-font "
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -441,9 +453,10 @@ const Selectchapter = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
+        className="min-md:!bottom-12 !bottom-11 min-lg:!bottom-24 "
       >
         <Text
-          className="alexandria-font translate-y-6"
+          className="alexandria-font"
           style={{
             fontSize: "0.9rem",
             color: "#9ca3af",

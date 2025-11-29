@@ -52,7 +52,7 @@ const Games = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
+        className="!h-full !top-0 min-md:!h-full min-md:!top-0 max-lg:!h-full max-sm:!top-[0%] max-lg:!top-[0%] "
       />
 
       <Box
@@ -80,15 +80,15 @@ const Games = () => {
           alignItems: "center",
           gap: "1rem",
         }}
-        className="max-sm:!top-[35%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className="!top-[17%]  !left-[13%] max-sm:!top-[35%]  max-sm:!left-12 min-md:!top-[17%] min-md:!left-[13%]
+        min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
       >
         <Box
           role="button"
           aria-label="Back"
           onClick={handleBack}
           style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
-          className="max-sm:!scale-[0.7]"
+          className="max-sm:!scale-[0.7] min-md:!scale-[0.6] !scale-[0.4] min-lg:!scale-[0.7] min-xl:!scale-[0.8]"
         >
           <BackButtonIcon />
         </Box>
@@ -117,15 +117,16 @@ const Games = () => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          className="!w-[8rem] max-sm:!top-[38%] min-md:!w-full min-md:!top-[33%] min-lg:!top-[18%] 
+          className="!w-[60%] !mx-auto max-sm:!top-[38%] min-sm:!top-[17%] min-md:!w-full min-md:!top-[17%] min-lg:!top-[22%] 
           min-xl:!top-[22%]"
         >
 
 
           <Text
             className="pixel-font max-sm:!scale-[1.1]
-                  min-md:!scale-[3]
-                  min-md:!mt-28"
+                  min-md:!scale-[2]
+                  !scale-[1.5]
+                  !mt-16"
             style={{
               color: "#1f2937",
               
@@ -168,9 +169,9 @@ const Games = () => {
               animation: "floatCloud2 6s ease-in-out infinite",
               zIndex: 1,
             }}
-            className="max-sm:!right-[-4rem] min-md:!right-32 min-md:!h-16 min-md:!w-16
-            min-lg:!right-48 min-lg:!h-20 min-lg:!w-20
-            min-xl:!right-64 min-xl:!h-28 min-xl:!w-28 "
+            className="max-sm:!right-[-10%] min-md:!right-[16%] min-md:!h-16 min-md:!w-16
+            min-lg:!right-[20%] min-lg:!h-20 min-lg:!w-20
+            min-xl:!right-[20%] min-xl:!h-28 min-xl:!w-28 "
           />
 
           <Image
@@ -188,9 +189,9 @@ const Games = () => {
               animation: "floatCloud3 10s ease-in-out infinite",
               zIndex: 1,
             }}
-            className="max-sm:!top-5 max-sm:!right-[-6rem] max-sm:!h-24 max-sm:!w-24 min-md:!right-16 min-md:!top-20
-            min-lg:!right-32 min-lg:!top-24 min-lg:!h-32 min-lg:!w-32 
-            min-xl:!right-48 min-xl:!top-40 min-xl:!h-40 min-xl:!w-40"
+            className="max-sm:!top-5 !right-[0%] !top-[90%] max-sm:!right-[-6rem] max-sm:!h-24 max-sm:!w-24 min-md:!right-[20%] min-md:!top-[90%]
+            min-lg:!right-[0%] min-lg:!top-[90%] min-lg:!h-32 min-lg:!w-32 
+            min-xl:!right-[0%] min-xl:!top-[90%] min-xl:!h-40 min-xl:!w-40"
           />
         </Box>
 

@@ -404,8 +404,9 @@ const Comicread = () => {
           pointerEvents: "none",
         }}
         className="
+           !h-full !top-0
           max-sm:!h-[30rem] max-sm:!top-[10%]
-          min-md:!h-[34rem] min-md:!top-[25%]
+          min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
       />
