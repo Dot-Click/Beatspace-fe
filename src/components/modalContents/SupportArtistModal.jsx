@@ -837,6 +837,10 @@ const SupportArtistModal = ({
           height: "auto", // 👈 Fit to content
         }}
         className="
+        min-sm:!h-[80%] 
+        !overflow-y-auto
+        custom-scrollbar
+       
           lg:!max-w-[460px]
           xl:!max-w-[480px]
         "
@@ -868,6 +872,7 @@ const SupportArtistModal = ({
             textAlign: "center",
             width: "100%",
           }}
+          className="pt-40 min-lg:!pt-10 min-xl:!pt-10"
         >
           {/* Artist Image */}
           <Box
@@ -875,9 +880,9 @@ const SupportArtistModal = ({
               width: "110px",
               height: "110px",
               borderRadius: "8px",
-              overflow: "hidden",
               marginBottom: "1rem",
             }}
+            className="min-sm:!h-[80px] max-sm:!h-[70px] "
           >
             <Image
               src={imageSrc}
@@ -885,7 +890,7 @@ const SupportArtistModal = ({
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "fill",
               }}
             />
           </Box>
@@ -938,7 +943,9 @@ const SupportArtistModal = ({
               lineHeight: 1.4,
               marginBottom: "1.2rem",
             }}
-          >
+          > 
+
+
             THIS BEAT IS FREE TO DOWNLOAD. <br />
             SUPPORT THE ARTIST IF YOU CAN.
           </Text>

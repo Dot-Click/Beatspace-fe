@@ -259,8 +259,8 @@ const Comicview = () => {
             alignItems: "center",
             gap: "0.8rem",
           }}
-          className="min-sm:!right-[13%] min-sm:!top-[35%] min-md:!top-[35%]  min-md:!right-[13%] min-lg:!top-[35%]
-           min-lg:!right-[13%] min-xl:!right-[13%] min-xl:!top-[35%]"
+          className="min-sm:!right-[13%] min-sm:!top-[35%]  min-md:!top-[35%]  min-md:!right-[13%] min-lg:!top-[35%]
+           min-lg:!right-[13%] min-xl:!right-[13%]   min-xl:!top-[35%]"
         >
           <BookreadIcon />
           <SliderIcon />

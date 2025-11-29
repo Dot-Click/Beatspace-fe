@@ -1,3 +1,5 @@
+
+
 // import React, { useState } from "react";
 // import { Box, Text, Image } from "@mantine/core";
 // import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
@@ -44,8 +46,9 @@
 //           pointerEvents: "none",
 //         }}
 //         className="
+//            !h-full !top-0
 //           max-sm:!h-[30rem] max-sm:!top-[10%]
-//           min-md:!h-[34rem] min-md:!top-[25%]
+//           min-md:!h-full min-md:!top-[0%]
 //           lg:!h-full lg:!w-full lg:!top-0
 //         "
 //       />
@@ -53,7 +56,8 @@
 //         style={{
 //           position: "absolute",
 //           inset: 0,
-//           backgroundImage: 'url("/assets/dark-bg.png")',
+//           backgroundColor: 'black',
+
 //           backgroundSize: "cover",
 //           backgroundPosition: "center",
 //           backgroundRepeat: "no-repeat",
@@ -108,9 +112,8 @@
 //           </Text>
 //         </Box>
 //         <Text
-//           className="alexandria-font"
+//           className="alexandria-font max-sm:!text-xs max-sm:!tracking-tighter"
 //           style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
-
 //         >
 //           Me and the Boys - The Beginning
 //         </Text>
@@ -137,8 +140,8 @@
 //             flexDirection: "column",
 //             gap: "1rem",
 //           }}
-//           className="max-sm:!left-12 max-sm:!top-60 min-md:!left-20 min-md:!top-[29rem]
-//                      min-lg:!top-52 min-lg:!left-28 min-xl:!top-64 min-xl:!left-40"
+//           className="max-sm:!left-12 max-sm:!top-72 min-md:!left-20 min-md:!top-[40%]
+//                      min-lg:!top-[35%] min-lg:!left-28 min-xl:!top-64 min-xl:!left-40"
 //         >
 //           <Box
 //             style={{
@@ -163,7 +166,8 @@
 
 //         {/* Scroll container using global custom scrollbar */}
 //         <Box
-//           className="custom-scrollbar"
+//           className="custom-scrollbar max-sm:!h-44 max-sm:!w-[85%] min-md:!top-[42%] min-xl:!top-[35%] min-md:!h-66 min-xl:!h-[50%]    overflow-x-hidden 
+//           max-sm:!translate-x-1"
 //           style={{
 //             position: "absolute",
 //             left: "3%",
@@ -184,6 +188,7 @@
 //               alignItems: "center",
 //               gap: "2rem",
 //             }}
+//             className=" "
 //           >
 //             {pages.map((src, i) => (
 //               <Box
@@ -199,6 +204,7 @@
 //                   justifyContent: "center",
 //                   overflow: "hidden",
 //                 }}
+//                 className="max-sm:!h-[140px] max-sm:!w-[120px] min-md:!h-[230px] min-md:!w-[190px] "
 //               >
 //                 <Image
 //                   src={src}
@@ -206,8 +212,6 @@
 //                   style={{
 //                     width: "100%",
 //                     height: "100%",
-//                     objectFit: "contain",
-//                     objectPosition: "center",
 //                   }}
 //                 />
 //               </Box>
@@ -239,9 +243,10 @@
 //                     width: "340px",
 //                     textAlign: "center",
 //                   }}
+//                   className="max-sm:!w-[250px] max-sm:!px-[0.6rem] max-sm:!py-[1rem]"
 //                 >
 //                   <Text
-//                     className="vision-font-regular"
+//                     className="vision-font-regular max-sm:!text-xs"
 //                     style={{
 //                       color: "#F6F4D3",
 //                       fontSize: "0.85rem",
@@ -252,7 +257,7 @@
 //                     Next Chapter
 //                   </Text>
 //                   <Text
-//                     className="vision-font-regular"
+//                     className="vision-font-regular max-sm:!text-sm"
 //                     style={{
 //                       color: "#F6F4D3",
 //                       fontSize: "1.8rem",
@@ -312,9 +317,10 @@
 //                   justifyContent: "center",
 //                   cursor: "pointer",
 //                 }}
+//                 className="max-sm:!w-fit !w-full max-sm:!translate-x-4 max-sm:!py-3 !py-4 pixel-font"
 //               >
 //                 <Text
-//                   className="vision-font-regular"
+//                   className=" max-sm:!text-[0.4rem] !font-bold !text-[0.67rem]"
 //                   style={{ fontWeight: "bold", letterSpacing: "2px" }}
 //                 >
 //                   Support the Artist: 0,00€ »
@@ -325,7 +331,10 @@
 //         </Box>
 //         {/* Small UI icons top-right inside viewer */}
 //         <Box
-//           className="min-xl:!top-60"
+//           className="max-sm:!top-52 max-sm:!right-10 min-md:!top-[40%] min-md:!right-32
+//           min-lg:!top-[30%] min-lg:!right-44
+//            min-xl:!top-[33%] min-xl:!right-48
+//           "
 //           style={{
 //             position: "absolute",
 //             top: "12rem",
@@ -357,6 +366,7 @@
 // };
 
 // export default Comicread;
+
 
 import React, { useState } from "react";
 import { Box, Text, Image } from "@mantine/core";
@@ -391,91 +401,92 @@ const Comicread = () => {
       }}
     >
       {/* Screen Frame and BG */}
-      <Image
-        src="/assets/Frame.png"
-        alt="TV Frame"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "fill",
-          zIndex: 2,
-          pointerEvents: "none",
-        }}
-        className="
-           !h-full !top-0
-          max-sm:!h-[30rem] max-sm:!top-[10%]
-          min-md:!h-full min-md:!top-[0%]
-          lg:!h-full lg:!w-full lg:!top-0
-        "
-      />
-      <Box
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundColor: 'black',
-
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          zIndex: 1,
-          pointerEvents: "none",
-        }}
-      />
-
-      {/* Top-right GLOBAL VISION logo */}
-      <Box
-        style={{ position: "absolute", top: "20%", right: "13%", zIndex: 3 }}
-        className="max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[34%] min-md:!right-20
-        min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
-      >
         <Image
-          src="/assets/logo.png"
-          alt="GLOBAL VISION"
-          style={{ width: "120px", height: "auto", filter: "brightness(1.2)" }}
-          className="max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
-        />
-      </Box>
-
-      {/* Header */}
-      <Box
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "13%",
-          zIndex: 5,
-          display: "flex",
-          flexDirection: "column",
-          pointerEvents: "auto",
-        }}
-        className="max-sm:!top-[18%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
-      >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <Box
-            role="button"
-            aria-label="Back"
-            onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="max-sm:!scale-[0.7]"
-          >
-            <BackButtonIcon />
-          </Box>
-          <Text
-            style={{ fontSize: "2rem", color: "#F6F4D3", letterSpacing: "3px" }}
-            className="max-sm:!scale-[0.7]"
-          >
-            COMICS
-          </Text>
-        </Box>
-        <Text
-          className="alexandria-font max-sm:!text-xs max-sm:!tracking-tighter"
-          style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
-        >
-          Me and the Boys - The Beginning
-        </Text>
-      </Box>
+              src="/assets/Frame.png"
+              alt="TV Frame"
+              className="
+              !h-full !top-0
+                max-sm:!h-[30rem] max-sm:!top-[10%]
+                min-md:!h-full min-md:!top-[0%]
+                lg:!h-full lg:!w-full lg:!top-0
+              "
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "fill",
+                zIndex: 2,
+                pointerEvents: "none",
+              }}
+            />
+      
+            <Box
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: 'black',
+      
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                zIndex: 1,
+                pointerEvents: "none",
+              }}
+            />
+      
+            {/* Top-right GLOBAL VISION logo */}
+            <Box
+              style={{ position: "absolute", top: "8rem", right: "12rem", zIndex: 3 }}
+              className="min-sm:!top-[20%] min-sm:!right-[13%] min-md:!top-[17%] min-md:!right-[13%]
+              min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
+            >
+              <Image
+                src="/assets/logo.png"
+                alt="GLOBAL VISION"
+                style={{ width: "120px", height: "auto", filter: "brightness(1.2)" }}
+                className="!w-14 max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
+              />
+            </Box>
+      
+            {/* Header */}
+            <Box
+              style={{
+                position: "absolute",
+                top: "8rem",
+                left: "12rem",
+                zIndex: 5,
+                display: "flex",
+                flexDirection: "column",
+                pointerEvents: "auto",
+              }}
+              className="min-sm:!top-[17%]  min-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
+              min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
+            >
+              <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className="min-md:!gap-0">
+                <Box
+                  role="button"
+                  aria-label="Back"
+                  onClick={handleBack}
+                  style={{ cursor: "pointer" }}
+                  className="min-sm:!scale-[0.5]   min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7]"
+                >
+                  <BackButtonIcon />
+                </Box>
+                <Text
+                  style={{ fontSize: "2rem", color: "#F6F4D3", letterSpacing: "3px" }}
+                  className="min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-5"
+                >
+                  COMICS
+                 </Text>
+              </Box>
+              <Text
+                style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
+                className="alexandria-font min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-8 min-sm:-translate-y-4"
+              >
+                Me and the Boys - The Beginning
+              </Text>
+            </Box>
 
       {/* Viewer Area */}
       <Box
@@ -490,41 +501,42 @@ const Comicread = () => {
       >
         {/* Chapter badge left */}
         <Box
-          style={{
-            position: "absolute",
-            left: "13%",
-            top: "35%",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-          className="max-sm:!left-12 max-sm:!top-72 min-md:!left-20 min-md:!top-[40%]
-                     min-lg:!top-[35%] min-lg:!left-28 min-xl:!top-64 min-xl:!left-40"
-        >
-          <Box
-            style={{
-              width: "48px",
-              height: "28px",
-              backgroundColor: "#d1c676",
-              borderRadius: "2px",
-              border: "2px solid #000",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text
-              className="alexandria-font"
-              style={{ fontSize: "0.9rem", color: "#000", fontWeight: "bold" }}
-            >
-              01
-            </Text>
-          </Box>
-        </Box>
+                 style={{
+                   position: "absolute",
+                   left: "12rem",
+                   top: "16rem",
+                   display: "flex",
+                   flexDirection: "column",
+                   gap: "1rem",
+                 }}
+                 className="min-sm:!left-[13%] min-sm:!top-[35%] min-md:!left-[13%] min-md:!top-[35%] 
+                  min-lg:!top-[35%] min-lg:!left-[13%] min-xl:!top-[35%] min-xl:!left-[13%]"
+               >
+                 <Box
+                   style={{
+                     width: "48px",
+                     height: "28px",
+                     backgroundColor: "#d1c676",
+                     borderRadius: "2px",
+                     border: "2px solid #000",
+                     display: "flex",
+                     alignItems: "center",
+                     justifyContent: "center",
+                   }}
+                 >
+                   <Text
+                     className="alexandria-font"
+                     style={{ fontSize: "0.9rem", color: "#000", fontWeight: "bold" }}
+                   >
+                     {/* {String(chapterNumber || 1).padStart(2, "0")} */}
+                     01
+                   </Text>
+                 </Box>
+               </Box>
 
         {/* Scroll container using global custom scrollbar */}
         <Box
-          className="custom-scrollbar max-sm:!h-44 max-sm:!w-[85%] min-md:!top-[42%] min-xl:!top-[35%] min-md:!h-66 min-xl:!h-[50%]    overflow-x-hidden 
+          className="custom-scrollbar  max-sm:!h-44 min-md:!h-[60%] min-lg:!h-[60%]  max-sm:!w-[85%] min-md:!top-[20%] min-sm:!top-[35%] min-sm:!left-[30%] min-md:!left-[31%] min-md:!px-5 min-xl:!top-[20%]  min-xl:!h-[65%]    overflow-x-hidden 
           max-sm:!translate-x-1"
           style={{
             position: "absolute",
@@ -532,7 +544,7 @@ const Comicread = () => {
             top: "35%",
             zIndex: 3,
             pointerEvents: "auto",
-            width: "calc(100% - 13%)",
+            width: "calc(100% - 60%)",
             height: "46%",
             overflowY: "scroll",
           }}
@@ -546,7 +558,7 @@ const Comicread = () => {
               alignItems: "center",
               gap: "2rem",
             }}
-            className=" "
+            className="!min-md:!gap-0"
           >
             {pages.map((src, i) => (
               <Box
@@ -562,7 +574,8 @@ const Comicread = () => {
                   justifyContent: "center",
                   overflow: "hidden",
                 }}
-                className="max-sm:!h-[140px] max-sm:!w-[120px] min-md:!h-[230px] min-md:!w-[190px] "
+                className="min-sm:!h-[140px] min-sm:!w-[120px] min-md:!h-[190px] min-md:!w-[190px]
+                min-lg:!h-[350px] min-lg:!w-[250px] min-xl:!h-[450px] min-xl:!w-[350px] "
               >
                 <Image
                   src={src}
@@ -601,10 +614,10 @@ const Comicread = () => {
                     width: "340px",
                     textAlign: "center",
                   }}
-                  className="max-sm:!w-[250px] max-sm:!px-[0.6rem] max-sm:!py-[1rem]"
+                  className="max-sm:!w-[250px] min-md:!w-[250px] min-md:!px-3 min-md:!py-2 max-sm:!px-[0.6rem] max-sm:!py-[1rem]"
                 >
                   <Text
-                    className="vision-font-regular max-sm:!text-xs"
+                    className="vision-font-regular max-sm:!text-xs min-md:!text-3xl"
                     style={{
                       color: "#F6F4D3",
                       fontSize: "0.85rem",
@@ -688,23 +701,21 @@ const Comicread = () => {
           </Box>
         </Box>
         {/* Small UI icons top-right inside viewer */}
-        <Box
-          className="max-sm:!top-52 max-sm:!right-10 min-md:!top-[40%] min-md:!right-32
-          min-lg:!top-[30%] min-lg:!right-44
-           min-xl:!top-[33%] min-xl:!right-48
-          "
-          style={{
-            position: "absolute",
-            top: "12rem",
-            right: "12rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.8rem",
-          }}
-        >
-          <BookreadIcon />
-          <SliderIcon />
-        </Box>
+       <Box
+                 style={{
+                   position: "absolute",
+                   top: "12rem",
+                   right: "12rem",
+                   display: "flex",
+                   alignItems: "center",
+                   gap: "0.8rem",
+                 }}
+                 className="min-sm:!right-[13%] min-sm:!top-[35%] min-md:!top-[35%]  min-md:!right-[13%] min-lg:!top-[35%]
+                  min-lg:!right-[13%] min-xl:!right-[13%] min-xl:!top-[35%]"
+               >
+                 <BookreadIcon />
+                 <SliderIcon />
+               </Box>
 
         {/* Removed custom vertical slider indicator and arrow buttons; using global custom-scrollbar */}
       </Box>
