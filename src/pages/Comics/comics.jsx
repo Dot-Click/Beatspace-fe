@@ -310,7 +310,7 @@ const Comics = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="!top-[17%] !right-[13%] max-sm:!top-[17%] max-sm:!right-[13%] min-md:!top-[17%] min-md:!right-[13%]
+        className="!top-[14%] !right-[11%] max-sm:!top-[14%] max-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[13%]
         min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
@@ -333,7 +333,8 @@ const Comics = () => {
           zIndex: 4,
           pointerEvents: "auto",
         }}
-        className="!top-[17%] !left-[13%] max-sm:!top-[17%]  max-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
+        className="!top-[14%] !left-[11%] max-sm:!top-[14%]  max-sm:!left-[11%]
+         min-md:!top-[14%] min-md:!left-[11%]
         min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%] flex items-center gap-0"
       >
         <Box

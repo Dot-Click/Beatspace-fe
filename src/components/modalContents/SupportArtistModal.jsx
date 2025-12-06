@@ -816,6 +816,7 @@ const SupportArtistModal = ({
         justifyContent: "center",
         zIndex: 1000,
         overflowY: "auto",
+        padding: "1rem",
       }}
       onClick={onClose}
     >
@@ -831,16 +832,12 @@ const SupportArtistModal = ({
           boxShadow: "0 0 25px rgba(0,0,0,0.6)",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          maxHeight: "90vh",
           overflow: "hidden",
-          height: "auto", // 👈 Fit to content
         }}
         className="
-        min-sm:!h-[80%] 
-        !overflow-y-auto
-        custom-scrollbar
-       
+          min-sm:!max-w-[400px]
+          min-md:!max-w-[450px]
           lg:!max-w-[460px]
           xl:!max-w-[480px]
         "
@@ -862,27 +859,40 @@ const SupportArtistModal = ({
           ✕
         </Box>
 
-        {/* Top Section */}
+        {/* Scrollable Content Section */}
         <Box
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             textAlign: "center",
             width: "100%",
+            overflowY: "auto",
+            overflowX: "hidden",
+            flex: 1,
+            paddingRight: "0.5rem",
+            marginBottom: "1rem",
           }}
-          className="pt-40 min-lg:!pt-10 min-xl:!pt-10"
+          className="custom-scrollbar"
         >
           {/* Artist Image */}
           <Box
             style={{
-              width: "110px",
-              height: "110px",
               borderRadius: "8px",
               marginBottom: "1rem",
+              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            className="min-sm:!h-[80px] max-sm:!h-[70px] "
+            className="
+              max-sm:!w-[70px] max-sm:!h-[70px]
+              min-sm:!w-[80px] min-sm:!h-[80px]
+              min-md:!w-[100px] min-md:!h-[100px]
+              min-lg:!w-[130px] min-lg:!h-[130px]
+              min-xl:!w-[140px] min-xl:!h-[140px]
+            "
           >
             <Image
               src={imageSrc}
@@ -891,6 +901,7 @@ const SupportArtistModal = ({
                 width: "100%",
                 height: "100%",
                 objectFit: "fill",
+                display: "block",
               }}
             />
           </Box>
@@ -982,34 +993,38 @@ const SupportArtistModal = ({
           </Box>
         </Box>
 
-        {/* Checkout Button */}
-        <Button
-          className=" pixel-font "
-          onClick={handleCheckout}
+        {/* Checkout Button - Fixed at bottom */}
+        <Box
           style={{
             width: "100%",
-            backgroundColor: "#F6F993",
-            color: "#2D2D2D",
-            border: "none",
-            borderRadius: "6px",
-            fontWeight: "bold",
-            fontFamily: "Press Start 2P",
-            height: "40px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            marginTop: "0.5rem",
+            marginTop: "auto",
+            paddingTop: "1rem",
+            flexShrink: 0,
           }}
-          // onMouseEnter={(e) => {
-          //   e.target.style.backgroundColor = "#FFD700";
-          //   e.target.style.transform = "scale(1.02)";
-          // }}
-          // onMouseLeave={(e) => {
-          //   e.target.style.backgroundColor = "#F6F4D3";
-          //   e.target.style.transform = "scale(1)";
-          // }}
         >
-          <span className="min-lg:!text-xl max-sm:!text-sm min-md:!text-lg"> CHECKOUT</span>
-        </Button>
+          <Button
+            className="pixel-font"
+            onClick={handleCheckout}
+            style={{
+              width: "100%",
+              backgroundColor: "#F6F993",
+              color: "#2D2D2D",
+              border: "none",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              fontFamily: "Press Start 2P",
+              height: "40px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+           
+          >
+            <span className="min-lg:!scale-[0.4] max-sm:!scale-[0.4] min-md:!scale-[0.4] min-sm:!scale-[0.4]">CHECKOUT</span>
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

@@ -83,8 +83,9 @@ const Selectchapter = () => {
           zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="min-sm:!top-[17%] min-sm:!right-[13%]  max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[17%] min-md:!right-[13%]
-        min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
+        className="min-sm:!top-[14%] min-sm:!right-[11%]
+          max-sm:!top-[14%] max-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[11%]
+        min-lg:!top-[14%] min-lg:!right-[11%] min-xl:!top-[14%] min-xl:!right-[11%]"
       >
         <Image
           src="/assets/logo.png"
@@ -109,8 +110,9 @@ const Selectchapter = () => {
           display: "flex",
           flexDirection: "column",
         }}
-        className=" !top-[12%]  !left-[13%] min-lg:!left-[13%] max-sm:!top-[17%]  max-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
-        min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
+        className=" !top-[12%]  !left-[11%] min-lg:!left-[11%] max-sm:!top-[17%]  max-sm:!left-[11%]
+         min-md:!top-[17%] min-md:!left-[11%]
+        min-lg:!top-[17%] min-lg:!left-[11%] min-xl:!top-[17%] min-xl:!left-[11%]"
       >
         <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className=" !w-fit !gap-0">
           <Box

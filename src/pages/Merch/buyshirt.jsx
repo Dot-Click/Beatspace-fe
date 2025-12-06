@@ -402,13 +402,13 @@ const BuyShirt = () => {
         }}
         onClick={() => navigate("/menu")}
         className="
-             !top-[15%] !left-[12%] !gap-0 
-               min-md:!top-[15%] min-md:!left-[12%]
-               min-lg:!top-[15%] min-lg:!left-[12%]
-               min-xl:!top-[15%] min-xl:!left-[12%] 
-                 min-2xl:!top-[15%] min-2xl:!left-[12%]
-               flex items-center max-sm:!gap-2
-             "
+        !top-[13%] !left-[11%] !gap-0 
+          min-md:!top-[13%] min-md:!left-[11%]
+          min-lg:!top-[15%] min-lg:!left-[12%]
+          min-xl:!top-[15%] min-xl:!left-[12%] 
+            min-2xl:!top-[15%] min-2xl:!left-[12%]
+          flex items-center max-sm:!gap-2
+        "
       >
         <Box
           role="button"

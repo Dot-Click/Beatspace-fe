@@ -340,8 +340,8 @@ const Merch = () => {
         }}
         onClick={() => navigate("/menu")}
         className="
-        !top-[15%] !left-[12%] !gap-0 
-          min-md:!top-[15%] min-md:!left-[12%]
+        !top-[13%] !left-[11%] !gap-0 
+          min-md:!top-[13%] min-md:!left-[11%]
           min-lg:!top-[15%] min-lg:!left-[12%]
           min-xl:!top-[15%] min-xl:!left-[12%] 
             min-2xl:!top-[15%] min-2xl:!left-[12%]
@@ -396,8 +396,8 @@ const Merch = () => {
         }}
         onClick={() => navigate("/cart")}
         className="
-        !top-[15%] !right-[13%] 
-          min-md:!top-[15%] min-md:!right-[13%]
+        !top-[14%] !right-[11%] 
+          min-md:!top-[14%] min-md:!right-[11%]
           min-lg:!top-[15%] min-lg:!right-[13%]
           min-xl:!top-[15%] min-xl:!right-[13%]
           min-2xl:!top-[15%] min-2xl:!right-[13%]

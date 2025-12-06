@@ -21,6 +21,7 @@ import MerchManagement from "../pages/admin/MerchManagement";
 import ComicManagment from "../pages/admin/ComicManagment";
 import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
+import AdminMobileBlock from "../components/AdminMobileBlock";
 
 
 const Router = () => {
@@ -41,41 +42,41 @@ const Router = () => {
 
       {/* Admin Routes */}
       {/* Redirect /admin to login */}
-      <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+      <Route path="/admin" element={<AdminMobileBlock><Navigate to="/admin/login" replace /></AdminMobileBlock>} />
       
-      {/* Admin login route */}
-      <Route path="/admin/login" element={<AdminLogin />} />
+      {/* Admin login route - Blocked on Mobile */}
+      <Route path="/admin/login" element={<AdminMobileBlock><AdminLogin /></AdminMobileBlock>} />
       
-      {/* Admin Dashboard Routes - No Authentication */}
-      <Route path="/admin/dashboard" element={<DashboardLayout />}>
+      {/* Admin Dashboard Routes - Blocked on Mobile */}
+      <Route path="/admin/dashboard" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<Dashboard />} />
       </Route>
       
-      <Route path="/admin/beatmaker" element={<DashboardLayout />}>
+      <Route path="/admin/beatmaker" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<Beatmaker />} />
       </Route>
       
-      <Route path="/admin/merch-management" element={<DashboardLayout />}>
+      <Route path="/admin/merch-management" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<MerchManagement />} />
       </Route>
       
-      <Route path="/admin/comic-management" element={<DashboardLayout />}>
+      <Route path="/admin/comic-management" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<ComicManagment />} />
       </Route>
       
-      <Route path="/admin/settings" element={<DashboardLayout />}>
+      <Route path="/admin/settings" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<AdminProfileSettings />} />
       </Route>
       
-      <Route path="/admin/games" element={<DashboardLayout />}>
+      <Route path="/admin/games" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<AdminGames />} />
       </Route>
       
-      <Route path="/admin/upload-assets" element={<DashboardLayout />}>
+      <Route path="/admin/upload-assets" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<UploadAssets />} />
       </Route>
       
-      <Route path="/admin/asset-management" element={<DashboardLayout />}>
+      <Route path="/admin/asset-management" element={<AdminMobileBlock><DashboardLayout /></AdminMobileBlock>}>
         <Route index element={<UploadAssets />} />
       </Route>
 

@@ -438,8 +438,8 @@ const Comicread = () => {
             {/* Top-right GLOBAL VISION logo */}
             <Box
               style={{ position: "absolute", top: "8rem", right: "12rem", zIndex: 3 }}
-              className="min-sm:!top-[20%] min-sm:!right-[13%] min-md:!top-[17%] min-md:!right-[13%]
-              min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
+              className="min-sm:!top-[14%] min-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[11%]
+              min-lg:!top-[14%] min-lg:!right-[11%] min-xl:!top-[14%] min-xl:!right-[11%]"
             >
               <Image
                 src="/assets/logo.png"
@@ -460,8 +460,8 @@ const Comicread = () => {
                 flexDirection: "column",
                 pointerEvents: "auto",
               }}
-              className="min-sm:!top-[17%]  min-sm:!left-[13%] min-md:!top-[17%] min-md:!left-[13%]
-              min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%]"
+              className="min-sm:!top-[14%]  min-sm:!left-[11%] min-md:!top-[14%] min-md:!left-[11%]
+              min-lg:!top-[14%] min-lg:!left-[11%] min-xl:!top-[14%] min-xl:!left-[11%]"
             >
               <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className="min-md:!gap-0">
                 <Box
