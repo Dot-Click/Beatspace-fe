@@ -401,7 +401,7 @@ const Comicread = () => {
       }}
     >
       {/* Screen Frame and BG */}
-        <Image
+        {/* <Image
               src="/assets/Frame.png"
               alt="TV Frame"
               className="
@@ -419,7 +419,7 @@ const Comicread = () => {
                 zIndex: 2,
                 pointerEvents: "none",
               }}
-            />
+            /> */}
       
             <Box
               style={{

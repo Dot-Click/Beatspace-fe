@@ -997,7 +997,7 @@ const BeatPlay = () => {
       }}
       className=""
     >
-      <Image
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -1012,7 +1012,7 @@ const BeatPlay = () => {
           pointerEvents: "none",
         }}
         className="min-sm:!h-full min-md:!h-full min-lg:!h-full  "
-      />
+      /> */}
 
      <Box
             style={{

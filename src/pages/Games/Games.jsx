@@ -38,7 +38,7 @@ const Games = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -53,13 +53,14 @@ const Games = () => {
           pointerEvents: "none",
         }}
         className="!h-full !top-0 min-md:!h-full min-md:!top-0 max-lg:!h-full max-sm:!top-[0%] max-lg:!top-[0%] "
-      />
+      /> */}
 
       <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/Hero-bg.webp")',
+          // backgroundImage: 'url("/assets/Hero-bg.webp")',
+          backgroundColor:"black",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

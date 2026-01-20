@@ -269,7 +269,9 @@ const Home = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+
+       {/* frame image  */}
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -284,13 +286,15 @@ const Home = () => {
           pointerEvents: "none",
         }}
         className="max-sm:!h-full max-sm:!w-full  "
-      />
+      /> */}
 
       <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/Hero-bg.webp")',
+          // backgroundImage: 'url("/assets/Hero-bg.webp")',
+          backgroundColor:"black",
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

@@ -34,7 +34,7 @@ const Comicview = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         className="
@@ -52,7 +52,7 @@ const Comicview = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-      />
+      /> */}
 
       <Box
         style={{

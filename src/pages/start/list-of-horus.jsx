@@ -276,7 +276,9 @@ const ListOfHorus = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+
+      {/* image frame  */}
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -290,7 +292,7 @@ const ListOfHorus = () => {
         }}
         className="!h-full min-md:!h-full
         min-lg:!h-full min-lg:!w-full min-lg:!top-0 "
-      />
+      /> */}
 
       <Box
         style={{

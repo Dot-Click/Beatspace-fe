@@ -269,7 +269,8 @@ const Comics = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+      {/* image frame  */}
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -286,7 +287,7 @@ const Comics = () => {
           min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
-      />
+      /> */}
  
       <Box
         style={{
