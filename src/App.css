@@ -114,3 +114,8 @@ p, span, div, a, label, li, td, th, button {
 .mrt-table-head-sort-button {
   display: none !important;
 }
+
+
+.vision-font {
+  font-family: 'Vision', sans-serif;
+}

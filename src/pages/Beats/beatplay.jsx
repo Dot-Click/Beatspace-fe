@@ -83,7 +83,7 @@
 //         const audio = new Audio();
 //         audio.preload = "metadata";
 //         audio.crossOrigin = "anonymous";
-        
+
 //         // Set up error handling
 //         audio.addEventListener("error", (e) => {
 //           console.error(`Error loading audio for ${beat.name}:`, e);
@@ -157,7 +157,7 @@
 
 //   const handlePlay = async (beat) => {
 //     const beatId = beat.id;
-    
+
 //     // Check if audio URL is provided
 //     if (!beat.audioUrl || beat.audioUrl.trim() === "") {
 //       alert(`No audio URL provided for ${beat.name}. Please add an audio URL in the beatItems array.`);
@@ -217,7 +217,7 @@
 //       });
 
 //       audioRefs.current[beatId] = newAudio;
-      
+
 //       // Try to play the newly created audio
 //       try {
 //         await newAudio.play();
@@ -235,18 +235,18 @@
 //                           audio.src !== window.location.href && 
 //                           audio.src.trim() !== "" &&
 //                           (audio.src.includes(beat.audioUrl) || audio.readyState > 0);
-    
+
 //     if (!hasValidSource) {
 //       console.error(`No valid audio source for ${beat.name}`, {
 //         audioSrc: audio.src,
 //         expectedUrl: beat.audioUrl,
 //         readyState: audio.readyState
 //       });
-      
+
 //       // Try to reload the audio source
 //       audio.src = beat.audioUrl;
 //       audio.load();
-      
+
 //       // Wait a bit and try again
 //       setTimeout(async () => {
 //         try {
@@ -324,7 +324,7 @@
 //     setIsModalOpen(false);
 //     setSelectedBeat(null);
 //   };
-  
+
 //   const handleBack = () => {
 //     if (window.history.length > 1) navigate(-1);
 //      else navigate("/menu");
@@ -556,7 +556,7 @@
 //                     }
 //                   />
 //                 </Box>
-                
+
 //                 {/* Time duration at edges beneath waveform */}
 //                 <Box
 //                   style={{
@@ -588,7 +588,7 @@
 //                   >
 //                     {formatTime(audioCurrentTime[beat.id] || 0)}
 //                   </span>
-                  
+
 //                   {/* Total duration at right edge */}
 //                   <span
 //                     style={{
@@ -681,39 +681,39 @@ const BeatPlay = () => {
   const audioRefs = useRef({});
   const navigate = useNavigate();
   const beatItems = useMemo(() => [
-    { 
+    {
       id: 0,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-1",
       audioUrl: "/assets/audio.wav"
     },
-    { 
+    {
       id: 1,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-2",
       audioUrl: "/assets/sample-9s.mp3"
     },
-    { 
+    {
       id: 2,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-3",
       audioUrl: "/assets/sample-6s.mp3"
     },
-    { 
+    {
       id: 3,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-4",
       audioUrl: "/assets/audio.wav"
     },
-    { 
+    {
       id: 4,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-5",
       audioUrl: "/assets/sample-9s.mp3"
     },
-    { 
+    {
       id: 5,
-      name: "eFELKIT", 
+      name: "eFELKIT",
       waveform: "audio-waveform-6",
       audioUrl: "/assets/sample-6s.mp3"
     },
@@ -741,7 +741,7 @@ const BeatPlay = () => {
         const audio = new Audio();
         audio.preload = "metadata";
         audio.crossOrigin = "anonymous";
-        
+
         // Set up error handling
         audio.addEventListener("error", (e) => {
           console.error(`Error loading audio for ${beat.name}:`, e);
@@ -815,7 +815,7 @@ const BeatPlay = () => {
 
   const handlePlay = async (beat) => {
     const beatId = beat.id;
-    
+
     // Check if audio URL is provided
     if (!beat.audioUrl || beat.audioUrl.trim() === "") {
       alert(`No audio URL provided for ${beat.name}. Please add an audio URL in the beatItems array.`);
@@ -875,7 +875,7 @@ const BeatPlay = () => {
       });
 
       audioRefs.current[beatId] = newAudio;
-      
+
       // Try to play the newly created audio
       try {
         await newAudio.play();
@@ -889,22 +889,22 @@ const BeatPlay = () => {
 
     // Check if audio has a valid source
     // Note: audio.src might be the full URL, so we check if it contains the audioUrl
-    const hasValidSource = audio.src && 
-                          audio.src !== window.location.href && 
-                          audio.src.trim() !== "" &&
-                          (audio.src.includes(beat.audioUrl) || audio.readyState > 0);
-    
+    const hasValidSource = audio.src &&
+      audio.src !== window.location.href &&
+      audio.src.trim() !== "" &&
+      (audio.src.includes(beat.audioUrl) || audio.readyState > 0);
+
     if (!hasValidSource) {
       console.error(`No valid audio source for ${beat.name}`, {
         audioSrc: audio.src,
         expectedUrl: beat.audioUrl,
         readyState: audio.readyState
       });
-      
+
       // Try to reload the audio source
       audio.src = beat.audioUrl;
       audio.load();
-      
+
       // Wait a bit and try again
       setTimeout(async () => {
         try {
@@ -982,21 +982,37 @@ const BeatPlay = () => {
     setIsModalOpen(false);
     setSelectedBeat(null);
   };
-  
+
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
-     else navigate("/menu");
-   }; 
+    else navigate("/menu");
+  };
   return (
     <Box
       style={{
         minHeight: "100vh",
-        backgroundColor: "black",
+        // backgroundColor: "black",
         position: "relative",
         overflow: "hidden",
       }}
       className=""
     >
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
       {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
@@ -1014,80 +1030,80 @@ const BeatPlay = () => {
         className="min-sm:!h-full min-md:!h-full min-lg:!h-full  "
       /> */}
 
-     <Box
-            style={{
-              position: "absolute",
-              top: "8rem",
-              right: "12rem",
-              zIndex: 4,
-              pointerEvents: "auto",
-            }}
-            className="!top-[16%] !right-[12%] min-md:!top-[16%] min-md:!right-[12%]
+      <Box
+        style={{
+          position: "absolute",
+          top: "8rem",
+          right: "12rem",
+          zIndex: 4,
+          pointerEvents: "auto",
+        }}
+        className="!top-[16%] !right-[12%] min-md:!top-[16%] min-md:!right-[12%]
             min-lg:!top-[16%] min-lg:!right-[12%] min-xl:!top-[16%] min-xl:!right-[12%]"
-          >
-            <Image
-              src="/assets/logo.png"
-              alt="GLOBAL VISION"
-              style={{
-                width: "120px",
-                height: "auto",
-                filter: "brightness(1.2)",
-              }}
-              className="!w-16 min-md:!w-20 min-lg:!w-28 min-xl:!w-36"
-            />
-          </Box>
-    
-          <Box
-            style={{
-              position: "absolute",
-              top: "8rem",
-              left: "12rem",
-              zIndex: 4,
-              pointerEvents: "auto",
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-            className="!top-[15%] !gap-[0.4rem] min-lg:!gap-[1rem]  !left-[12%] min-md:!top-[15%] min-md:!left-[12%]
+      >
+        <Image
+          src="/assets/logo.png"
+          alt="GLOBAL VISION"
+          style={{
+            width: "120px",
+            height: "auto",
+            filter: "brightness(1.2)",
+          }}
+          className="!w-16 min-md:!w-20 min-lg:!w-28 min-xl:!w-36"
+        />
+      </Box>
+
+      <Box
+        style={{
+          position: "absolute",
+          top: "8rem",
+          left: "12rem",
+          zIndex: 4,
+          pointerEvents: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+        }}
+        className="!top-[15%] !gap-[0.4rem] min-lg:!gap-[1rem]  !left-[12%] min-md:!top-[15%] min-md:!left-[12%]
             min-lg:!top-[15%] min-lg:!left-[12%] min-xl:!top-[15%] min-xl:!left-[12%]"
-          >
-          <Box
-            role="button"
-            aria-label="Back to Comics"
-            onClick={handleBack}
-            style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
-            className="!scale-[0.5] min-lg:!scale-[0.7]"
-          >
-            <BackButtonIcon />
-          </Box>
-            <Box
-              style={{
-                width: "40px",
-                height: "30px",
-                backgroundColor: "#F6F4D3",
-                borderRadius: "6px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-              }}
-              className="!w-7 !h-5 min-lg:!w-9 min-lg:!h-7"
-            >
-              {beatsIcon()}
-            </Box>
-    
-            <Text
-              style={{
-                fontSize: "1.4rem",
-                color: "#F6F4D3",
-                letterSpacing: "2px",
-                textShadow: "0 0 10px #F6F4D3",
-              }}
-              className="!text-base min-lg:!text-2xl"
-            >
-              BE★TS
-            </Text>
-          </Box>
+      >
+        <Box
+          role="button"
+          aria-label="Back to Comics"
+          onClick={handleBack}
+          style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+          className="!scale-[0.5] min-lg:!scale-[0.7]"
+        >
+          <BackButtonIcon />
+        </Box>
+        <Box
+          style={{
+            width: "40px",
+            height: "30px",
+            backgroundColor: "#F6F4D3",
+            borderRadius: "6px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+          className="!w-7 !h-5 min-lg:!w-9 min-lg:!h-7"
+        >
+          {beatsIcon()}
+        </Box>
+
+        <Text
+          style={{
+            fontSize: "1.4rem",
+            color: "#F6F4D3",
+            letterSpacing: "2px",
+            textShadow: "0 0 10px #F6F4D3",
+          }}
+          className="!text-base min-lg:!text-2xl"
+        >
+          BE★TS
+        </Text>
+      </Box>
 
       <Box
         className="custom-scrollbar !top-[30%]    !h-[55%]  min-lg:!top-[26%] min-lg:!h-[60%]"
@@ -1146,9 +1162,9 @@ const BeatPlay = () => {
                 className="!h-8 !w-8 min-lg:!h-12 min-lg:!w-12 -translate-y-2   "
                 onClick={() => handlePlay(beat)}
               >
-                {currentlyPlaying === beat.id && 
-                 audioRefs.current[beat.id] && 
-                 !audioRefs.current[beat.id].paused
+                {currentlyPlaying === beat.id &&
+                  audioRefs.current[beat.id] &&
+                  !audioRefs.current[beat.id].paused
                   ? pauseIcon()
                   : playIcon()}
               </Box>
@@ -1201,7 +1217,7 @@ const BeatPlay = () => {
                     }
                   />
                 </Box>
-                
+
                 {/* Time duration at edges beneath waveform */}
                 <Box
                   style={{
@@ -1233,7 +1249,7 @@ const BeatPlay = () => {
                   >
                     {formatTime(audioCurrentTime[beat.id] || 0)}
                   </span>
-                  
+
                   {/* Total duration at right edge */}
                   <span
                     style={{

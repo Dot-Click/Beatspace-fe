@@ -400,6 +400,27 @@ const Comicread = () => {
         overflow: "hidden",
       }}
     >
+
+
+
+      <video
+  autoPlay
+  muted
+  loop
+  playsInline
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 0,
+  }}
+>
+  <source src="/assets/bgvideo.mp4" type="video/mp4" />
+</video>
+
+
       {/* Screen Frame and BG */}
         {/* <Image
               src="/assets/Frame.png"
@@ -421,7 +442,7 @@ const Comicread = () => {
               }}
             /> */}
       
-            <Box
+            {/* <Box
               style={{
                 position: "absolute",
                 inset: 0,
@@ -433,7 +454,7 @@ const Comicread = () => {
                 zIndex: 1,
                 pointerEvents: "none",
               }}
-            />
+            /> */}
       
             {/* Top-right GLOBAL VISION logo */}
             <Box

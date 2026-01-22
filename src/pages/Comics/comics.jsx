@@ -269,6 +269,25 @@ const Comics = () => {
         overflow: "hidden",
       }}
     >
+
+      <video
+  autoPlay
+  muted
+  loop
+  playsInline
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 0,
+  }}
+>
+  <source src="/assets/bgvideo.mp4" type="video/mp4" />
+</video>
+
+
       {/* image frame  */}
       {/* <Image
         src="/assets/Frame.png"
@@ -289,7 +308,7 @@ const Comics = () => {
         "
       /> */}
  
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
@@ -301,7 +320,9 @@ const Comics = () => {
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
+
+
 
       <Box
         style={{

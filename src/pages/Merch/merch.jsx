@@ -297,6 +297,25 @@ const Merch = () => {
         overflow: "hidden",
       }}
     >
+
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
+
+
       {/* TV Frame */}
       {/* <Image
         src="/assets/Frame.png"
@@ -318,7 +337,7 @@ const Merch = () => {
       /> */}
 
       {/* Background behind TV */}
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
@@ -329,7 +348,7 @@ const Merch = () => {
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
 
       {/* Planet Icon */}
       <Box

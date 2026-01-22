@@ -37,6 +37,26 @@ const Beats = () => {
         overflow: "hidden",
       }}
     >
+
+
+      <video
+  autoPlay
+  muted
+  loop
+  playsInline
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 0,
+  }}
+>
+  <source src="/assets/bgvideo.mp4" type="video/mp4" />
+</video>
+
+
       {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
@@ -53,7 +73,7 @@ const Beats = () => {
         min-lg:!h-full min-lg:!w-full min-lg:!top-0 "
       /> */}
 
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
@@ -64,7 +84,7 @@ const Beats = () => {
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
 
       <Box
         style={{
