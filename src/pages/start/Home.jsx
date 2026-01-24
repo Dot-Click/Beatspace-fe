@@ -270,7 +270,7 @@ const Home = () => {
       }}
     >
 
-       {/* frame image  */}
+      {/* frame image  */}
       {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
@@ -288,7 +288,7 @@ const Home = () => {
         className="max-sm:!h-full max-sm:!w-full  "
       /> */}
 
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
@@ -301,9 +301,27 @@ const Home = () => {
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
 
-    <Box
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
+
+
+      <Box
         style={{
           position: "absolute",
           inset: 0,

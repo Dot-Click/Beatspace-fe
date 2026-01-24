@@ -9,7 +9,7 @@ const Games = () => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-   
+
   };
 
   const handleHover = () => {
@@ -55,7 +55,7 @@ const Games = () => {
         className="!h-full !top-0 min-md:!h-full min-md:!top-0 max-lg:!h-full max-sm:!top-[0%] max-lg:!top-[0%] "
       /> */}
 
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
@@ -67,7 +67,24 @@ const Games = () => {
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
+
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
 
       {/* Back Button - Top Left Corner */}
       <Box
@@ -130,7 +147,7 @@ const Games = () => {
                   !mt-16"
             style={{
               color: "#1f2937",
-              
+
               transition: "all 0.3s ease",
               margin: 0,
             }}

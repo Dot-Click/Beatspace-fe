@@ -269,3 +269,10 @@ input, textarea, [contenteditable] {
     display: none; /* hide main content in portrait */
   }
 }
+
+/* Fix for iPhone landscape white bars */
+@media (max-width: 1024px) {
+  html, body {
+    background-color: black;
+  }
+}
