@@ -10,7 +10,7 @@ const ListOfHorus = () => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-  const menuItems = ["COMICS", "BEATS", "MERCH", "GAMES"];
+  const menuItems = ["COMICS", "BEATS", "SHOP", "GAMES"];
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -18,7 +18,7 @@ const ListOfHorus = () => {
       navigate("/comics");
     } else if (item === "BEATS") {
       navigate("/beats");
-    } else if (item === "MERCH") {
+    } else if (item === "SHOP") {
       navigate("/merch");
     } else if (item === "GAMES") {
       navigate("/games");

@@ -438,7 +438,7 @@ const BuyShirt = () => {
         >
           <BackButtonIcon />
         </Box>
-        {planetIcon()}
+        {/* {planetIcon()} */}
       </Box>
       {/* Title MERCH */}
       <Box
@@ -464,7 +464,7 @@ const BuyShirt = () => {
           }}
           className="!text-2xl min-md:!text-3xl lg:!text-5xl"
         >
-          MERCH
+          SHOP
         </Text>
       </Box>
 
@@ -524,7 +524,7 @@ const BuyShirt = () => {
             "
           >
             <Image
-              src="/assets/shirt.png"
+              src="/assets/shirt-old.png"
               alt="Vision T-Shirt"
               className="
                 !w-[200px]

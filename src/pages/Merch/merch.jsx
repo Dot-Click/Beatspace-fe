@@ -376,7 +376,7 @@ const Merch = () => {
         >
           <BackButtonIcon />
         </Box>
-        {planetIcon()}
+        {/* {planetIcon()} */}
       </Box>
       {/* Title MERCH */}
       <Box
@@ -402,7 +402,7 @@ const Merch = () => {
           }}
           className="!text-2xl min-md:!text-3xl lg:!text-5xl"
         >
-          MERCH
+          SHOP
         </Text>
       </Box>
 
@@ -469,7 +469,7 @@ const Merch = () => {
             }}
           >
             <Image
-              src="/assets/shirts.png"
+              src="/assets/shirt.png"
               alt="Vision T-Shirt"
               style={{
                 width: "380px",
@@ -526,7 +526,7 @@ const Merch = () => {
             }}
           >
             <Image
-              src="/assets/shirts.png"
+              src="/assets/shirt.png"
               alt="Vision T-Shirt"
               style={{
                 width: "380px",
