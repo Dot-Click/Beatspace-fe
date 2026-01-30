@@ -211,7 +211,7 @@ const ListOfHorus = () => {
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
-                className="!text-[1.3rem] !vision-font min-md:!text-[1.5rem] min-lg:!text-[2rem] min-xl:!text-[2.5rem]"
+                className="!text-[1.3rem] vision-font min-md:!text-[1.5rem] min-lg:!text-[2rem] min-xl:!text-[2.5rem]"
               >
                 {item}
               </Text>

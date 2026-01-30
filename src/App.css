@@ -5,7 +5,9 @@ body {
 }
 
 /* Global font size and weight overrides for all text elements */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   font-family: inherit;
 }
 
@@ -36,19 +38,45 @@ body {
 }
 
 /* Specific overrides for different text sizes */
-.mantine-Title-root[data-order="1"] { font-size: var(--font-size-h1) !important; }
-.mantine-Title-root[data-order="2"] { font-size: var(--font-size-h2) !important; }
-.mantine-Title-root[data-order="3"] { font-size: var(--font-size-h3) !important; }
-.mantine-Title-root[data-order="4"] { font-size: var(--font-size-h4) !important; }
-.mantine-Title-root[data-order="5"] { font-size: var(--font-size-h5) !important; }
-.mantine-Title-root[data-order="6"] { font-size: var(--font-size-h6) !important; }
+.mantine-Title-root[data-order="1"] {
+  font-size: var(--font-size-h1) !important;
+}
+
+.mantine-Title-root[data-order="2"] {
+  font-size: var(--font-size-h2) !important;
+}
+
+.mantine-Title-root[data-order="3"] {
+  font-size: var(--font-size-h3) !important;
+}
+
+.mantine-Title-root[data-order="4"] {
+  font-size: var(--font-size-h4) !important;
+}
+
+.mantine-Title-root[data-order="5"] {
+  font-size: var(--font-size-h5) !important;
+}
+
+.mantine-Title-root[data-order="6"] {
+  font-size: var(--font-size-h6) !important;
+}
 
 /* General text elements */
-p, span, div, a, label, li, td, th, button {
+p,
+span,
+div,
+a,
+label,
+li,
+td,
+th,
+button {
   font-size: var(--font-size-default) !important;
   font-weight: bold !important;
   font-family: "Vision Font", monospace, sans-serif !important;
 }
+
 .vision-font-regular,
 .vision-font-regular * {
   font-family: "Vision Font", monospace, sans-serif !important;
@@ -76,6 +104,7 @@ p, span, div, a, label, li, td, th, button {
   font-family: 'Press Start 2P', monospace !important;
   font-weight: normal !important;
 }
+
 .alexandria-font,
 .alexandria-font * {
   font-family: 'Alexandria', sans-serif !important;
@@ -98,7 +127,8 @@ p, span, div, a, label, li, td, th, button {
 .alexandria-font .mrt-table-body-cell {
   font-family: 'Alexandria', sans-serif !important;
 }
-.mantine-Accordion-panel > .mantine-Accordion-content {
+
+.mantine-Accordion-panel>.mantine-Accordion-content {
   padding: 0 !important;
 }
 
@@ -106,16 +136,18 @@ p, span, div, a, label, li, td, th, button {
   border: none !important;
 }
 
-.mantine-Table-thead > .mantine-Table-tr > .mantine-Table-th {
+.mantine-Table-thead>.mantine-Table-tr>.mantine-Table-th {
   background-color: #000000 !important;
   font-weight: 200 !important;
   color: white;
 }
+
 .mrt-table-head-sort-button {
   display: none !important;
 }
 
 
-.vision-font {
-  font-family: 'Vision', sans-serif;
+.vision-font,
+.vision-font * {
+  font-family: 'Vision', sans-serif !important;
 }

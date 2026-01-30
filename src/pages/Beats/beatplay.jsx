@@ -441,7 +441,7 @@ const BeatPlay = () => {
             letterSpacing: "2px",
             textShadow: "0 0 10px #F6F4D3",
           }}
-          className="!text-base min-lg:!text-2xl"
+          className="!text-base vision-font min-lg:!text-2xl"
         >
           BE★TS
         </Text>

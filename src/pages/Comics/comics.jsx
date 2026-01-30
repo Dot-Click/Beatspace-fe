@@ -375,7 +375,7 @@ const Comics = () => {
             textShadow: "0 0 10px #F6F4D3",
             letterSpacing: "3px",
           }} 
-          className="!scale-[0.6] max-sm:!scale-[0.7] min-md:!scale-[0.7]"
+          className="!scale-[0.6]  vision-font max-sm:!scale-[0.7] min-md:!scale-[0.7]"
         >
           COMICS
         </Text>
@@ -450,7 +450,7 @@ const Comics = () => {
                     selectedItem === item ? "0 0 10px #F6F4D3" : "none",
                   transition: "all 0.3s ease",
                 }}
-                className="!scale-[0.6] max-sm:!scale-[0.7] min-md:!scale-[0.8] min-lg:!scale-[1.5] min-lg:!text-[1.5rem] min-xl:!text-[2rem]"
+                className="!scale-[0.6] vision-font max-sm:!scale-[0.7] min-md:!scale-[0.8] min-lg:!scale-[1.5] min-lg:!text-[1.5rem] min-xl:!text-[2rem]"
               >
                 {item}
               </Text>

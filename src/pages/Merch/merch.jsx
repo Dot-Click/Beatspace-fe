@@ -400,7 +400,7 @@ const Merch = () => {
             textShadow: "0 0 10px #F6F4D3",
             letterSpacing: "6px",
           }}
-          className="!text-2xl min-md:!text-3xl lg:!text-5xl"
+          className="!text-2xl vision-font min-md:!text-3xl lg:!text-5xl"
         >
           SHOP
         </Text>
@@ -485,13 +485,13 @@ const Merch = () => {
               color: "#F6F4D3",
               letterSpacing: "4px",
             }}
-            className="min-sm:!text-xl min-lg:-mt-16 min-lg:!text-4xl"
+            className="min-sm:!text-xl vision-font min-lg:-mt-16 min-lg:!text-4xl"
           >
             VISION SHIRT
           </Text>
 
           <Button
-            className="min-lg:-mt-4 !text-base"
+            className="min-lg:-mt-4  vision-font  !text-base"
             onClick={() => navigate("/buyshirt")}
             style={{
               backgroundColor: "#000",
@@ -541,13 +541,13 @@ const Merch = () => {
               color: "#F6F4D3",
               letterSpacing: "4px",
             }}
-            className="min-sm:!text-xl min-lg:-mt-16 min-lg:!text-4xl"
+            className="min-sm:!text-xl vision-font min-lg:-mt-16 min-lg:!text-4xl"
           >
             VISION SHIRT
           </Text>
 
           <Button
-            className="min-lg:-mt-4 !text-base"
+            className="min-lg:-mt-4 vision-font !text-base"
             onClick={() => navigate("/buyshirt")}
             style={{
               backgroundColor: "#000",

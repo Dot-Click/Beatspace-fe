@@ -389,7 +389,7 @@ const Selectcomic = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className="  !scale-[0.6] max-sm:!scale-[0.7]"
+            className="vision-font  !scale-[0.6] max-sm:!scale-[0.7]"
           >
             COMICS
           </Text>
@@ -400,7 +400,7 @@ const Selectcomic = () => {
             color: "#F6F4D3",
             letterSpacing: "2px",
           }}
-          className=" !scale-[0.6] max-sm:!scale-[0.5] -translate-x-8 -translate-y-6"
+          className=" vision-font !scale-[0.6] max-sm:!scale-[0.5] -translate-x-8 -translate-y-6"
         >
           SPACERACOON
         </Text>
@@ -472,10 +472,10 @@ const Selectcomic = () => {
               }}
             >
               <Text
-                className="vision-font-regular"
+                className="vision-font"
                 style={{
                   color: "#F6F4D3",
-                  fontSize: "18px",
+                  fontSize: "5px",
                   lineHeight: 1.2,
                   textAlign: "left",
                 }}

@@ -462,7 +462,7 @@ const BuyShirt = () => {
             textShadow: "0 0 10px #F6F4D3",
             letterSpacing: "6px",
           }}
-          className="!text-2xl min-md:!text-3xl lg:!text-5xl"
+          className="!text-2xl  vision-font min-md:!text-3xl lg:!text-5xl"
         >
           SHOP
         </Text>
@@ -550,7 +550,7 @@ const BuyShirt = () => {
                 color: "#F6F4D3",
                 letterSpacing: "3px",
               }}
-              className="!text-lg min-md:!text-lg min-lg:!text-4xl xl:!text-4xl "
+              className="!text-lg vision-font min-md:!text-lg min-lg:!text-4xl xl:!text-4xl "
             >
               VISION SHIRT
             </Text>
@@ -560,7 +560,7 @@ const BuyShirt = () => {
                 color: "#00CED1",
                 letterSpacing: "2px",
               }}
-              className="!text-lg min-md:!text-xl min-lg:!text-5xl min-xl:!text-3xl "
+              className="!text-lg vision-font  min-md:!text-xl min-lg:!text-5xl min-xl:!text-3xl "
             >
               €25
             </Text>
@@ -572,7 +572,7 @@ const BuyShirt = () => {
                   color: "#F6F4D3",
                   letterSpacing: "2px",
                 }}
-                className="!text-sm min-md:!text-sm min-lg:!text-2xl xl:!text-2xl "
+                className="!text-sm vision-font min-md:!text-sm min-lg:!text-2xl xl:!text-2xl "
               >
                 SIZE:
               </Text>

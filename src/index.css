@@ -10,7 +10,7 @@
   --font-size-xl: 32px;
   --font-size-xxl: 36px;
   --font-size-default: var(--font-size-xxl);
-  
+
   /* Heading font sizes */
   --font-size-h1: 54px;
   --font-size-h2: 48px;
@@ -18,16 +18,25 @@
   --font-size-h4: 40px;
   --font-size-h5: 38px;
   --font-size-h6: 36px;
-  
+
   /* Special font sizes */
   --font-size-pixel: 12px;
-  --font-size-modal: var(--font-size-sm); /* 16px for modals like support artist */
+  --font-size-modal: var(--font-size-sm);
+  /* 16px for modals like support artist */
 }
 
 /* Vision Font Declaration */
 @font-face {
   font-family: 'Vision Font';
   src: url('/fonts/VisionFont-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Vision';
+  src: url('/fonts/Vision-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -46,7 +55,7 @@
   .text-shadow-sm {
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
   }
-  
+
   .pixel-font {
     font-family: 'Press Start 2P', monospace;
     font-weight: normal;
@@ -63,20 +72,43 @@
   }
 
   /* Font size utility classes */
-  .font-xs { font-size: var(--font-size-xs) !important; }
-  .font-sm { font-size: var(--font-size-sm) !important; }
-  .font-md { font-size: var(--font-size-md) !important; }
-  .font-lg { font-size: var(--font-size-lg) !important; }
-  .font-xl { font-size: var(--font-size-xl) !important; }
-  .font-xxl { font-size: var(--font-size-xxl) !important; }
-  .font-modal { font-size: var(--font-size-modal) !important; }
-  .font-default { font-size: var(--font-size-default) !important; }
-  
+  .font-xs {
+    font-size: var(--font-size-xs) !important;
+  }
+
+  .font-sm {
+    font-size: var(--font-size-sm) !important;
+  }
+
+  .font-md {
+    font-size: var(--font-size-md) !important;
+  }
+
+  .font-lg {
+    font-size: var(--font-size-lg) !important;
+  }
+
+  .font-xl {
+    font-size: var(--font-size-xl) !important;
+  }
+
+  .font-xxl {
+    font-size: var(--font-size-xxl) !important;
+  }
+
+  .font-modal {
+    font-size: var(--font-size-modal) !important;
+  }
+
+  .font-default {
+    font-size: var(--font-size-default) !important;
+  }
+
   .crt-effect {
     background: linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.03) 50%);
     background-size: 4px 4px;
   }
-  
+
   .retro-cursor {
     width: 16px;
     height: 16px;
@@ -86,12 +118,20 @@
     box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
     animation: blink 1s infinite;
   }
-  
+
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+
+    0%,
+    50% {
+      opacity: 1;
+    }
+
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
-  
+
   @media (min-width: 640px) {
     .retro-cursor {
       width: 20px;
@@ -101,51 +141,74 @@
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes floatCloud1 {
-  0%, 100% { 
+
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) rotate(0deg);
   }
-  25% { 
+
+  25% {
     transform: translateY(-10px) translateX(5px) rotate(1deg);
   }
-  50% { 
+
+  50% {
     transform: translateY(-5px) translateX(-3px) rotate(-0.5deg);
   }
-  75% { 
+
+  75% {
     transform: translateY(-15px) translateX(8px) rotate(0.5deg);
   }
 }
 
 @keyframes floatCloud2 {
-  0%, 100% { 
+
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) rotate(0deg);
   }
-  33% { 
+
+  33% {
     transform: translateY(-8px) translateX(-4px) rotate(-1deg);
   }
-  66% { 
+
+  66% {
     transform: translateY(-12px) translateX(6px) rotate(1deg);
   }
 }
 
 @keyframes floatCloud3 {
-  0%, 100% { 
+
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) rotate(0deg);
   }
-  20% { 
+
+  20% {
     transform: translateY(-6px) translateX(3px) rotate(0.5deg);
   }
-  40% { 
+
+  40% {
     transform: translateY(-10px) translateX(-2px) rotate(-0.5deg);
   }
-  60% { 
+
+  60% {
     transform: translateY(-4px) translateX(4px) rotate(0.3deg);
   }
-  80% { 
+
+  80% {
     transform: translateY(-8px) translateX(-1px) rotate(-0.3deg);
   }
 }
@@ -193,11 +256,15 @@
 }
 
 /* Specific cursor states */
-button, a, [role="button"] {
+button,
+a,
+[role="button"] {
   cursor: url('data:image/svg+xml;utf8,<svg width="30" height="39" viewBox="0 0 50 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 0H5V5H10V0Z" fill="%23242730"/><path d="M5 5H0V10H5V5Z" fill="%23242730"/><path d="M10 5H5V10H10V5Z" fill="%23F6F4D3"/><path d="M15 5H10V10H15V5Z" fill="%23242730"/><path d="M5 10H0V15H5V10Z" fill="%23242730"/><path d="M10 10H5V15H10V10Z" fill="%23F6F4D3"/><path d="M15 10H10V15H15V10Z" fill="%23F6F4D3"/><path d="M20 10H15V15H20V10Z" fill="%23242730"/><path d="M5 15H0V20H5V15Z" fill="%23242730"/><path d="M10 15H5V20H10V15Z" fill="%23F6F4D3"/><path d="M15 15H10V20H15V15Z" fill="%23F6F4D3"/><path d="M20 15H15V20H20V15Z" fill="%23F6F4D3"/><path d="M25 15H20V20H25V15Z" fill="%23242730"/><path d="M5 20H0V25H5V20Z" fill="%23242730"/><path d="M10 20H5V25H10V20Z" fill="%23F6F4D3"/><path d="M15 20H10V25H15V20Z" fill="%23F6F4D3"/><path d="M20 20H15V25H20V20Z" fill="%23F6F4D3"/><path d="M25 20H20V25H25V20Z" fill="%23F6F4D3"/><path d="M30 20H25V25H30V20Z" fill="%23242730"/><path d="M5 25H0V30H5V25Z" fill="%23242730"/><path d="M10 25H5V30H10V25Z" fill="%23F6F4D3"/><path d="M15 25H10V30H15V25Z" fill="%23F6F4D3"/><path d="M20 25H15V30H20V25Z" fill="%23F6F4D3"/><path d="M25 25H20V30H25V25Z" fill="%23F6F4D3"/><path d="M30 25H25V30H30V25Z" fill="%23F6F4D3"/><path d="M35 25H30V30H35V25Z" fill="%23242730"/><path d="M5 30H0V35H5V30Z" fill="%23242730"/><path d="M10 30H5V35H10V30Z" fill="%23F6F4D3"/><path d="M15 30H10V35H15V30Z" fill="%23F6F4D3"/><path d="M20 30H15V35H20V30Z" fill="%23F6F4D3"/><path d="M25 30H20V35H25V30Z" fill="%23F6F4D3"/><path d="M30 30H25V35H30V30Z" fill="%23F6F4D3"/><path d="M35 30H30V35H35V30Z" fill="%23F6F4D3"/><path d="M40 30H35V35H40V30Z" fill="%23242730"/><path d="M5 35H0V40H5V35Z" fill="%23242730"/><path d="M10 35H5V40H10V35Z" fill="%23F6F4D3"/><path d="M15 35H10V40H15V35Z" fill="%23F6F4D3"/><path d="M20 35H15V40H20V35Z" fill="%23F6F4D3"/><path d="M25 35H20V40H25V35Z" fill="%23F6F4D3"/><path d="M30 35H25V40H30V35Z" fill="%23F6F4D3"/><path d="M35 35H30V40H35V35Z" fill="%23F6F4D3"/><path d="M40 35H35V40H40V35Z" fill="%23F6F4D3"/><path d="M45 35H40V40H45V35Z" fill="%23242730"/><path d="M5 40H0V45H5V40Z" fill="%23242730"/><path d="M10 40H5V45H10V40Z" fill="%23F6F4D3"/><path d="M15 40H10V45H15V40Z" fill="%23F6F4D3"/><path d="M20 40H15V45H20V40Z" fill="%23F6F4D3"/><path d="M25 40H20V45H25V40Z" fill="%23F6F4D3"/><path d="M30 40H25V45H30V40Z" fill="%23F6F4D3"/><path d="M35 40H30V45H35V40Z" fill="%23F6F4D3"/><path d="M40 40H35V45H40V40Z" fill="%23F6F4D3"/><path d="M45 40H40V45H45V40Z" fill="%23F6F4D3"/><path d="M50 40H45V45H50V40Z" fill="%23242730"/><path d="M5 45H0V50H5V45Z" fill="%23242730"/><path d="M10 45H5V50H10V45Z" fill="%23F6F4D3"/><path d="M15 45H10V50H15V45Z" fill="%23F6F4D3"/><path d="M20 45H15V50H20V45Z" fill="%23F6F4D3"/><path d="M25 45H20V50H25V45Z" fill="%23242730"/><path d="M30 45H25V50H30V45Z" fill="%23242730"/><path d="M35 45H30V50H35V45Z" fill="%23242730"/><path d="M40 45H35V50H40V45Z" fill="%23242730"/><path d="M45 45H40V50H45V45Z" fill="%23242730"/><path d="M50 45H45V50H50V45Z" fill="%23242730"/><path d="M5 50H0V55H5V50Z" fill="%23242730"/><path d="M10 50H5V55H10V50Z" fill="%23F6F4D3"/><path d="M15 50H10V55H15V50Z" fill="%23F6F4D3"/><path d="M20 50H15V55H20V50Z" fill="%23242730"/><path d="M5 55H0V60H5V55Z" fill="%23242730"/><path d="M10 55H5V60H10V55Z" fill="%23F6F4D3"/><path d="M15 55H10V60H15V55Z" fill="%23242730"/><path d="M5 60H0V65H5V60Z" fill="%23242730"/><path d="M10 60H5V65H10V60Z" fill="%23242730"/></svg>'), pointer;
 }
 
-input, textarea, [contenteditable] {
+input,
+textarea,
+[contenteditable] {
   cursor: url('data:image/svg+xml;utf8,<svg width="30" height="39" viewBox="0 0 50 65" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 0H5V5H10V0Z" fill="%23242730"/><path d="M5 5H0V10H5V5Z" fill="%23242730"/><path d="M10 5H5V10H10V5Z" fill="%23F6F4D3"/><path d="M15 5H10V10H15V5Z" fill="%23242730"/><path d="M5 10H0V15H5V10Z" fill="%23242730"/><path d="M10 10H5V15H10V10Z" fill="%23F6F4D3"/><path d="M15 10H10V15H15V10Z" fill="%23F6F4D3"/><path d="M20 10H15V15H20V10Z" fill="%23242730"/><path d="M5 15H0V20H5V15Z" fill="%23242730"/><path d="M10 15H5V20H10V15Z" fill="%23F6F4D3"/><path d="M15 15H10V20H15V15Z" fill="%23F6F4D3"/><path d="M20 15H15V20H20V15Z" fill="%23F6F4D3"/><path d="M25 15H20V20H25V15Z" fill="%23242730"/><path d="M5 20H0V25H5V20Z" fill="%23242730"/><path d="M10 20H5V25H10V20Z" fill="%23F6F4D3"/><path d="M15 20H10V25H15V20Z" fill="%23F6F4D3"/><path d="M20 20H15V25H20V20Z" fill="%23F6F4D3"/><path d="M25 20H20V25H25V20Z" fill="%23F6F4D3"/><path d="M30 20H25V25H30V20Z" fill="%23242730"/><path d="M5 25H0V30H5V25Z" fill="%23242730"/><path d="M10 25H5V30H10V25Z" fill="%23F6F4D3"/><path d="M15 25H10V30H15V25Z" fill="%23F6F4D3"/><path d="M20 25H15V30H20V25Z" fill="%23F6F4D3"/><path d="M25 25H20V30H25V25Z" fill="%23F6F4D3"/><path d="M30 25H25V30H30V25Z" fill="%23F6F4D3"/><path d="M35 25H30V30H35V25Z" fill="%23242730"/><path d="M5 30H0V35H5V30Z" fill="%23242730"/><path d="M10 30H5V35H10V30Z" fill="%23F6F4D3"/><path d="M15 30H10V35H15V30Z" fill="%23F6F4D3"/><path d="M20 30H15V35H20V30Z" fill="%23F6F4D3"/><path d="M25 30H20V35H25V30Z" fill="%23F6F4D3"/><path d="M30 30H25V35H30V30Z" fill="%23F6F4D3"/><path d="M35 30H30V35H35V30Z" fill="%23F6F4D3"/><path d="M40 30H35V35H40V30Z" fill="%23242730"/><path d="M5 35H0V40H5V35Z" fill="%23242730"/><path d="M10 35H5V40H10V35Z" fill="%23F6F4D3"/><path d="M15 35H10V40H15V35Z" fill="%23F6F4D3"/><path d="M20 35H15V40H20V35Z" fill="%23F6F4D3"/><path d="M25 35H20V40H25V35Z" fill="%23F6F4D3"/><path d="M30 35H25V40H30V35Z" fill="%23F6F4D3"/><path d="M35 35H30V40H35V35Z" fill="%23F6F4D3"/><path d="M40 35H35V40H40V35Z" fill="%23F6F4D3"/><path d="M45 35H40V40H45V35Z" fill="%23242730"/><path d="M5 40H0V45H5V40Z" fill="%23242730"/><path d="M10 40H5V45H10V40Z" fill="%23F6F4D3"/><path d="M15 40H10V45H15V40Z" fill="%23F6F4D3"/><path d="M20 40H15V45H20V40Z" fill="%23F6F4D3"/><path d="M25 40H20V45H25V40Z" fill="%23F6F4D3"/><path d="M30 40H25V45H30V40Z" fill="%23F6F4D3"/><path d="M35 40H30V45H35V40Z" fill="%23F6F4D3"/><path d="M40 40H35V45H40V40Z" fill="%23F6F4D3"/><path d="M45 40H40V45H45V40Z" fill="%23F6F4D3"/><path d="M50 40H45V45H50V40Z" fill="%23242730"/><path d="M5 45H0V50H5V45Z" fill="%23242730"/><path d="M10 45H5V50H10V45Z" fill="%23F6F4D3"/><path d="M15 45H10V50H15V45Z" fill="%23F6F4D3"/><path d="M20 45H15V50H20V45Z" fill="%23F6F4D3"/><path d="M25 45H20V50H25V45Z" fill="%23242730"/><path d="M30 45H25V50H30V45Z" fill="%23242730"/><path d="M35 45H30V50H35V45Z" fill="%23242730"/><path d="M40 45H35V50H40V45Z" fill="%23242730"/><path d="M45 45H40V50H45V45Z" fill="%23242730"/><path d="M50 45H45V50H50V45Z" fill="%23242730"/><path d="M5 50H0V55H5V50Z" fill="%23242730"/><path d="M10 50H5V55H10V50Z" fill="%23F6F4D3"/><path d="M15 50H10V55H15V50Z" fill="%23F6F4D3"/><path d="M20 50H15V55H20V50Z" fill="%23242730"/><path d="M5 55H0V60H5V55Z" fill="%23242730"/><path d="M10 55H5V60H10V55Z" fill="%23F6F4D3"/><path d="M15 55H10V60H15V55Z" fill="%23242730"/><path d="M5 60H0V65H5V60Z" fill="%23242730"/><path d="M10 60H5V65H10V60Z" fill="%23242730"/></svg>'), text;
 }
 
@@ -266,13 +333,16 @@ input, textarea, [contenteditable] {
   }
 
   .app-content {
-    display: none; /* hide main content in portrait */
+    display: none;
+    /* hide main content in portrait */
   }
 }
 
 /* Fix for iPhone landscape white bars */
 @media (max-width: 1024px) {
-  html, body {
+
+  html,
+  body {
     background-color: black;
   }
 }

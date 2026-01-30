@@ -149,7 +149,7 @@ const Selectchapter = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className=" !scale-[0.4]  min-md:!scale-[0.6] max-sm:!scale-[0.7] min-lg:!scale-[0.9]"
+            className="vision-font !scale-[0.4]  min-md:!scale-[0.6] max-sm:!scale-[0.7] min-lg:!scale-[0.9]"
           >
             COMICS
           </Text>
@@ -160,7 +160,7 @@ const Selectchapter = () => {
             color: "#F6F4D3",
             letterSpacing: "2px",
           }}
-          className="!scale-[0.5] max-sm:!scale-[0.5] min-md:!scale-[0.6]  min-lg:!scale-[0.9]
+          className="!scale-[0.5] vision-font max-sm:!scale-[0.5] min-md:!scale-[0.6]  min-lg:!scale-[0.9]
           !-translate-y-8 max-sm:-translate-x-8 max-sm:-translate-y-6 min-md:-translate-y-5 min-lg:!-translate-y-3"
         >
           SPACERACOON
@@ -238,7 +238,7 @@ const Selectchapter = () => {
             {/* Comic Title */}
             <Box
               style={{ textAlign: "left", order: 2 }}
-              className="vision-font-regular"
+              className="vision-font"
             >
               <Text
                 style={{
