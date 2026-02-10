@@ -35,7 +35,7 @@ const Comicread = () => {
       }
     } catch {
       navigate("/comics/chapter/1");
-    }
+    }     
   };
 
   const nextPage = (e) => {    
