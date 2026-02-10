@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Text, Image } from "@mantine/core";
+import { Box, Text, Image, Button } from "@mantine/core";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
@@ -8,7 +8,8 @@ import { BackButtonIcon, BookreadIcon, SliderIcon } from "../../customIcons";
 const Comicread = () => {
   const navigate = useNavigate();
   const [isSupportOpen, setIsSupportOpen] = useState(false);
-  const pages = Array(2).fill("/assets/comicpage.png");
+  const [currentPage, setCurrentPage] = useState(0);
+  const pages = Array(3).fill("/assets/comicpage.png"); // Mocking more pages for testing navigation
 
   // Mobile detection
   const isMobileMediaQuery = useMediaQuery("(max-width: 1024px)");
@@ -17,6 +18,13 @@ const Comicread = () => {
   useEffect(() => {
     setIsMobile(isMobileMediaQuery);
   }, [isMobileMediaQuery]);
+
+  // Automatically open support modal when last page is reached
+  useEffect(() => {
+    if (currentPage === pages.length - 1 && !isSupportOpen) {
+      setIsSupportOpen(true);
+    }
+  }, [currentPage, pages.length]);
 
   const handleBack = () => {
     try {
@@ -30,6 +38,22 @@ const Comicread = () => {
     }
   };
 
+  const nextPage = (e) => {
+    if (e) e.stopPropagation();
+    if (currentPage < pages.length - 1) {
+      console.log("Navigating to next page:", currentPage + 1);
+      setCurrentPage(prev => prev + 1);
+    }
+  };
+
+  const prevPage = (e) => {
+    if (e) e.stopPropagation();
+    if (currentPage > 0) {
+      console.log("Navigating to previous page:", currentPage - 1);
+      setCurrentPage(prev => prev - 1);
+    }
+  };
+
   if (isMobile) {
     return (
       <Box
@@ -37,10 +61,10 @@ const Comicread = () => {
           height: "100vh",
           width: "100vw",
           backgroundColor: "#000",
-          overflowX: "auto", // Changed to horizontal scroll
+          overflowX: "auto",
           overflowY: "hidden",
-          scrollSnapType: "x mandatory", // Changed to x
-          display: "flex", // Ensure horizontal layout
+          scrollSnapType: "x mandatory",
+          display: "flex",
           flexDirection: "row",
           position: "fixed",
           top: 0,
@@ -56,63 +80,43 @@ const Comicread = () => {
             div::-webkit-scrollbar {
               display: none !important;
             }
-            .rotate-overlay { display: none !important; }
-            .app-content { display: block !important; }
-            body { overflow: hidden !important; }
           `}
         </style>
-
-        {/* Blurred background video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          style={{
-            position: "fixed",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: -1,
-            filter: "blur(30px) brightness(0.3)",
-          }}
-        >
-          <source src="/assets/bgvideo.mp4" type="video/mp4" />
-        </video>
 
         {/* Minimal Back Button Overlay */}
         <Box
           onClick={handleBack}
           style={{
             position: "fixed",
-            top: "1rem",
-            left: "1rem",
+            top: "1.5rem",
+            left: "1.5rem",
             zIndex: 100,
-            padding: "10px",
             cursor: "pointer",
-            opacity: 0.5,
+            background: "rgba(0,0,0,0.4)",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
           }}
         >
-          <Box style={{ transform: "scale(0.7)" }}>
+          <Box style={{ transform: "scale(0.8)" }}>
             <BackButtonIcon />
           </Box>
         </Box>
 
-        {/* Comic Pages in a Row */}
         {pages.map((page, index) => (
           <Box
             key={index}
             style={{
               height: "100vh",
               width: "100vw",
-              minWidth: "100vw", // Ensure each page takes full width
+              minWidth: "100vw",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               scrollSnapAlign: "start",
-              scrollSnapStop: "always",
-              overflow: "hidden",
             }}
           >
             <Image
@@ -123,13 +127,12 @@ const Comicread = () => {
                 width: "auto",
                 maxWidth: "100%",
                 objectFit: "contain",
-                boxShadow: "0 0 50px rgba(0,0,0,0.5)",
               }}
             />
           </Box>
         ))}
 
-        {/* End of chapter interaction on mobile */}
+        {/* End of chapter panel for mobile */}
         <Box
           style={{
             height: "100vh",
@@ -140,48 +143,23 @@ const Comicread = () => {
             alignItems: "center",
             justifyContent: "center",
             scrollSnapAlign: "start",
-            gap: "2rem",
-            padding: "2rem",
-            textAlign: "center",
-            backgroundColor: "rgba(0,0,0,0.8)"
+            gap: "2.5rem",
+            backgroundColor: "#000"
           }}
         >
-          <Box
-            style={{
-              padding: "1.2rem 1.8rem",
-              border: "2px solid #d1c676",
-              backgroundColor: "#000",
-              width: "280px",
-            }}
-          >
-            <Text style={{ color: "#F6F4D3", fontSize: "0.8rem", letterSpacing: "2px", marginBottom: "0.5rem" }}>
-              Next Chapter
-            </Text>
-            <Text style={{ color: "#F6F4D3", fontSize: "1.2rem", letterSpacing: "3px", fontWeight: "bold" }}>
+          <Box style={{ border: "2px solid #d1c676", padding: "1.5rem", textAlign: "center", width: "80%" }}>
+            <Text className="vision-font" style={{ color: "#F6F4D3", fontSize: "1.5rem", letterSpacing: "3px" }}>
               COMING SOON
             </Text>
           </Box>
-
-          <Box
-            role="button"
+          <Button
             onClick={() => setIsSupportOpen(true)}
-            style={{
-              backgroundColor: "#d1c676",
-              color: "#000",
-              border: "2px solid #000",
-              borderRadius: "8px",
-              padding: "1rem 1.5rem",
-              boxShadow: "0 6px 0 #585411",
-              cursor: "pointer",
-            }}
+            style={{ backgroundColor: "#d1c676", color: "#000", fontWeight: "bold" }}
           >
-            <Text className="pixel-font" style={{ fontSize: "0.6rem", fontWeight: "bold" }}>
-              Support the Artist »
-            </Text>
-          </Box>
+            Support Artist
+          </Button>
         </Box>
 
-        {/* Modal */}
         {isSupportOpen && (
           <SupportArtistModal
             isOpen={isSupportOpen}
@@ -195,246 +173,196 @@ const Comicread = () => {
     );
   }
 
+  // Laptop View: Full Screen Image Viewer
   return (
     <Box
       style={{
-        minHeight: "100vh",
-        backgroundColor: "#111827",
-        position: "relative",
-        overflow: "hidden",
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: "#000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 9999,
+        overflow: "hidden"
       }}
     >
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
+      {/* Back Button */}
+      <Box
+        onClick={handleBack}
         style={{
           position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
+          top: "2.5rem",
+          left: "2.5rem",
+          zIndex: 20,
+          cursor: "pointer",
+          opacity: 0.6,
+          transition: "all 0.3s ease",
+          background: "rgba(0,0,0,0.5)",
+          padding: "10px",
+          borderRadius: "50%"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.opacity = "1";
+          e.currentTarget.style.transform = "scale(1.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.opacity = "0.6";
+          e.currentTarget.style.transform = "scale(1)";
         }}
       >
-        <source src="/assets/bgvideo.mp4" type="video/mp4" />
-      </video>
-
-      {/* Top-right GLOBAL VISION logo */}
-      <Box
-        style={{ position: "absolute", top: "8rem", right: "12rem", zIndex: 3 }}
-        className="min-sm:!top-[14%] min-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[11%]
-              min-lg:!top-[14%] min-lg:!right-[11%] min-xl:!top-[14%] min-xl:!right-[11%]"
-      >
-        <Image
-          src="/assets/logo.png"
-          alt="GLOBAL VISION"
-          style={{ width: "120px", height: "auto", filter: "brightness(1.2)" }}
-          className="!w-14 max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
-        />
-      </Box>
-
-      {/* Header */}
-      <Box
-        style={{
-          position: "absolute",
-          top: "8rem",
-          left: "12rem",
-          zIndex: 5,
-          display: "flex",
-          flexDirection: "column",
-          pointerEvents: "auto",
-        }}
-        className="min-sm:!top-[14%]  min-sm:!left-[11%] min-md:!top-[14%] min-md:!left-[11%]
-              min-lg:!top-[14%] min-lg:!left-[11%] min-xl:!top-[14%] min-xl:!left-[11%]"
-      >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className="min-md:!gap-0">
-          <Box
-            role="button"
-            aria-label="Back"
-            onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="min-sm:!scale-[0.5]   min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7]"
-          >
-            <BackButtonIcon />
-          </Box>
-          <Text
-            style={{ fontSize: "2rem", color: "#F6F4D3", letterSpacing: "3px" }}
-            className=" vision-font min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-5"
-          >
-            COMICS
-          </Text>
+        <Box style={{ transform: "scale(1.2)" }}>
+          <BackButtonIcon />
         </Box>
-        <Text
-          style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
-          className="alexandria-font min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-8 min-sm:-translate-y-4"
-        >
-          Me and the Boys - The Beginning
-        </Text>
       </Box>
 
-      {/* Viewer Area */}
+      {/* Main Comic Image container */}
       <Box
         style={{
-          position: "absolute",
-          inset: 0,
+          height: "100vh",
+          width: "100vw",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          zIndex: 3,
+          position: "relative"
         }}
       >
-        {/* Chapter badge left */}
-        <Box
+        <Image
+          key={currentPage} // Force re-render for animation if needed
+          src={pages[currentPage]}
+          alt={`Page ${currentPage + 1}`}
           style={{
-            position: "absolute",
-            left: "12rem",
-            top: "16rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
+            height: "98vh",
+            width: "auto",
+            maxWidth: "98vw",
+            objectFit: "contain",
           }}
-          className="min-sm:!left-[13%] min-sm:!top-[35%] min-md:!left-[13%] min-md:!top-[35%] 
-                  min-lg:!top-[35%] min-lg:!left-[13%] min-xl:!top-[35%] min-xl:!left-[13%]"
-        >
+        />
+
+        {/* Left Arrow Button */}
+        {currentPage > 0 && (
           <Box
+            onClick={prevPage}
             style={{
-              width: "48px",
-              height: "28px",
-              backgroundColor: "#d1c676",
-              borderRadius: "2px",
-              border: "2px solid #000",
+              position: "absolute",
+              left: "2rem",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 15,
+              cursor: "pointer",
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(246, 244, 211, 0.1)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              transition: "all 0.3s ease",
+              border: "1px solid rgba(246, 244, 211, 0.2)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.3)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.1)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
             }}
           >
-            <Text
-              className="alexandria-font"
-              style={{ fontSize: "0.9rem", color: "#000", fontWeight: "bold" }}
-            >
-              01
+            <Text style={{ color: "#F6F4D3", fontSize: "2rem", fontWeight: "bold", userSelect: "none" }}>
+              «
             </Text>
           </Box>
-        </Box>
+        )}
 
-        {/* Scroll container using global custom scrollbar */}
+        {/* Right Arrow Button */}
+        {currentPage < pages.length - 1 && (
+          <Box
+            onClick={nextPage}
+            style={{
+              position: "absolute",
+              right: "2rem",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 15,
+              cursor: "pointer",
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(246, 244, 211, 0.1)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.3s ease",
+              border: "1px solid rgba(246, 244, 211, 0.2)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.3)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.1)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+            }}
+          >
+            <Text style={{ color: "#F6F4D3", fontSize: "2rem", fontWeight: "bold", userSelect: "none" }}>
+              »
+            </Text>
+          </Box>
+        )}
+
+        {/* Click-to-Next Global Overlay (Invisible side zones for easy clicking) */}
         <Box
-          className="custom-scrollbar  max-sm:!h-44 min-md:!h-[60%] min-lg:!h-[60%]  max-sm:!w-[85%] min-md:!top-[20%] min-sm:!top-[35%] min-sm:!left-[30%] min-md:!left-[31%] min-md:!px-5 min-xl:!top-[20%]  min-xl:!h-[65%]    overflow-x-hidden 
-          max-sm:!translate-x-1"
-          style={{
-            position: "absolute",
-            left: "3%",
-            top: "35%",
-            zIndex: 3,
-            pointerEvents: "auto",
-            width: "calc(100% - 60%)",
-            height: "46%",
-            overflowY: "scroll",
-          }}
-        >
+          onClick={prevPage}
+          style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15%", zIndex: 5, cursor: "pointer" }}
+        />
+        {currentPage < pages.length - 1 && (
+          <Box
+            onClick={nextPage}
+            style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15%", zIndex: 5, cursor: "pointer" }}
+          />
+        )}
+
+        {/* End Interaction (on last page) */}
+        {currentPage === pages.length - 1 && (
           <Box
             style={{
+              position: "absolute",
+              bottom: "5%",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "2rem",
+              gap: "1rem",
+              zIndex: 20
             }}
-            className="!min-md:!gap-0"
           >
-            {pages.map((src, i) => (
-              <Box
-                key={i}
-                style={{
-                  width: "360px",
-                  height: "480px",
-                  border: "3px solid #d1c676",
-                  boxShadow: "0 0 0 3px #000 inset",
-                  backgroundColor: "#0b0b0b",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
-                }}
-                className="min-sm:!h-[140px] min-sm:!w-[120px] min-md:!h-[190px] min-md:!w-[190px]
-                min-lg:!h-[350px] min-lg:!w-[250px] min-xl:!h-[450px] min-xl:!w-[350px] "
-              >
-                <Image src={src} alt={`Page ${i + 1}`} style={{ width: "100%", height: "100%" }} />
-              </Box>
-            ))}
-
-            {/* End-of-chapter panel */}
-            <Box
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "1.2rem",
-                paddingBottom: "2rem",
-              }}
-            >
-              <Box style={{ backgroundColor: "transparent", padding: "0.3rem", border: "2px solid #d1c676" }}>
-                <Box
-                  style={{
-                    padding: "1.2rem 1.8rem",
-                    border: "2px solid #d1c676",
-                    backgroundColor: "#000",
-                    width: "340px",
-                    textAlign: "center",
-                  }}
-                  className="max-sm:!w-[250px] min-md:!w-[250px] min-md:!px-3 min-md:!py-2 max-sm:!px-[0.6rem] max-sm:!py-[1rem]"
-                >
-                  <Text className="vision-font max-sm:!text-xs min-md:!text-3xl" style={{ color: "#F6F4D3", fontSize: "0.85rem", letterSpacing: "2px", marginBottom: "0.8rem" }}>
-                    Next Chapter
-                  </Text>
-                  <Text className="vision-font max-sm:!text-sm" style={{ color: "#F6F4D3", fontSize: "1.8rem", letterSpacing: "3px", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6rem" }}>
-                    COMING SOON
-                  </Text>
-                </Box>
-              </Box>
-              <Box
-                role="button"
+            <Box style={{ backgroundColor: "rgba(0,0,0,0.85)", border: "2px solid #d1c676", borderRadius: "12px", padding: "1.5rem 3rem", textAlign: "center" }}>
+              <Text className="vision-font" style={{ color: "#F6F4D3", fontSize: "1.2rem", marginBottom: "1rem", letterSpacing: "2px" }}>
+                END OF CHAPTER
+              </Text>
+              <Button
                 onClick={() => setIsSupportOpen(true)}
                 style={{
-                  backgroundColor: "#d1c676",
+                  backgroundColor: "#BEB97A",
                   color: "#000",
-                  border: "2px solid #000",
+                  fontWeight: "900",
+                  height: "45px",
                   borderRadius: "8px",
-                  padding: "0rem 1rem",
-                  boxShadow: "0 6px 0 #585411",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
+                  letterSpacing: "1px"
                 }}
-                className="max-sm:!w-fit !w-full max-sm:!translate-x-4 max-sm:!py-3 !py-4 pixel-font"
+                className="vision-font"
               >
-                <Text className=" max-sm:!text-[0.4rem] !font-bold !text-[0.67rem]" style={{ fontWeight: "bold", letterSpacing: "2px" }}>
-                  Support the Artist: 0,00€ »
-                </Text>
-              </Box>
+                SUPPORT THE ARTIST
+              </Button>
             </Box>
           </Box>
-        </Box>
-        <Box
-          style={{
-            position: "absolute",
-            top: "12rem",
-            right: "12rem",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.8rem",
-          }}
-          className="min-sm:!right-[13%] min-sm:!top-[35%] min-md:!top-[35%]  min-md:!right-[13%] min-lg:!top-[35%]
-                  min-lg:!right-[13%] min-xl:!right-[13%] min-xl:!top-[35%]"
-        >
-          <BookreadIcon />
-          <SliderIcon />
-        </Box>
+        )}
       </Box>
 
-      {/* Modal */}
+      {/* Support Modal */}
       {isSupportOpen && (
         <SupportArtistModal
           isOpen={isSupportOpen}

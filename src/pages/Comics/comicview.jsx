@@ -127,7 +127,7 @@ const Comicview = () => {
           </Box>
           <Text
             style={{ fontSize: "2rem", color: "#F6F4D3", letterSpacing: "3px" }}
-            className="min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-5"
+            className="vision-font"
           >
             COMICS
           </Text>

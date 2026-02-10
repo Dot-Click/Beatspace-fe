@@ -375,7 +375,7 @@ const Comics = () => {
             textShadow: "0 0 10px #F6F4D3",
             letterSpacing: "3px",
           }} 
-          className="!scale-[0.6]  vision-font max-sm:!scale-[0.7] min-md:!scale-[0.7]"
+          className="vision-font "
         >
           COMICS
         </Text>

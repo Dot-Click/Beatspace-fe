@@ -154,7 +154,7 @@ const ListOfHorus = () => {
           padding: "2rem",
           zIndex: 3,
           pointerEvents: "auto",
-        }}
+        }} 
       >
         <Box
           style={{

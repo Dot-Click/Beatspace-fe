@@ -149,7 +149,7 @@ const Selectchapter = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className="vision-font !scale-[0.4]  min-md:!scale-[0.6] max-sm:!scale-[0.7] min-lg:!scale-[0.9]"
+            className="vision-font"
           >
             COMICS
           </Text>

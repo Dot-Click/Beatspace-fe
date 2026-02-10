@@ -326,8 +326,8 @@ const BeatPlay = () => {
   };
 
   const handleBack = () => {
-    // if (window.history.length > 1) navigate(-1);
-    // else navigate("/menu");
+    if (window.history.length > 1) navigate(-1);
+    else navigate("/menu");
   };
   return (
     <Box
@@ -441,7 +441,7 @@ const BeatPlay = () => {
             letterSpacing: "2px",
             textShadow: "0 0 10px #F6F4D3",
           }}
-          className="!text-base vision-font min-lg:!text-2xl"
+          className="!text-base !vision-font min-lg:!text-2xl"
         >
           BE★TS
         </Text>
@@ -528,10 +528,8 @@ const BeatPlay = () => {
                     fontSize: "0.9rem",
                     color: "#F6F4D3",
                     letterSpacing: "2px",
-                    margin: 0,
                   }}
-                  className="!text-[0.6rem] absolute -top-3 left-0 w-full pixel-font !scale-[0.9]
-                  min-md:!scale-[1] min-md:!mb-5"
+                  className="!text-[0.6rem] absolute  !vision-font -top-3 min-md:-top-6 min-lg:-top-4 left-0 w-full min-md:!text-[0.9rem]   min-lg:!text-[1.3rem] min-md:!mb-5"
                 >
                   {beat.name}
                 </Text>
@@ -575,18 +573,18 @@ const BeatPlay = () => {
                 >
                   {/* Current time at left edge */}
                   <span
+                  className="!vision-font font-700"
                     style={{
                       fontSize: "0.32rem",
-                      color: "#F6F4D3",
+                     color: "#676762ff",
                       letterSpacing: "0.1px",
                       margin: 0,
                       padding: 0,
                       opacity: 0.6,
                       lineHeight: 1,
                       display: "inline-block",
-                      transform: "scale(0.8)",
                       transformOrigin: "left center",
-                      fontFamily: "inherit",
+                      
                     }}
                   >
                     {formatTime(audioCurrentTime[beat.id] || 0)}
@@ -594,18 +592,19 @@ const BeatPlay = () => {
 
                   {/* Total duration at right edge */}
                   <span
+                  className="!vision-font font-700"
                     style={{
                       fontSize: "0.32rem",
-                      color: "#F6F4D3",
+                      color: "#676762ff",
                       letterSpacing: "0.1px",
                       margin: 0,
                       padding: 0,
                       opacity: 0.6,
                       lineHeight: 1,
                       display: "inline-block",
-                      transform: "scale(0.8)",
+                     
                       transformOrigin: "right center",
-                      fontFamily: "inherit",
+                    
                     }}
                   >
                     {formatTime(audioDuration[beat.id] || 0)}

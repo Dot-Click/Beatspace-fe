@@ -389,7 +389,7 @@ const Selectcomic = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className="vision-font  !scale-[0.6] max-sm:!scale-[0.7]"
+            className="vision-font"
           >
             COMICS
           </Text>

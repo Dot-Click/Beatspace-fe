@@ -17,7 +17,7 @@ const Beats = () => {
 
   const handleItemHover = () => {
     setIsHovered(true);
-  };
+  };  
 
   const handleItemLeave = () => {
     setIsHovered(false);
@@ -25,8 +25,8 @@ const Beats = () => {
 
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
-     else navigate("/menu");
-   }; 
+    else navigate("/menu");
+  };
 
   return (
     <Box
@@ -38,23 +38,22 @@ const Beats = () => {
       }}
     >
 
-
       <video
-  autoPlay
-  muted
-  loop
-  playsInline
-  style={{
-    position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    zIndex: 0,
-  }}
->
-  <source src="/assets/bgvideo.mp4" type="video/mp4" />
-</video>
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
 
 
       {/* <Image
@@ -123,15 +122,15 @@ const Beats = () => {
         className="!top-[15%] !gap-[0.4rem] min-lg:!gap-[1rem]  !left-[12%] min-md:!top-[15%] min-md:!left-[12%]
         min-lg:!top-[15%] min-lg:!left-[12%] min-xl:!top-[15%] min-xl:!left-[12%]"
       >
-      <Box
-        role="button"
-        aria-label="Back to Comics"
-        onClick={handleBack}
-        style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
-        className="!scale-[0.5] min-lg:!scale-[0.7]"
-      >
-        <BackButtonIcon />
-      </Box>
+        <Box
+          role="button"
+          aria-label="Back to Comics"
+          onClick={handleBack}
+          style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
+          className="!scale-[0.5] min-lg:!scale-[0.7]"
+        >
+          <BackButtonIcon />
+        </Box>
         <Box
           style={{
             width: "40px",
@@ -155,7 +154,7 @@ const Beats = () => {
             letterSpacing: "2px",
             textShadow: "0 0 10px #F6F4D3",
           }}
-          className="!text-base min-lg:!text-2xl"
+          className="!text-base   !vision-font min-lg:!text-2xl"
         >
           BE★TS
         </Text>
@@ -194,8 +193,7 @@ const Beats = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
               }}
-              className="!px-0  pixel-font !scale-[0.3]
-                  min-md:!scale-[0.4] min-lg:!scale-[0.6] !py-0"
+              className="!px-0  !py-0"
               onClick={() => handleItemClick(item)}
               onMouseEnter={handleItemHover}
               onMouseLeave={handleItemLeave}
@@ -210,7 +208,7 @@ const Beats = () => {
                     imageRendering: "pixelated",
                     flexShrink: 0,
                   }}
-                  className="!w-3 !h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                  className="!w-3 !h-3  min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
                 >
                   {/* Left chevron (<) */}
                   <rect x="2" y="2" width="2" height="2" fill="#F6F4D3" />
@@ -229,11 +227,10 @@ const Beats = () => {
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
-                className="!text-4xl min-md:!text-4xl min-lg:text-7xl"
+                className="!text-lg vision-font min-md:!text-xl min-lg:!text-3xl"
               >
                 {item}
               </Text>
-
               {selectedItem === item && (
                 <svg
                   viewBox="0 0 16 16"
