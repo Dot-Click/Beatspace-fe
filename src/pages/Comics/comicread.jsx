@@ -38,7 +38,7 @@ const Comicread = () => {
     }
   };
 
-  const nextPage = (e) => {
+  const nextPage = (e) => {    
     if (e) e.stopPropagation();
     if (currentPage < pages.length - 1) {
       console.log("Navigating to next page:", currentPage + 1);
