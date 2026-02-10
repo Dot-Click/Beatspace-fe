@@ -14,6 +14,7 @@ A comprehensive, modern web application built with React, Mantine UI, React Quer
 - **ESLint** - Code linting and formatting
 - **TypeScript Ready** - Easy to migrate to TypeScript
 
+
 ## 📁 Project Structure
 
 ```
