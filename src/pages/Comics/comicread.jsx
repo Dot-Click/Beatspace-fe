@@ -30,10 +30,10 @@ const Comicread = () => {
     try {
       if (window.history.length > 1) {
         navigate(-1);
-      } else {
+      } else {      
         navigate("/comics/chapter/1");
       }
-    } catch {
+    } catch {      
       navigate("/comics/chapter/1");
     }     
   };
