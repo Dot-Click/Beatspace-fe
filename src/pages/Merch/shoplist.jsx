@@ -71,7 +71,7 @@ const ShopList = () => {
           pointerEvents: "none",
         }}
         className="
-          max-sm:!h-full max-sm:!top-[0%]
+          max-sm:!h-full max-sm:!top-[0%]  
           min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
