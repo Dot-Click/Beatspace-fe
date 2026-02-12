@@ -22,6 +22,7 @@ import ComicManagment from "../pages/admin/ComicManagment";
 import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
 import AdminMobileBlock from "../components/AdminMobileBlock";
+import ShopList from "../pages/Merch/shoplist";
 
 
 const Router = () => {
@@ -37,6 +38,7 @@ const Router = () => {
       <Route path="/comics/select-chapter" element={<Selectchapter />} />
       <Route path="/comics/chapter/:chapterNumber" element={<Comicview />} />
       <Route path="/comics/read" element={<Comicread />} />
+      <Route path="/shop-list" element={<ShopList />} />
       <Route path="/merch" element={<Merch />} />
       <Route path="/buyshirt" element={<BuyShirt />} />
 

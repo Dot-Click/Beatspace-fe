@@ -1,26 +1,18 @@
-
-
 import React, { useState } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { BackButtonIcon } from "../../customIcons";
 
-const ListOfHorus = () => {
-  const [selectedItem, setSelectedItem] = useState("BEATS");
+const ShopList = () => {
+  const [selectedItem, setSelectedItem] = useState("SHIRTS");
   const navigate = useNavigate();
 
-  const menuItems = ["COMICS", "BEATS", "SHOP", "GAMES"];
+  const menuItems = ["SHIRTS"];
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
-    if (item === "COMICS") {
-      navigate("/comics");
-    } else if (item === "BEATS") {
-      navigate("/beats");
-    } else if (item === "SHOP") {
-      navigate("/shop-list");
-    } else if (item === "GAMES") {
-      navigate("/games");
+    if (item === "SHIRTS") {
+      navigate("/merch");
     }
   };
 
@@ -29,13 +21,12 @@ const ListOfHorus = () => {
   };
 
   const handleItemLeave = () => {
-    // Optional: could reset to a default if desired, 
-    // but staying on the last hovered item is usually preferred for such UX.
+    // Selection stays on the last hovered item
   };
 
   const handleBack = () => {
     if (window.history.length > 1) navigate(-1);
-    else navigate("/start");
+    else navigate("/menu");
   };
 
   return (
@@ -47,6 +38,7 @@ const ListOfHorus = () => {
         overflow: "hidden",
       }}
     >
+
       <video
         autoPlay
         muted
@@ -64,6 +56,7 @@ const ListOfHorus = () => {
         <source src="/assets/bgvideo.mp4" type="video/mp4" />
       </video>
 
+
       {/* image frame  */}
       {/* <Image
         src="/assets/Frame.png"
@@ -77,8 +70,11 @@ const ListOfHorus = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="!h-full min-md:!h-full
-        min-lg:!h-full min-lg:!w-full min-lg:!top-0 "
+        className="
+          max-sm:!h-full max-sm:!top-[0%]
+          min-md:!h-full min-md:!top-[0%]
+          lg:!h-full lg:!w-full lg:!top-0
+        "
       /> */}
 
       {/* <Box
@@ -86,6 +82,7 @@ const ListOfHorus = () => {
           position: "absolute",
           inset: 0,
           backgroundColor: 'black',
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -94,16 +91,18 @@ const ListOfHorus = () => {
         }}
       /> */}
 
+
+
       <Box
         style={{
           position: "absolute",
           top: "8rem",
           right: "12rem",
-          zIndex: 4,
+          zIndex: 3,
           pointerEvents: "auto",
         }}
-        className="!top-[16%] !right-[10%] min-md:!top-[16%] min-md:!right-24
-        min-lg:!top-[15%] min-lg:!right-[12%] min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
+        className="!top-[14%] !right-[11%] max-sm:!top-[14%] max-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[13%]
+        min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
           src="/assets/logo.png"
@@ -113,7 +112,7 @@ const ListOfHorus = () => {
             height: "auto",
             filter: "brightness(1.2)",
           }}
-          className="!w-16 min-md:!w-20 min-lg:!w-28 min-xl:!w-44"
+          className="!w-13 max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
         />
       </Box>
 
@@ -122,39 +121,38 @@ const ListOfHorus = () => {
           position: "absolute",
           top: "8rem",
           left: "12rem",
-          zIndex: 5,
+          zIndex: 4,
           pointerEvents: "auto",
-          display: "flex",
-          alignItems: "center",
-          gap: "1rem",
         }}
-        className="!top-[16%] !left-[10%] min-md:!top-[16%] min-md:!left-24
-        min-lg:!top-[15%] min-lg:!left-[12%] min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className="!top-[14%] !left-[11%] max-sm:!top-[14%]  max-sm:!left-[11%]
+         min-md:!top-[14%] min-md:!left-[11%]
+        min-lg:!top-[17%] min-lg:!left-[13%] min-xl:!top-[17%] min-xl:!left-[13%] flex items-center gap-0"
       >
         <Box
           role="button"
-          aria-label="Back"
+          aria-label="Back to Comics"
           onClick={handleBack}
           style={{ cursor: "pointer", position: "relative", zIndex: 5 }}
-          className="!scale-[0.7] min-lg:!scale-[0.9] min-2xl:!scale-[1]"
+          className="!scale-[0.6] max-sm:!scale-[0.7] min-md:!scale-[0.7]"
         >
           <BackButtonIcon />
         </Box>
+      
       </Box>
 
       <Box
-        className="!top-[18%]   max-sm:!p-0 min-md:!top-[27%] min-md:!p-0 min-lg:!top-[31%]
-        min-xl:!top-[27%]"
         style={{
           position: "absolute",
           inset: 0,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           padding: "2rem",
           zIndex: 3,
           pointerEvents: "auto",
         }}
+        className="max-sm:!-mt-10 min-md:!-mt-0"
       >
         <Box
           style={{
@@ -163,11 +161,10 @@ const ListOfHorus = () => {
             alignItems: "center",
             gap: "1.5rem",
           }}
-          className="!gap-0 min-md:!gap-0"
+          className="!gap-[1rem]"
         >
           {menuItems.map((item, index) => (
             <div
-              className="max-sm:px-0 max-sm:py-0"
               key={item}
               style={{
                 display: "flex",
@@ -177,9 +174,11 @@ const ListOfHorus = () => {
                 borderRadius: "4px",
                 transition: "all 0.3s ease",
               }}
+
               onClick={() => handleItemClick(item)}
               onMouseEnter={() => handleItemHover(item)}
               onMouseLeave={handleItemLeave}
+
             >
               {selectedItem === item && (
                 <svg
@@ -191,7 +190,7 @@ const ListOfHorus = () => {
                     imageRendering: "pixelated",
                     flexShrink: 0,
                   }}
-                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-8 !mr-[1rem] min-md:!mr-[1.5rem] min-lg:!mr-[3rem] min-xl:!mr-[3rem] min-lg:!h-8"
                 >
                   {/* Left chevron (<) */}
                   <rect x="2" y="2" width="2" height="2" fill="#F6F4D3" />
@@ -204,14 +203,13 @@ const ListOfHorus = () => {
 
               <Text
                 style={{
-                  fontSize: "1.4rem",
+                  fontSize: "0.5rem",
                   color: selectedItem === item ? "#F6F4D3" : "#9ca3af",
                   textShadow:
                     selectedItem === item ? "0 0 10px #F6F4D3" : "none",
-                  letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
-                className="!text-[1.3rem] vision-font min-md:!text-[1.5rem] min-lg:!text-[2rem] min-xl:!text-[2.5rem]"
+                className="!scale-[0.6] vision-font max-sm:!scale-[0.7] min-md:!scale-[0.8] min-lg:!scale-[1.5] min-lg:!text-[1.5rem] min-xl:!text-[2rem]"
               >
                 {item}
               </Text>
@@ -226,7 +224,7 @@ const ListOfHorus = () => {
                     imageRendering: "pixelated",
                     flexShrink: 0,
                   }}
-                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 min-lg:!w-5 min-lg:!h-5"
+                  className="max-sm:!w-3 max-sm:!h-3 min-md:!w-4 min-md:!h-4 !ml-[1rem] min-md:!ml-[1.5rem] min-lg:!ml-[3rem] min-xl:!ml-[3rem] min-lg:!w-8 min-lg:!h-8"
                 >
                   {/* Right chevron (>) */}
                   <rect x="12" y="4" width="2" height="2" fill="#F6F4D3" />
@@ -236,7 +234,6 @@ const ListOfHorus = () => {
                   <rect x="10" y="8" width="2" height="2" fill="#F6F4D3" />
                 </svg>
               )}
-
             </div>
           ))}
         </Box>
@@ -245,4 +242,4 @@ const ListOfHorus = () => {
   );
 };
 
-export default ListOfHorus;
+export default ShopList;

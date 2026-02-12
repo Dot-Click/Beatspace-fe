@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const Beats = () => {
   const [selectedItem, setSelectedItem] = useState("PHONiX");
-  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   const menuItems = ["SAPHIRE", "PHONiX", "HORUS", "SPALE RALOOON"];
@@ -15,12 +14,12 @@ const Beats = () => {
     navigate("/beatplay");
   };
 
-  const handleItemHover = () => {
-    setIsHovered(true);
-  };  
+  const handleItemHover = (item) => {
+    setSelectedItem(item);
+  };
 
   const handleItemLeave = () => {
-    setIsHovered(false);
+    // Selection stays on the last hovered item
   };
 
   const handleBack = () => {
@@ -195,7 +194,7 @@ const Beats = () => {
               }}
               className="!px-0  !py-0"
               onClick={() => handleItemClick(item)}
-              onMouseEnter={handleItemHover}
+              onMouseEnter={() => handleItemHover(item)}
               onMouseLeave={handleItemLeave}
             >
               {selectedItem === item && (
