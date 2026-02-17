@@ -30,15 +30,15 @@ const Comicread = () => {
     try {
       if (window.history.length > 1) {
         navigate(-1);
-      } else {      
+      } else {
         navigate("/comics/chapter/1");
       }
-    } catch {      
+    } catch {
       navigate("/comics/chapter/1");
-    }     
+    }
   };
 
-  const nextPage = (e) => {    
+  const nextPage = (e) => {
     if (e) e.stopPropagation();
     if (currentPage < pages.length - 1) {
       console.log("Navigating to next page:", currentPage + 1);
@@ -123,10 +123,11 @@ const Comicread = () => {
               src={page}
               alt={`Page ${index + 1}`}
               style={{
-                height: "100%",
-                width: "auto",
-                maxWidth: "100%",
-                objectFit: "contain",
+                transform: "rotate(270deg)",
+                height: "80vw",
+                width: "100vh",
+                maxWidth: "none",
+                objectFit: "fill",
               }}
             />
           </Box>

@@ -35,21 +35,21 @@ const Comicview = () => {
       }}
     >
       <video
-  autoPlay
-  muted
-  loop
-  playsInline
-  style={{
-    position: "absolute",
-    inset: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    zIndex: 0,
-  }}
->
-  <source src="/assets/bgvideo.mp4" type="video/mp4" />
-</video>
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
 
 
 
@@ -136,7 +136,7 @@ const Comicview = () => {
           style={{ fontSize: "1rem", color: "#F6F4D3", letterSpacing: "2px" }}
           className="alexandria-font min-sm:!scale-[0.5] min-md:!scale-[0.5] min-lg:!scale-[0.6] min-xl:!scale-[0.7] min-sm:-translate-x-8 min-sm:-translate-y-4"
         >
-          Me and the Boys - The Beginning
+          Me and the Boys - The Beginning 
         </Text>
       </Box>
 
@@ -254,7 +254,7 @@ const Comicview = () => {
             transform: "translateX(160px)",
             cursor: "pointer",
           }}
-        
+
         >
           <Box
             style={{

@@ -137,7 +137,7 @@ const ShopList = () => {
         >
           <BackButtonIcon />
         </Box>
-      
+
       </Box>
 
       <Box

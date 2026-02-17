@@ -213,7 +213,7 @@ const Selectchapter = () => {
             className=" h-full "
           >
             {/* Comic Cover Image */}
-            <Box
+            {/* <Box
               style={{
                 width: "160px",
                 height: "200px",
@@ -234,7 +234,7 @@ const Selectchapter = () => {
                   objectFit: "fill",
                 }}
               />
-            </Box>
+            </Box> */}
 
             {/* Comic Title */}
             <Box
