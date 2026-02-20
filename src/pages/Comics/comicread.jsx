@@ -110,9 +110,9 @@ const Comicread = () => {
           <Box
             key={index}
             style={{
-              height: "100vh",
-              width: "100vw",
-              minWidth: "100vw",
+              height: "95vh",
+              width: "95vw",
+              minWidth: "95vw",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -125,8 +125,8 @@ const Comicread = () => {
               style={{
                 height: "100%",
                 width: "100%",
-                paddingBottom: '12px',
-                paddingTop: '12px',
+                paddingBottom: '20px',
+                paddingTop: '20px',
                 maxWidth: "none",
                 objectFit: "fill",
               }}
@@ -179,6 +179,7 @@ const Comicread = () => {
   return (
     <Box
       style={{
+        
         height: "100vh",
         width: "100vw",
         backgroundColor: "#000",
@@ -224,8 +225,8 @@ const Comicread = () => {
       {/* Main Comic Image container */}
       <Box
         style={{
-          height: "100vh",
-          width: "100vw",
+          height: "90vh",
+          width: "90vw",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -237,9 +238,9 @@ const Comicread = () => {
           src={pages[currentPage]}
           alt={`Page ${currentPage + 1}`}
           style={{
-            height: "98vh",
+            height: "100%",
             width: "auto",
-            maxWidth: "98vw",
+            maxWidth: "100%",
             objectFit: "contain",
           }}
         />
