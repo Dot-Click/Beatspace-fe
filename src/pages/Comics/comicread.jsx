@@ -57,12 +57,13 @@ const Comicread = () => {
   if (isMobile) {
     return (
       <Box
+      className="custom-scrollbar"
         style={{
           height: "100vh",
           width: "100vw",
           backgroundColor: "#000",
           overflowX: "auto",
-          overflowY: "hidden",
+          overflowY: "auto",
           scrollSnapType: "x mandatory",
           display: "flex",
           flexDirection: "row",
@@ -110,9 +111,9 @@ const Comicread = () => {
           <Box
             key={index}
             style={{
-              height: "95vh",
-              width: "95vw",
-              minWidth: "95vw",
+              height: "100vh",
+              width: "100vw",
+              minWidth: "100vw",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -369,7 +370,7 @@ const Comicread = () => {
       {isSupportOpen && (
         <SupportArtistModal
           isOpen={isSupportOpen}
-          onClose={() => setIsSupportOpen(false)}
+          onClose={(ww) => setIsSupportOpen(false)}
           beatName={"Me and the Boys"}
           artistName={"Space Racoon"}
           imageSrc={"/assets/comic.png"}
