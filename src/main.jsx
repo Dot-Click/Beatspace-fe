@@ -6,8 +6,10 @@ import { theme } from "./configs/theme.config.js";
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import { Provider } from "react-redux";
 import "mantine-react-table/styles.css";
 import QueryProvider from "./configs/query.config.jsx";
+import store from "./store/store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

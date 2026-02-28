@@ -1,17 +1,47 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Chart from 'react-apexcharts';
 
-const DonutChart = ({ title = "MOST PLAYED GENRES" }) => {
+const DonutChart = ({ title = "MOST PLAYED GENRES", genreDistribution = [] }) => {
+  // Transform genre distribution data
+  const { series, labels, colors, legendData } = useMemo(() => {
+    if (!genreDistribution || genreDistribution.length === 0) {
+      return {
+        series: [],
+        labels: [],
+        colors: [],
+        legendData: []
+      };
+    }
+
+    const colorPalette = ['#C1BE91', '#FF9800', '#2196F3', '#4CAF50', '#9C27B0', '#E91E63', '#00BCD4', '#FFC107'];
+    
+    const seriesData = genreDistribution.map(item => item.count || 0);
+    const labelsData = genreDistribution.map(item => item.genre || '');
+    const colorsData = genreDistribution.map((_, index) => colorPalette[index % colorPalette.length]);
+    const legendDataFormatted = genreDistribution.map((item, index) => ({
+      label: item.genre || '',
+      percentage: `${item.percentage || 0}%`,
+      color: colorPalette[index % colorPalette.length]
+    }));
+
+    return {
+      series: seriesData,
+      labels: labelsData,
+      colors: colorsData,
+      legendData: legendDataFormatted
+    };
+  }, [genreDistribution]);
+
   const chartData = {
-    series: [35, 28, 20, 12, 5],
+    series: series,
     options: {
       chart: {
         type: 'donut',
         height: 300,
         background: 'transparent'
       },
-      colors: ['#C1BE91', '#FF9800', '#2196F3', '#4CAF50', '#9C27B0'],
-      labels: ['HIP-HOP', 'TRAP', 'R&B', 'POP', 'ELECTRONIC'],
+      colors: colors,
+      labels: labels,
       dataLabels: {
         enabled: false
       },
@@ -56,14 +86,6 @@ const DonutChart = ({ title = "MOST PLAYED GENRES" }) => {
       }]
     }
   };
-
-  const legendData = [
-    { label: 'HIP-HOP', percentage: '35%', color: '#C1BE91' },
-    { label: 'TRAP', percentage: '28%', color: '#FF9800' },
-    { label: 'R&B', percentage: '20%', color: '#2196F3' },
-    { label: 'POP', percentage: '12%', color: '#4CAF50' },
-    { label: 'ELECTRONIC', percentage: '5%', color: '#9C27B0' }
-  ];
 
   return (
     <div className="bg-[#2A2B35]  border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font">
