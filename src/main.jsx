@@ -13,12 +13,22 @@ import store from "./store/store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Provider store={store}>
+    <div className="app-root">
+      <div className="rotate-overlay">
+        <div className="rotate-container">
+          <p className="rotate-message">
+            Please rotate your device for the best experience
+          </p>
+          <img src="/assets/200w.gif" alt="rotate"/>
+        </div>
+      </div>
+      <div className="app-content">  
       <MantineProvider theme={theme}>
         <QueryProvider>
           <App />
         </QueryProvider>
       </MantineProvider>
-    </Provider>
+    </div>
+    </div>
   </StrictMode>
 );

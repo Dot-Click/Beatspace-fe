@@ -1,6 +1,6 @@
 # Global Vision
 
-A comprehensive, modern web application built with React, Mantine UI, React Query, and Tailwind CSS. Global Vision provides a scalable foundation for building enterprise-level applications with advanced authentication, routing, and modern development tools.
+A comprehensive, modern web application built with React, Mantine UI, React Query, and Tailwind CSS.  Global Vision provides a scalable foundation for building enterprise-level applications with advanced authentication, routing, and modern development tools.
 
 ## 🚀 Features
 
@@ -13,6 +13,7 @@ A comprehensive, modern web application built with React, Mantine UI, React Quer
 - **Axios** - HTTP client for API calls
 - **ESLint** - Code linting and formatting
 - **TypeScript Ready** - Easy to migrate to TypeScript
+
 
 ## 📁 Project Structure
 

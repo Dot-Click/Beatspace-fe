@@ -264,8 +264,11 @@ const Selectcomic = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate("/comics");
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+    } else {
+      navigate("/comics");
+    }
   };
 
   const handleComicClick = () => navigate("/comics/select-chapter");
@@ -279,8 +282,28 @@ const Selectcomic = () => {
         overflow: "hidden",
       }}
     >
+
+      <video
+  autoPlay
+  muted
+  loop
+  playsInline
+  style={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 0,
+  }}
+>
+  <source src="/assets/bgvideo.mp4" type="video/mp4" />
+</video>
+
+
+
       {/* TV Frame */}
-      <Image
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -294,23 +317,24 @@ const Selectcomic = () => {
         }}
         className="
           max-sm:!h-[35rem] max-sm:!top-[10%]
-          min-md:!h-[34rem] min-md:!top-[25%]
+          min-md:!h-full min-md:!top-[0%]
           lg:!h-full lg:!w-full lg:!top-0
         "
-      />
+      /> */}
 
       {/* Background */}
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/dark-bg.png")',
+          backgroundColor: 'black',
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           zIndex: 1,
         }}
-      />
+      /> */}
 
       {/* Global Vision Logo */}
       <Box
@@ -318,10 +342,12 @@ const Selectcomic = () => {
           position: "absolute",
           top: "8rem",
           right: "12rem",
-          zIndex: 3,
+          zIndex: 4,
+          pointerEvents: "auto",
         }}
-        className="max-sm:!top-[20%] max-sm:!right-12 min-md:!top-[34%] min-md:!right-20
-        min-lg:!top-[7rem] min-lg:!right-28 min-xl:!top-[8.5rem] min-xl:!right-[10rem]"
+        className="!top-[14%] !right-[11%] max-sm:!top-[14%] max-sm:!right-[11%] 
+        min-md:!top-[14%] min-md:!right-[11%]
+        min-lg:!top-[17%] min-lg:!right-[13%] min-xl:!top-[17%] min-xl:!right-[13%]"
       >
         <Image
           src="/assets/logo.png"
@@ -339,20 +365,22 @@ const Selectcomic = () => {
       <Box
         style={{
           position: "absolute",
-          zIndex: 5,
+          zIndex: 6,
+          pointerEvents: "auto",
           display: "flex",
           flexDirection: "column",
         }}
-        className="max-sm:!top-[18%]  max-sm:!left-12 min-md:!top-[32%] min-md:!left-20
-        min-lg:!top-[7rem] min-lg:!left-28 min-xl:!top-[8.5rem] min-xl:!left-[10rem]"
+        className="!top-[14%] !left-[11%] max-sm:!top-[14%]  max-sm:!left-[11%]
+         min-md:!top-[14%] min-md:!left-[11%]
+        min-lg:!top-[14%] min-lg:!left-[11%] min-xl:!top-[14%] min-xl:!left-[11%]"
       >
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box
             role="button"
             aria-label="Back to Comics"
             onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="max-sm:!scale-[0.7]"
+            style={{ cursor: "pointer", position: "relative", zIndex: 6 }}
+            className="!scale-[0.6] max-sm:!scale-[0.7]"
           >
             <BackButtonIcon />
           </Box>
@@ -361,7 +389,7 @@ const Selectcomic = () => {
               color: "#F6F4D3",
               letterSpacing: "3px",
             }}
-            className="max-sm:!scale-[0.7]"
+            className="vision-font"
           >
             COMICS
           </Text>
@@ -372,7 +400,7 @@ const Selectcomic = () => {
             color: "#F6F4D3",
             letterSpacing: "2px",
           }}
-          className="max-sm:!scale-[0.5] max-sm:-translate-x-8 max-sm:-translate-y-6"
+          className=" vision-font !scale-[0.6] max-sm:!scale-[0.5] -translate-x-8 -translate-y-6"
         >
           SPACERACOON
         </Text>
@@ -390,7 +418,7 @@ const Selectcomic = () => {
           padding: "2rem",
           zIndex: 5, // 🔥 increased so it stays above frame
         }}
-        className="max-sm:!-mt-[15rem]"
+        className="!p-13"
       >
         {/* Scrollable Comic Frame */}
         <Box
@@ -405,7 +433,7 @@ const Selectcomic = () => {
             cursor: "pointer",
             overflow: "hidden",
           }}
-          className="max-sm:!h-[210px] min-md:!h-[330px]  max-sm:mt-60 hover:!shadow-[0_0_20px_#d1c676]"
+          className="max-sm:!h-[210px] min-md:!h-fit !h-fit  max-sm:mt-60 hover:!shadow-[0_0_20px_#d1c676]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={handleComicClick}
@@ -444,10 +472,10 @@ const Selectcomic = () => {
               }}
             >
               <Text
-                className="vision-font-regular"
+                className="vision-font"
                 style={{
                   color: "#F6F4D3",
-                  fontSize: "18px",
+                  fontSize: "5px",
                   lineHeight: 1.2,
                   textAlign: "left",
                 }}

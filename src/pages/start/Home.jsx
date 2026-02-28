@@ -4,6 +4,7 @@
 
 // const Home = () => {
 //   const [isHovered, setIsHovered] = useState(false);
+
 //   const navigate = useNavigate();
 
 //   const handleClick = (e) => {
@@ -26,6 +27,7 @@
 
 //   return (
 //     <Box
+//     className=" max-sm:h-screen max-sm:!w-screen "
 //       style={{
 //         minHeight: "100vh",
 //         backgroundColor: "#111827",
@@ -47,7 +49,7 @@
 //           zIndex: 2,
 //           pointerEvents: "none",
 //         }}
-//         className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
+//         className="max-sm:!h-screen max-sm:!w-screen max-lg:!h-[55%] max-lg:!top-[25%] "
 //       />
 
 //       <Box
@@ -80,20 +82,21 @@
 //       >
 //         <Box
 //           style={{
-//             position: "relative",
+//             position: "absolute",
 //             width: "100%",
-//             maxWidth: "32rem",
 //             display: "flex",
 //             justifyContent: "center",
 //             alignItems: "center",
 //           }}
+//           className="!w-[8rem] max-sm:!top-[38%] min-md:!w-full min-md:!top-[33%] min-lg:!top-[18%] 
+//           min-xl:!top-[22%]"
 //         >
 //           <Image
 //             src="/assets/Hero.webp"
 //             alt="GLOBAL VISION"
 //             style={{
 //               width: "100%",
-//               maxWidth: "24rem",
+
 //               height: "auto",
 //               filter:
 //                 "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))",
@@ -101,6 +104,7 @@
 //               position: "relative",
 //               zIndex: 10,
 //             }}
+//             className="max-sm:!mb-0 min-md:!h-28 min-lg:!h-40  "
 //           />
 
 //           <Image
@@ -117,6 +121,8 @@
 //               animation: "floatCloud1 8s ease-in-out infinite",
 //               zIndex: 1,
 //             }}
+//             className="max-sm:!left-[-6.5rem] max-sm:!h-24 max-sm:!w-24 min-md:!left-20 min-md:!h-32 min-md:!w-32
+//             min-lg:!left-32 min-lg:!h-32 min-lg:!w-36 min-xl:!left-44 min-xl:!h-40 min-xl:!w-40 min-xl:top-[20%] "
 //           />
 
 //           <Image
@@ -133,6 +139,9 @@
 //               animation: "floatCloud2 6s ease-in-out infinite",
 //               zIndex: 1,
 //             }}
+//             className="max-sm:!right-[-4rem] min-md:!right-32 min-md:!h-16 min-md:!w-16
+//             min-lg:!right-48 min-lg:!h-20 min-lg:!w-20
+//             min-xl:!right-64 min-xl:!h-28 min-xl:!w-28 "
 //           />
 
 //           <Image
@@ -150,6 +159,9 @@
 //               animation: "floatCloud3 10s ease-in-out infinite",
 //               zIndex: 1,
 //             }}
+//             className="max-sm:!top-5 max-sm:!right-[-6rem] max-sm:!h-24 max-sm:!w-24 min-md:!right-16 min-md:!top-20
+//             min-lg:!right-32 min-lg:!top-24 min-lg:!h-32 min-lg:!w-32 
+//             min-xl:!right-48 min-xl:!top-40 min-xl:!h-40 min-xl:!w-40"
 //           />
 //         </Box>
 
@@ -171,16 +183,17 @@
 //               onMouseEnter={handleHover}
 //               onMouseLeave={handleLeave}
 //               onClick={handleClick}
+//               className="md:p-3"
 //             >
 //               <Text
-//                 className="pixel-font"
+//                 className="pixel-font hover:max-sm:!scale-[0.7] max-sm:!scale-[1.1]
+//                  hover:min-md:!scale-[1.3] min-md:!scale-[2.2]
+//                   min-md:!mt-28"
 //                 style={{
-//                   fontSize: "1.2rem",
 //                   color: isHovered ? "#F6F4D3" : "#1f2937",
 //                   textShadow: isHovered
 //                     ? "0 0 10px #F6F4D3, 0 0 20px #F6F4D3, 0 0 30px #F6F4D3"
 //                     : "none",
-//                   transform: isHovered ? "scale(1.1)" : "scale(1)",
 //                   transition: "all 0.3s ease",
 //                   margin: 0,
 //                 }}
@@ -190,21 +203,23 @@
 //             </div>
 //           </Group>
 
-//           <Group justify="center" mt={60}>
+//           <Group
+//             justify="center"
+//             mt={60}
+//             className="!mt-0 min-md:!gap-[4.3rem] min-md:!translate-y-16  xl:mt-60"
+//           >
 //             <Text
-//               className="pixel-font"
+//               className="pixel-font min-md:scale-[1.6]"
 //               style={{
 //                 color: "#1f2937",
-//                 fontSize: "1.1rem",
 //               }}
 //             >
 //               ©
 //             </Text>
 //             <Text
-//               className="pixel-font"
+//               className="pixel-font min-md:scale-[1.4]"
 //               style={{
 //                 color: "#1f2937",
-//                 fontSize: "1.1rem",
 //               }}
 //             >
 //               2025 GLOBAL VISION
@@ -223,6 +238,7 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [isHovered, setIsHovered] = useState(false);
+
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -245,6 +261,7 @@ const Home = () => {
 
   return (
     <Box
+      className=" max-sm:h-screen max-sm:!w-screen "
       style={{
         minHeight: "100vh",
         backgroundColor: "#111827",
@@ -252,7 +269,9 @@ const Home = () => {
         overflow: "hidden",
       }}
     >
-      <Image
+
+      {/* frame image  */}
+      {/* <Image
         src="/assets/Frame.png"
         alt="TV Frame"
         style={{
@@ -266,26 +285,45 @@ const Home = () => {
           zIndex: 2,
           pointerEvents: "none",
         }}
-        className="max-sm:!h-52 max-lg:!h-[55%] max-sm:!top-[35%] max-lg:!top-[25%] "
-      />
+        className="max-sm:!h-full max-sm:!w-full  "
+      /> */}
 
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: 'url("/assets/Hero-bg.webp")',
+          // backgroundImage: 'url("/assets/Hero-bg.webp")',
+          backgroundColor:"black",
+
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           zIndex: 1,
           pointerEvents: "none",
         }}
-      />
+      /> */}
+
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 0,
+        }}
+      >
+        <source src="/assets/bgvideo.mp4" type="video/mp4" />
+      </video>
+
 
       <Box
         style={{
           position: "absolute",
-
           inset: 0,
           display: "flex",
           flexDirection: "column",
@@ -305,7 +343,7 @@ const Home = () => {
             justifyContent: "center",
             alignItems: "center",
           }}
-          className="!w-[8rem] max-sm:!top-[38%] min-md:!w-full min-md:!top-[33%] min-lg:!top-[18%] 
+          className="!w-full !top-[13%] min-md:!w-full min-md:!top-[15%] min-lg:!top-[18%] 
           min-xl:!top-[22%]"
         >
           <Image
@@ -313,7 +351,6 @@ const Home = () => {
             alt="GLOBAL VISION"
             style={{
               width: "100%",
-
               height: "auto",
               filter:
                 "drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1))",
@@ -321,7 +358,7 @@ const Home = () => {
               position: "relative",
               zIndex: 10,
             }}
-            className="max-sm:!mb-0 min-md:!h-28 min-lg:!h-40  "
+            className="max-sm:!mb-0 !h-20 min-md:!h-20 min-lg:!h-40"
           />
 
           <Image
@@ -338,7 +375,7 @@ const Home = () => {
               animation: "floatCloud1 8s ease-in-out infinite",
               zIndex: 1,
             }}
-            className="max-sm:!left-[-6.5rem] max-sm:!h-24 max-sm:!w-24 min-md:!left-20 min-md:!h-32 min-md:!w-32
+            className="!left-20 !h-24 !w-24 min-md:!left-20 min-md:!h-32 min-md:!w-32
             min-lg:!left-32 min-lg:!h-32 min-lg:!w-36 min-xl:!left-44 min-xl:!h-40 min-xl:!w-40 min-xl:top-[20%] "
           />
 
@@ -356,7 +393,7 @@ const Home = () => {
               animation: "floatCloud2 6s ease-in-out infinite",
               zIndex: 1,
             }}
-            className="max-sm:!right-[-4rem] min-md:!right-32 min-md:!h-16 min-md:!w-16
+            className="!right-32 min-md:!right-32 min-md:!h-16 min-md:!w-16
             min-lg:!right-48 min-lg:!h-20 min-lg:!w-20
             min-xl:!right-64 min-xl:!h-28 min-xl:!w-28 "
           />
@@ -376,7 +413,7 @@ const Home = () => {
               animation: "floatCloud3 10s ease-in-out infinite",
               zIndex: 1,
             }}
-            className="max-sm:!top-5 max-sm:!right-[-6rem] max-sm:!h-24 max-sm:!w-24 min-md:!right-16 min-md:!top-20
+            className="!top-5 !right-16 !h-24 !w-24 max-sm:!h-24 max-sm:!w-24 min-md:!right-16 min-md:!top-20
             min-lg:!right-32 min-lg:!top-24 min-lg:!h-32 min-lg:!w-32 
             min-xl:!right-48 min-xl:!top-40 min-xl:!h-40 min-xl:!w-40"
           />
@@ -390,7 +427,7 @@ const Home = () => {
             maxWidth: "24rem",
           }}
         >
-          <Group justify="center" mt={20}>
+          <Group justify="center" mt={17}>
             <div
               style={{
                 display: "inline-block",
@@ -403,9 +440,9 @@ const Home = () => {
               className="md:p-3"
             >
               <Text
-                className="pixel-font hover:max-sm:!scale-[0.7] max-sm:!scale-[1.1]
-                 hover:min-md:!scale-[1.3] min-md:!scale-[2.2]
-                  min-md:!mt-28"
+                className="pixel-font hover:!scale-[0.7]   !scale-[1]
+                 hover:min-md:!scale-[1.2] min-md:!scale-[1.8]
+                  min-md:!mt-20"
                 style={{
                   color: isHovered ? "#F6F4D3" : "#1f2937",
                   textShadow: isHovered
@@ -434,7 +471,7 @@ const Home = () => {
               ©
             </Text>
             <Text
-              className="pixel-font min-md:scale-[1.4]"
+              className="pixel-font  min-md:scale-[1.1]"
               style={{
                 color: "#1f2937",
               }}
