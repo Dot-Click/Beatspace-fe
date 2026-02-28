@@ -12,7 +12,7 @@ import QueryProvider from "./configs/query.config.jsx";
 import store from "./store/store.js";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <Provider store={store}>
     <div className="app-root">
       <div className="rotate-overlay">
         <div className="rotate-container">
@@ -30,5 +30,5 @@ createRoot(document.getElementById("root")).render(
       </MantineProvider>
     </div>
     </div>
-  </StrictMode>
+  </Provider>
 );
