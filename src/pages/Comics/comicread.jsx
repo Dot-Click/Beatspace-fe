@@ -67,7 +67,7 @@ const Comicread = () => {
           scrollSnapType: "x mandatory",
           display: "flex",
           flexDirection: "column",
-          paddingBottom:"10px",
+          paddingBottom:"55px",
           paddingTop:"10px",
           position: "fixed",
           top: 0,
