@@ -1,263 +1,345 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { DiskIcon, MusicIcon, UploadIcon } from '../../customIcons';
+import { useBeatController } from '../../hooks/useBeatController';
+import { toast } from 'sonner';
+import { Modal } from '@mantine/core';
 
 const Beat = () => {
-  // BeatTable state
-  const [beats, setBeats] = useState([
-    {
-      id: '1',
-      name: 'Dark Trap Vibes',
-      duration: '3:24',
-      date: '2024-12-15',
-      genre: 'Trap',
-      tags: ['dark', 'hard', '808s'],
-      plays: 1547,
-      downloads: 89,
-      donations: 25.50,
-      isPlaying: false
-    },
-    {
-      id: '2',
-      name: 'UK Drill Storm',
-      duration: '2:48',
-      date: '2024-12-14',
-      genre: 'Drill',
-      tags: ['uk', 'drill', 'aggressive'],
-      plays: 2103,
-      downloads: 156,
-      donations: 42.75
-    },
-    {
-      id: '3',
-      name: 'Boom Bap Classic',
-      duration: '4:12',
-      date: '2024-12-13',
-      genre: 'Boom-bap',
-      tags: ['uk', 'drill', 'aggressive'],
-      plays: 892,
-      downloads: 67,
-      donations: 18.25
-    },
-    {
-      id: '4',
-      name: 'Lo-Fi Dreams',
-      duration: '3:56',
-      date: '2024-12-12',
-      genre: 'Lo-Fi',
-      tags: ['uk', 'drill', 'aggressive'],
-      plays: 3241,
-      downloads: 234,
-      donations: 67.80
-    },
-    {
-      id: '5',
-      name: 'Electronic Pulse',
-      duration: '3:33',
-      date: '2024-12-11',
-      genre: 'Electronic',
-      tags: ['uk', 'drill', 'aggressive'],
-      plays: 1876,
-      downloads: 112,
-      donations: 33.90
+  const { beats: reduxBeats, isLoading: isBeatsLoading, isCreating, fetchBeats, addBeat, removeBeat, editBeat } = useBeatController();
+  
+  // Local state for UI interactions (playing, volume, etc.)
+  const [beats, setBeats] = useState([]);
+  
+  // Add Beat Form State
+  const [newBeatForm, setNewBeatForm] = useState({
+    name: '',
+    genre: 'HIP-HOP',
+    genre_tags: '',
+    beat: null
+  });
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef(null);
+  
+  // Edit Beat Form State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentEditId, setCurrentEditId] = useState(null);
+  const [editBeatForm, setEditBeatForm] = useState({
+    name: '',
+    genre: 'HIP-HOP',
+    genre_tags: '',
+  });
+
+  // Sync redux beats to local state for internal UI logic (like isPlaying)
+  useEffect(() => {
+    if (reduxBeats) {
+      setBeats(reduxBeats.map(beat => ({
+        ...beat,
+        id: beat._id || beat.id,
+        isPlaying: false
+      })));
     }
-  ]);
+  }, [reduxBeats]);
+
+  useEffect(() => {
+    fetchBeats();
+  }, [fetchBeats]);
 
   // SearchAndFilter state
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('All Genres');
   const [showGenreDropdown, setShowGenreDropdown] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  // Reset page when search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedGenre]);
 
   // AudioPlayer state
   const [volume, setVolume] = useState(75);
-  const [currentTime, setCurrentTime] = useState(0); // Current time in seconds
-  const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null); // Track which beat is playing
+  const [currentTime, setCurrentTime] = useState(0); 
+  const [duration, setDuration] = useState(0);
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null);
 
-  // Simple play/pause handler
-  const handlePlayToggle = (id) => {
-    console.log('handlePlayToggle called with id:', id);
+  // Genres from Schema
+  const GENRE_OPTIONS = ['HIP-HOP', 'TRAP', 'R&B', 'POP', 'ELECTRONICS', 'LO-FI', 'BOOM BAP'];
+
+  // Drag and Drop Handlers
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelect(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileSelect = (file) => {
+    if (file && (file.type === "audio/mpeg" || file.type === "audio/wav" || file.name.endsWith('.mp3') || file.name.endsWith('.wav'))) {
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error("File size exceeds 50MB");
+        return;
+      }
+      setNewBeatForm(prev => ({ ...prev, beat: file }));
+      toast.success(`File selected: ${file.name}`);
+    } else {
+      toast.error("Invalid file type. Please upload MP3 or WAV.");
+    }
+  };
+
+  const onButtonClick = () => fileInputRef.current.click();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewBeatForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddBeat = async (e) => {
+    e.preventDefault();
+    if (!newBeatForm.name || !newBeatForm.beat) {
+      toast.error("Please provide at least a name and an audio file");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", newBeatForm.name);
+    formData.append("beat", newBeatForm.beat);
+    formData.append("genre", newBeatForm.genre);
     
+    // Handle genre_tags as multiple appends for the array
+    if (newBeatForm.genre_tags) {
+      const tags = newBeatForm.genre_tags.split(',').map(t => t.trim()).filter(t => t !== "");
+      tags.forEach(tag => {
+        formData.append("genre_tags", tag);
+      });
+    }
+
+    const res = await addBeat(formData);
+    if (res?.success) {
+      toast.success("Beat uploaded successfully!");
+      setNewBeatForm({ name: '', genre: 'HIP-HOP', genre_tags: '', beat: null });
+      fetchBeats();
+    } else {
+      toast.error(res?.message || "Upload failed");
+    }
+  };
+
+  const handleDeleteBeat = async (id) => {
+    if (window.confirm("Are you sure you want to delete this beat?")) {
+      const res = await removeBeat(id);
+      if (res?.success) {
+        toast.success("Beat deleted successfully");
+        fetchBeats();
+      } else {
+        toast.error(res?.message || "Delete failed");
+      }
+    }
+  };
+
+  const handleOpenEditModal = (beat) => {
+    setCurrentEditId(beat._id || beat.id);
+    setEditBeatForm({
+      name: beat.name || '',
+      genre: beat.genre || 'HIP-HOP',
+      genre_tags: Array.isArray(beat.genre_tags) ? beat.genre_tags.join(', ') : (beat.genre_tags || ''),
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditBeatForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditBeat = async (e) => {
+    e.preventDefault();
+    if (!editBeatForm.name) {
+      toast.error("Name is required");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", editBeatForm.name);
+    formData.append("genre", editBeatForm.genre);
+    
+    if (editBeatForm.genre_tags) {
+      const tags = editBeatForm.genre_tags.split(',').map(t => t.trim()).filter(t => t !== "");
+      tags.forEach(tag => {
+        formData.append("genre_tags", tag);
+      });
+    }
+
+    const res = await editBeat(currentEditId, formData);
+    if (res?.success) {
+      toast.success("Beat updated successfully!");
+      setIsEditModalOpen(false);
+      setCurrentEditId(null);
+      fetchBeats();
+    } else {
+      toast.error(res?.message || "Failed to update beat");
+    }
+  };
+
+  // Audio Engine
+  const audioRef = useRef(new Audio());
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    
+    const onTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const onDurationChange = () => setDuration(audio.duration);
+    const onEnded = () => {
+      setCurrentlyPlayingId(null);
+      setBeats(prev => prev.map(b => ({ ...b, isPlaying: false })));
+    };
+
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('durationchange', onDurationChange);
+    audio.addEventListener('loadedmetadata', onDurationChange);
+    audio.addEventListener('ended', onEnded);
+    
+    return () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('durationchange', onDurationChange);
+      audio.removeEventListener('loadedmetadata', onDurationChange);
+      audio.removeEventListener('ended', onEnded);
+      audio.pause();
+    };
+  }, []);
+
+  useEffect(() => {
+    audioRef.current.volume = volume / 100;
+  }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (currentlyPlayingId) {
+      const playingBeat = beats.find(b => b.id === currentlyPlayingId);
+      if (playingBeat && playingBeat.mp3_url) {
+        if (audio.src !== playingBeat.mp3_url) {
+          audio.src = playingBeat.mp3_url;
+          audio.load();
+        }
+        audio.play().catch(err => {
+          console.error("Playback error:", err);
+          toast.error("Audio playback blocked or failed");
+        });
+      }
+    } else {
+      audio.pause();
+    }
+  }, [currentlyPlayingId, beats]);
+
+  const handlePlayToggle = (id) => {
     setBeats(prevBeats => {
       const currentBeat = prevBeats.find(beat => beat.id === id);
       const isCurrentlyPlaying = currentBeat?.isPlaying || false;
       
-      console.log(`Beat ${id} is currently playing: ${isCurrentlyPlaying}`);
-      
-      // If this beat is currently playing, pause it
       if (isCurrentlyPlaying) {
-        console.log('Pausing beat:', id);
         setCurrentlyPlayingId(null);
-        return prevBeats.map(beat => ({
-          ...beat,
-          isPlaying: false
-        }));
+        return prevBeats.map(beat => ({ ...beat, isPlaying: false }));
       } else {
-        // If this beat is not playing, start it and stop all others
-        console.log('Starting beat:', id);
+        // Stop current audio if any before playing new one
+        if (currentlyPlayingId && currentlyPlayingId !== id) {
+          audioRef.current.pause();
+        }
         setCurrentlyPlayingId(id);
-        setCurrentTime(0); // Reset timer for new beat
-        return prevBeats.map(beat => ({
-        ...beat,
-          isPlaying: beat.id === id
-        }));
+        return prevBeats.map(beat => ({ ...beat, isPlaying: beat.id === id }));
       }
     });
   };
 
-  const handleDelete = (id) => {
-    setBeats(prevBeats => prevBeats.filter(beat => beat.id !== id));
-  };
-
-
-  const handleVolumeChange = (e) => {
-    const newVolume = parseInt(e.target.value);
-    setVolume(newVolume);
-  };
-
-  const handleVolumeInteraction = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newVolume = Math.round((clickX / rect.width) * 100);
-    setVolume(Math.max(0, Math.min(100, newVolume)));
-  };
-
-  const handleVolumeMouseDown = (e) => {
-    e.preventDefault();
-    handleVolumeInteraction(e);
-    
-    const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newVolume = Math.round((clickX / rect.width) * 100);
-    setVolume(Math.max(0, Math.min(100, newVolume)));
-  };
-
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
-
-  // Timer effect for currently playing beat
-  useEffect(() => {
-    let interval;
-    if (currentlyPlayingId) {
-      const playingBeat = beats.find(beat => beat.id === currentlyPlayingId);
-      if (playingBeat) {
-        console.log('Timer started for beat:', playingBeat.name);
-        interval = setInterval(() => {
-          setCurrentTime(prevTime => {
-            const [minutes, seconds] = playingBeat.duration.split(':').map(Number);
-            const totalSeconds = minutes * 60 + seconds;
-            if (prevTime >= totalSeconds) {
-              return 0; // Reset to start
-            }
-            return prevTime + 1;
-          });
-        }, 1000);
-      }
-    } else {
-      console.log('No beat is currently playing - timer stopped');
-    }
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-        console.log('Timer cleared');
-      }
-    };
-  }, [currentlyPlayingId, beats]);
-
-
-  // Helper function to format time
   const formatTime = (seconds) => {
+    if (isNaN(seconds) || seconds < 0) return '0:00';
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const filteredBeats = beats.filter(beat => {
+    const matchesSearch = beat.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGenre = selectedGenre === 'All Genres' || (beat.genre || 'HIP-HOP').toUpperCase() === selectedGenre.toUpperCase();
+    return matchesSearch && matchesGenre;
+  });
 
-  // Stats data
+  const totalPages = Math.ceil(filteredBeats.length / rowsPerPage);
+  const paginatedBeats = filteredBeats.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
   const stats = [
-    { value: '5', label: 'Total Beats' },
-    { value: '9,659', label: 'Total Plays' },
-    { value: '658', label: 'Total Downloads' },
-    { value: '€188.20', label: 'Total Donations' }
+    { value: beats.length.toString(), label: 'Total Beats' },
+    { value: beats.reduce((acc, b) => acc + (b.plays || 0), 0).toLocaleString(), label: 'Total Plays' },
+    { value: beats.reduce((acc, b) => acc + (b.no_of_downloads || 0), 0).toLocaleString(), label: 'Total Downloads' },
+    { value: `€${beats.reduce((acc, b) => acc + (b.donations?.amount || 0), 0).toFixed(2)}`, label: 'Total Donations' }
   ];
 
-  // BeatRow component
   const BeatRow = ({ beat }) => {
+    // Schema uses genre_tags as [String]
+    const tags = Array.isArray(beat.genre_tags) ? beat.genre_tags : (beat.genre_tags ? beat.genre_tags.split(',').map(t => t.trim()) : []);
+    const date = beat.createdAt ? new Date(beat.createdAt).toLocaleDateString() : 'N/A';
+    
+    const [localDuration, setLocalDuration] = useState(0);
+
+    useEffect(() => {
+      if (beat.mp3_url && !beat.duration) {
+        const tempAudio = new Audio(beat.mp3_url);
+        const handleLoadedMetadata = () => {
+          setLocalDuration(tempAudio.duration);
+        };
+        tempAudio.addEventListener('loadedmetadata', handleLoadedMetadata);
+        return () => tempAudio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      }
+    }, [beat.mp3_url, beat.duration]);
+
+    const displayDuration = beat.isPlaying ? formatTime(duration) : (beat.duration ? beat.duration : formatTime(localDuration));
+
     return (
-      <tr className={`w-full h-20 lg:h-24 border-b border-[#D4D4B0] relative ${beat.isPlaying ? 'bg-[#C5C274]' : 'bg-[#4A4A3C]'}`}>
+      <tr className={`w-full h-20 lg:h-24 border-b border-[#D4D4B0] transition-colors duration-200 ${beat.isPlaying ? 'bg-[#C5C274]' : 'bg-[#4A4A3C] hover:bg-[#525244]'}`}>
         <td className="px-3 lg:px-6 py-2">
           <div className="flex flex-col justify-center items-start gap-1">
-            <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-              {beat.name}
-            </div>
-            <div className={`text-xs lg:text-sm font-normal ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.3px' }}>
-              {beat.duration} · {beat.date}
-            </div>
+            <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace' }}>{beat.name}</div>
+            <div className={`text-xs lg:text-sm font-normal ${beat.isPlaying ? 'text-black opacity-70' : 'text-[#D4D4B0] opacity-70'}`} style={{ fontFamily: 'monospace' }}>{displayDuration} · {date}</div>
           </div>
         </td>
         <td className="px-3 lg:px-6 py-2">
           <div className="flex flex-col justify-center items-start gap-2">
-            <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-              {beat.genre}
-            </div>
+            <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace' }}>{beat.genre || 'HIP-HOP'}</div>
             <div className="flex items-center gap-2 flex-wrap">
-              {beat.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className={`text-xs lg:text-sm font-normal px-2 py-1 rounded border ${beat.isPlaying ? 'text-black bg-[rgba(0,0,0,0.1)] border-black' : 'text-[#D4D4B0] bg-[rgba(212,212,176,0.2)] border-[#D4D4B0]'}`}
-                  style={{ fontFamily: 'monospace', letterSpacing: '0.3px' }}
-                >
-                  {tag}
-                </span>
+              {tags.map((tag, i) => (
+                <span key={i} className={`text-[10px] lg:text-xs px-2 py-0.5 rounded border ${beat.isPlaying ? 'border-black text-black' : 'border-[#D4D4B0] text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace' }}>{tag}</span>
               ))}
             </div>
           </div>
         </td>
-        <td className="px-3 lg:px-6 py-2">
-          <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-            {beat.plays.toLocaleString()}
-          </div>
-        </td>
-        <td className="px-3 lg:px-6 py-2">
-          <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-            {beat.downloads}
-          </div>
-        </td>
-        <td className="px-3 lg:px-6 py-2">
-          <div className={`text-sm lg:text-lg font-bold ${beat.isPlaying ? 'text-black' : 'text-[#D4D4B0]'}`} style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-            €{beat.donations.toFixed(2)}
-          </div>
-        </td>
+        <td className="px-3 lg:px-6 py-2 text-[#D4D4B0] font-bold" style={{ fontFamily: 'monospace' }}>{(beat.plays || 0).toLocaleString()}</td>
+        <td className="px-3 lg:px-6 py-2 text-[#D4D4B0] font-bold" style={{ fontFamily: 'monospace' }}>{beat.no_of_downloads || 0}</td>
+        <td className="px-3 lg:px-6 py-2 text-[#D4D4B0] font-bold" style={{ fontFamily: 'monospace' }}>€{(beat.donations?.amount || 0).toFixed(2)}</td>
         <td className="px-3 lg:px-6 py-2">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => handlePlayToggle(beat.id)}
-              className="flex w-10 h-10 lg:w-12 lg:h-12 justify-center items-center bg-[#FFD700] hover:bg-[#FFA500] transition-colors duration-200 cursor-pointer select-none"
-              style={{ fontFamily: 'monospace' }}
-            >
+            <button onClick={() => handlePlayToggle(beat.id)} className="w-10 h-10 lg:w-12 lg:h-12 bg-[#FFD700] hover:bg-[#E4DA33] transition-colors flex items-center justify-center">
               {beat.isPlaying ? (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="4" y="2" width="2" height="12" fill="white"/>
-                  <rect x="10" y="2" width="2" height="12" fill="white"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="black"><rect x="3" y="2" width="3" height="12"/><rect x="10" y="2" width="3" height="12"/></svg>
               ) : (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 2L14 8L4 14V2Z" fill="white"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="black"><path d="M4 2L14 8L4 14V2Z"/></svg>
               )}
             </button>
-            <button
-              onClick={() => handleDelete(beat.id)}
-              className="flex w-10 h-10 lg:w-12 lg:h-12 justify-center items-center bg-[#DC143C] hover:bg-[#B22222] transition-colors duration-200 cursor-pointer select-none"
-              style={{ fontFamily: 'monospace' }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4L4 12M4 4L12 12" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+            <button onClick={() => handleOpenEditModal(beat)} className="w-10 h-10 lg:w-12 lg:h-12 bg-[#4A4A3C] hover:bg-[#D4D1A0] hover:text-black text-[#D4D4B0] border border-[#D4D4B0] transition-colors flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </button>
+            <button onClick={() => handleDeleteBeat(beat.id)} className="w-10 h-10 lg:w-12 lg:h-12 bg-[#DC143C] hover:bg-[#B22222] transition-colors flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="white" stroke="white" strokeWidth="2"><path d="M12 4L4 12M4 4L12 12" strokeLinecap="round"/></svg>
             </button>
           </div>
         </td>
@@ -265,211 +347,264 @@ const Beat = () => {
     );
   };
 
-  // NowPlayingDropdown component - separated functionality
-  const NowPlayingDropdown = ({ beat }) => {
+  const NowPlayingDropdown = ({ beat }) => (
+    <tr className="bg-[#3C3C30]">
+      <td colSpan="6" className="p-4 lg:p-6 border-b border-[#D4D4B0]">
+        <div className="flex flex-col lg:flex-row items-center gap-6">
+          <button className="w-14 h-14 bg-[#FFD700] flex items-center justify-center shadow-lg"><DiskIcon /></button>
+          <div className="flex-1 w-full h-10 bg-[#4A4A3C] border border-[#D4D4B0] relative overflow-hidden flex items-center px-4">
+            <div className="text-[#FFD700] font-bold text-xs" style={{ fontFamily: 'monospace' }}>STREAMING WAVEFORM DATA...</div>
+            <div className="absolute inset-0 bg-black opacity-20"></div>
+          </div>
+          <div className="flex flex-col items-center">
+             <div className="text-[#FFD700] text-lg font-bold" style={{ fontFamily: 'monospace' }}>{beat.name}</div>
+             <div className="text-[#D4D4B0] text-xs opacity-70" style={{ fontFamily: 'monospace' }}>{formatTime(currentTime)} / {formatTime(duration)}</div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  );
+
   return (
-      <tr className="bg-[#3C3C30]">
-        <td colSpan="6" className="p-0">
-          <div className="p-4 lg:p-6">
-          <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6 w-full">
-            <button
-                onClick={() => handlePlayToggle(beat.id)}
-                className="flex w-12 h-12 lg:w-14 lg:h-14 justify-center items-center bg-[#FFD700] hover:bg-[#FFA500] transition-colors duration-200 cursor-pointer select-none"
+    <div className="min-h-screen alexandria-font  space-y-10"> 
+        
+        {/* Upload Section */}
+        <section 
+          className={`w-full bg-[#CBC895] border-[3px] border-dotted transition-all duration-300 rounded-xl p-8 flex flex-col items-center gap-8 ${dragActive ? 'border-[#FFD700] bg-[#D4D1A0] scale-[1.01]' : 'border-[#D4D4B0]'}`}
+          onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+        >
+          <input ref={fileInputRef} type="file" className="hidden" accept=".mp3,.wav" onChange={(e) => handleFileSelect(e.target.files[0])} />
+          
+          <div className="flex flex-col items-center cursor-pointer group" onClick={onButtonClick}>
+             <div className="transform group-hover:rotate-12 transition-transform duration-500"><DiskIcon /></div>
+             <p className="mt-4 text-[#191A22] font-bold text-center tracking-tighter" style={{ fontFamily: 'monospace' }}>
+               {newBeatForm.beat ? `SELECTED: ${newBeatForm.beat.name}` : 'DRAG AUDIO FILE HERE OR CLICK TO BROWSE'}
+             </p>
+          </div>
+
+          <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-[#191A22]">Beat Name</label>
+              <input type="text" name="name" value={newBeatForm.name} onChange={handleInputChange} placeholder="Untilted Beat" className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700]" style={{ fontFamily: 'monospace' }} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-[#191A22]">Genre (Enum)</label>
+              <select 
+                name="genre" 
+                value={newBeatForm.genre} 
+                onChange={handleInputChange} 
+                className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer" 
                 style={{ fontFamily: 'monospace' }}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="4" y="2" width="2" height="12" fill="white"/>
-                  <rect x="10" y="2" width="2" height="12" fill="white"/>
-                  </svg>
-            </button>
-            
-              <div className="flex-1 w-full h-16 lg:h-20 bg-[#4A4A3C] border border-[#D4D4B0] relative overflow-hidden rounded">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 50 }, (_, i) => (
-                    <div
-                      key={i}
-                        className="bg-[#FFD700] w-1 rounded-full animate-pulse"
-                      style={{
-                          height: `${15 + (i % 3) * 10}px`,
-                          animationDelay: `${i * 0.1}s`,
-                          animationDuration: '1s',
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
+                {GENRE_OPTIONS.map(g => (
+                  <option key={g} value={g}>{g}</option>
+                ))}
+              </select>
             </div>
-            
-            <div className="flex items-center gap-4 lg:gap-6">
-                <div className="text-[#FFD700] text-sm lg:text-lg font-bold" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                  {formatTime(currentTime)} / {beat.duration}
-              </div>
-              <div className="flex items-center gap-2">
-                <svg width="24" height="28" viewBox="0 0 33 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18.579 1.24507C18.8372 1.06034 19.1394 0.94658 19.4554 0.91516C19.7713 0.883739 20.09 0.935752 20.3796 1.06601C20.6691 1.19626 20.9195 1.4002 21.1056 1.65745C21.2916 1.91471 21.407 2.21629 21.4401 2.53207L21.45 2.72017V28.48C21.4501 28.7975 21.3669 29.1095 21.2087 29.3848C21.0505 29.6601 20.8229 29.8891 20.5485 30.0489C20.2741 30.2087 19.9626 30.2938 19.6451 30.2955C19.3276 30.2973 19.0152 30.2158 18.739 30.059L18.5806 29.9567L7.722 22.2001H3.3C2.46745 22.2003 1.66557 21.8859 1.0551 21.3198C0.444627 20.7537 0.0706916 19.9778 0.00825035 19.1476L1.65442e-07 18.9001V12.3001C-0.000263306 11.4675 0.314171 10.6656 0.88027 10.0552C1.44637 9.44469 2.22229 9.07076 3.0525 9.00832L3.3 9.00007H7.722L18.579 1.24507Z" fill="white"/>
-                </svg>
-                <div 
-                    className="w-24 lg:w-32 h-2 bg-[#4A4A3C] border border-[#D4D4B0] relative cursor-pointer rounded"
-                    onClick={handleVolumeInteraction}
-                    onMouseDown={handleVolumeMouseDown}
-                >
-                  <div 
-                      className="h-full bg-[#FFD700] transition-all duration-200 rounded" 
-                    style={{ width: `${volume}%` }}
-                  />
-                  <div 
-                    className="absolute w-3 h-3 bg-white rounded-full -top-[2px] cursor-pointer hover:scale-110 transition-transform duration-200"
-                    style={{ left: `${volume}%`, transform: 'translateX(-50%)' }}
-                      onMouseDown={handleVolumeMouseDown}
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  />
-                </div>
-              </div>
-                <div className="text-[#FFD700] text-sm lg:text-lg font-bold" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                {volume}%
-              </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold uppercase text-[#191A22]">Tags (Comma Separated)</label>
+              <input type="text" name="genre_tags" value={newBeatForm.genre_tags} onChange={handleInputChange} placeholder="dark, hard, 808s" className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700]" style={{ fontFamily: 'monospace' }} />
             </div>
           </div>
-            <div className="text-[#FFD700] text-sm lg:text-lg font-bold text-center lg:text-left mt-4" style={{ fontFamily: 'monospace', letterSpacing: '1px' }}>
-              Now Playing: {beat.name}
-            </div>
-          </div>
-        </td>
-      </tr>
-    );
-  };
 
-  return (
-    <div className="min-h-screen alexandria-font">
-        {/* Upload Area */}
-        <section className="w-full flex flex-col items-center ">
-          <div className="w-full  h-[200px] lg:h-[250px] flex items-center justify-center relative bg-[#CBC895] border-[3px] border-dotted border-[#D4D4B0] rounded-lg">
-            <div className="w-full h-auto flex flex-col items-center gap-4 p-6 lg:p-8">
-              {/* Central Icons */}
-              <div className="relative flex items-center justify-center">
-                {/* CD Icon */}
-                  <DiskIcon />               
-              </div>
-              
-              {/* Main Instruction Text */}
-              <div className="text-[#FFD700] text-lg lg:text-xl font-bold text-center" style={{ fontFamily: 'monospace', letterSpacing: '1px' }}>
-                DRAG & DROP MP3/WAV HERE OR CLICK TO UPLOAD
-              </div>
-              
-              {/* Additional Information Text */}
-              <div className="text-white text-sm lg:text-base text-center" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                Maximum file size: 50MB | Supported formats: MP3, WAV
-              </div>
-            </div>
-          </div>
+          <button onClick={handleAddBeat} disabled={isCreating} className={`px-12 py-4 bg-[#FFD700] text-black font-black uppercase tracking-[3px] hover:bg-[#E4DA33] transition-all shadow-xl disabled:opacity-50 flex items-center gap-4`} style={{ fontFamily: 'monospace' }}>
+            {isCreating ? <div className="w-4 h-4 border-2 border-black border-t-transparent animate-spin rounded-full"></div> : <UploadIcon />}
+            {isCreating ? 'PROCESSING...' : 'UPLOAD TRACK'}
+          </button>
         </section>
 
-        {/* Search and Filter */}
-        <div className="w-full flex flex-col lg:flex-row items-start gap-4 mt-6">
-          <div className="flex-1 w-full">
-            <input
-              type="text"
-              placeholder="Search beats..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-12 lg:h-14 text-[#9C963A] text-base lg:text-lg font-normal bg-[#4A4A3C] px-4 lg:px-6 py-3 border border-[#D4D4B0] focus:outline-none focus:border-[#E4DA33] transition-colors duration-200"
-              style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}
-            />
+        {/* Search & Stats */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-1 relative">
+            <input type="text" placeholder="SEARCH BEATS..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full h-16 bg-[#4A4A3C] border border-[#D4D4B0] px-6 text-[#FFD700] font-bold focus:outline-none focus:border-[#E4DA33] placeholder:text-[#9C963A]" style={{ fontFamily: 'monospace' }} />
           </div>
-          <div className="w-full lg:w-auto relative">
-            <button 
-              onClick={() => setShowGenreDropdown(!showGenreDropdown)}
-              className="w-full lg:w-[200px] h-12 lg:h-14 bg-[#D4D4B0] border border-[#D4D4B0] flex items-center justify-between px-4 lg:px-6 cursor-pointer hover:bg-[#E4E4C0] transition-colors duration-200"
-            >
-              <span className="text-[#191A22] text-base lg:text-lg font-semibold" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                All Genres
-              </span>
-              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L6 6L11 1" stroke="#191A22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+          <div className="relative w-full lg:w-64">
+            <button onClick={() => setShowGenreDropdown(!showGenreDropdown)} className="w-full h-16 bg-[#D4D4B0] text-[#191A22] font-black uppercase flex items-center justify-between px-6 border-b-4 border-black active:translate-y-1 active:border-b-0 transition-all" style={{ fontFamily: 'monospace' }}>
+              {selectedGenre} <svg width="12" height="8"><path d="M1 1L6 6L11 1" stroke="black" strokeWidth="2"/></svg>
             </button>
-            
-            {/* Dropdown Menu */}
             {showGenreDropdown && (
-              <div className="absolute top-full left-0 right-0 bg-[#D4D4B0] border border-[#D4D4B0] border-t-0 z-10">
-                <div className="p-2">
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    All Genres
-                  </div>
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    Trap
-                  </div>
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    Drill
-                  </div>
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    Boom-bap
-                  </div>
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    Lo-Fi
-                  </div>
-                  <div className="text-[#191A22] text-sm font-semibold px-3 py-2 hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                    Electronic
-                  </div>
-                </div>
+              <div className="absolute top-18 left-0 w-full bg-[#D4D4B0] border-2 border-black z-50 shadow-2xl">
+                {['All Genres', 'HIP-HOP', 'TRAP', 'R&B', 'POP', 'ELECTRONICS', 'LO-FI', 'BOOM BAP'].map(g => (
+                  <div key={g} onClick={() => { setSelectedGenre(g); setShowGenreDropdown(false); }} className="p-4 text-black font-bold border-b border-black hover:bg-[#E4E4C0] cursor-pointer" style={{ fontFamily: 'monospace' }}>{g}</div>
+                ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Beat Table */}
-        <section className="w-full relative mt-6 overflow-hidden">
-          <header className="w-full h-16 lg:h-20 flex items-center bg-black px-4 lg:px-8">
-            <div className="w-full grid grid-cols-6 gap-2 lg:gap-4 text-[#D4D4B0] text-sm lg:text-lg font-bold uppercase" style={{ fontFamily: 'monospace', letterSpacing: '1px' }}>
-              <div className="flex items-center gap-2">
-                <span>BEAT NAME</span>
-                <MusicIcon />
+        {/* Beats Table */}
+        <div className="w-full overflow-hidden border-2 border-[#D4D4B0] rounded-xl shadow-2xl">
+          <div className="bg-[#4A4A3C]">
+            {isBeatsLoading ? (
+              <div className="h-64 flex items-center justify-center"><div className="w-12 h-12 border-4 border-[#FFD700] border-t-transparent animate-spin rounded-full"></div></div>
+            ) : (
+              <div className="overflow-x-auto max-h-[800px] overflow-y-auto hidden-scrollbar">
+                <table className="w-full min-w-[800px] text-left">
+                  <thead className="bg-black sticky top-0 z-10 shadow-md">
+                    <tr className="text-[#FFD700] font-black text-xs lg:text-sm tracking-widest uppercase" style={{ fontFamily: 'monospace' }}>
+                      <th className="px-3 lg:px-6 py-6"><div className="flex items-center gap-2">NAME <MusicIcon /></div></th>
+                      <th className="px-3 lg:px-6 py-6">GENRE</th>
+                      <th className="px-3 lg:px-6 py-6">PLAYS</th>
+                      <th className="px-3 lg:px-6 py-6">DOWNLOADS</th>
+                      <th className="px-3 lg:px-6 py-6">DONATIONS</th>
+                      <th className="px-3 lg:px-6 py-6 shadow-[inset_0_-2px_0_black]">ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedBeats.length > 0 ? paginatedBeats.map(b => (
+                      <React.Fragment key={b.id}>
+                        <BeatRow beat={b} />
+                        {b.isPlaying && <NowPlayingDropdown beat={b} />}
+                      </React.Fragment>
+                    )) : (
+                      <tr className="h-48 text-center text-[#D4D4B0] font-bold"><td colSpan="6">NO TRACKS FOUND IN THE DATABASE</td></tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
-              <div>GENRE / TAGS</div>
-              <div>PLAYS</div>
-              <div>DOWNLOADS</div>
-              <div>DONATIONS (€)</div>
-              <div>ACTIONS</div>
-            </div>
-          </header>
-          <div className="bg-transparent">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[800px]">
-                <tbody>
-                  {beats.map((beat) => (
-                    <React.Fragment key={beat.id}>
-                      <BeatRow beat={beat} />
-                      {beat.isPlaying && <NowPlayingDropdown beat={beat} />}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            )}
           </div>
-        </section>
-
-
-        {/* Stats Footer */}
-        <footer className="flex flex-col lg:flex-row items-center justify-around bg-[#3C3C30] px-4 lg:px-8 py-6 lg:py-8 gap-4 lg:gap-0">
-          {stats.map((stat, index) => (
-            <div key={index} className="flex flex-col justify-center items-center gap-2 text-center">
-              <div className="text-[#D4D4B0] text-lg lg:text-xl font-bold" style={{ fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                {stat.value}
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="bg-[#191A22] border-t-2 border-[#D4D4B0] p-4 flex items-center justify-between px-6">
+              <div className="text-[#D4D4B0] text-sm font-bold tracking-widest uppercase">
+                Showing {(currentPage - 1) * rowsPerPage + 1} to {Math.min(currentPage * rowsPerPage, filteredBeats.length)} of {filteredBeats.length} Tracks
               </div>
-              <div className="text-[#D4D4B0] text-sm lg:text-lg font-normal" style={{ fontFamily: 'monospace', letterSpacing: '0.3px' }}>
-                {stat.label}
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="w-10 h-10 flex items-center justify-center bg-[#4A4A3C] text-[#FFD700] border border-[#D4D4B0] disabled:opacity-50 hover:bg-[#525244] transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div className="w-10 h-10 flex items-center justify-center bg-[#FFD700] text-black font-black text-sm">
+                  {currentPage}
+                </div>
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="w-10 h-10 flex items-center justify-center bg-[#4A4A3C] text-[#FFD700] border border-[#D4D4B0] disabled:opacity-50 hover:bg-[#525244] transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {stats.map((s, i) => (
+            <div key={i} className="bg-[#3C3C30] border-2 border-[#D4D4B0] p-6 rounded-xl flex flex-col items-center justify-center transform hover:-translate-y-2 transition-transform duration-300">
+               <div className="text-[#FFD700] text-2xl lg:text-3xl font-black mb-1" style={{ fontFamily: 'monospace' }}>{s.value}</div>
+               <div className="text-[#D4D4B0] text-[10px] lg:text-xs font-bold uppercase tracking-widest" style={{ fontFamily: 'monospace' }}>{s.label}</div>
             </div>
           ))}
-        </footer>
+        </div> 
+
+      {/* Edit Modal */}
+      <Modal 
+        opened={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        withCloseButton={false}
+        padding={0}
+        size="lg"
+        centered
+        overlayProps={{
+          color: 'black',
+          opacity: 0.8,
+          blur: 1,
+        }}
+        styles={{
+          content: { 
+            backgroundColor: 'transparent', 
+            boxShadow: 'none', 
+            border: 'none', 
+            overflow: 'visible' 
+          }
+        }}
+      >
+        <div className="w-full max-w-2xl bg-[#191A22] border-2 border-[#FFD700] shadow-[0_0_30px_rgba(255,215,0,0.15)] rounded-xl overflow-hidden relative alexandria-font">
+          
+          <div className="bg-[#FFD700] px-6 py-4 flex justify-between items-center">
+            <div className="text-black font-bold tracking-widest uppercase text-sm">Edit Track Attributes</div>
+            <button 
+              onClick={() => setIsEditModalOpen(false)}
+              className="w-8 h-8 flex items-center justify-center bg-black hover:bg-gray-800 transition-colors rounded-sm"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#FFD700" strokeWidth="2"><path d="M12 4L4 12M4 4L12 12" strokeLinecap="round"/></svg>
+            </button>
+          </div>
+
+          <div className="p-8 space-y-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">Track Name</label>
+              <input 
+                type="text" 
+                name="name" 
+                value={editBeatForm.name} 
+                onChange={handleEditInputChange} 
+                placeholder="Midnight Vibes" 
+                className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white font-bold focus:outline-none focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700] transition-colors text-sm" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">Genre Sequence</label>
+                <div className="relative">
+                  <select 
+                    name="genre" 
+                    value={editBeatForm.genre} 
+                    onChange={handleEditInputChange} 
+                    className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-[#FFD700] font-bold focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer text-sm" 
+                  >
+                    {GENRE_OPTIONS.map(g => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg width="12" height="8"><path d="M1 1L6 6L11 1" stroke="#FFD700" strokeWidth="2"/></svg>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">Meta Tags Array</label>
+                <input 
+                  type="text" 
+                  name="genre_tags" 
+                  value={editBeatForm.genre_tags} 
+                  onChange={handleEditInputChange} 
+                  placeholder="dark, hard, 808s" 
+                  className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-[#FFD700] focus:outline-none focus:border-[#FFD700] text-sm" 
+                />
+                <p className="text-[10px] text-[#D4D4B0] opacity-50 mt-1 uppercase">SEPARATE MULTIPLE TAGS WITH COMMAS</p>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-[#4A4A3C] flex justify-end gap-4">
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-6 py-2 bg-transparent border-2 border-[#D4D4B0] text-[#D4D4B0] font-bold uppercase tracking-widest hover:bg-[#4A4A3C] transition-colors text-xs" 
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleEditBeat}
+                disabled={isCreating} 
+                className="px-6 py-2 bg-[#FFD700] text-black font-black uppercase tracking-widest hover:bg-[#E4DA33] transition-colors border-2 border-[#FFD700] disabled:opacity-50 flex items-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)] text-xs" 
+              >
+                {isCreating ? 'UPDATING DB...' : 'OVERWRITE DB'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 };
