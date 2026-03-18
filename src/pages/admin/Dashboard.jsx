@@ -81,7 +81,24 @@ const Dashboard = () => {
         
         {/* Donut Chart - Takes 1 column (1/4 width) */}
         <div className="lg:col-span-1">
-          <DonutChart genreDistribution={dashboardData?.charts?.genreDistribution} />
+          <DonutChart 
+            title="GENRE DISTRIBUTION" 
+            genreDistribution={dashboardData?.charts?.genreDistribution} 
+          />
+        </div>
+      </div>
+
+      {/* New Row for Category Distribution */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+        <div className="lg:col-span-1">
+          <DonutChart 
+            title="CATEGORY DISTRIBUTION" 
+            genreDistribution={dashboardData?.charts?.categoryDistribution?.map(c => ({
+              genre: c.category.toUpperCase().replace('_', ' '),
+              count: c.count,
+              percentage: c.percentage
+            }))} 
+          />
         </div>
       </div>
 

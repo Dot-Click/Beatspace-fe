@@ -29,6 +29,25 @@ const beatReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case BEAT_CONSTANTS.GET_BEAT_BY_ID_REQUEST:
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+      };
+    case BEAT_CONSTANTS.GET_BEAT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        currentBeat: action.payload,
+      };
+    case BEAT_CONSTANTS.GET_BEAT_BY_ID_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload,
+      };
+
     case BEAT_CONSTANTS.CREATE_BEAT_REQUEST:
       return {
         ...state,

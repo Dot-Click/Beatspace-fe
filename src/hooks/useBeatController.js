@@ -6,8 +6,8 @@ export const useBeatController = () => {
   const dispatch = useDispatch();
   const { beats, isLoading, isCreating, error } = useSelector((state) => state.beat);
 
-  const fetchBeats = useCallback(() => {
-    return dispatch(getBeats());
+  const fetchBeats = useCallback((category) => {
+    return dispatch(getBeats(category));
   }, [dispatch]);
 
   const addBeat = useCallback((formData) => {

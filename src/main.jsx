@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")).render(
       <div className="rotate-overlay">
         <div className="rotate-container">
           <p className="rotate-message">
-            Please rotate your device for the best experience
+            Please rotate your device and hide the toolbar from browser settings for the best experience
           </p>
           <img src="/assets/200w.gif" alt="rotate"/>
         </div>

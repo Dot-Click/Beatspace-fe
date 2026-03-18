@@ -9,8 +9,10 @@ import {
   BackButtonIcon,
 } from "../../customIcons";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AudioWaveform from "../../components/AudioWaveform";
+import { useBeatController } from "../../hooks/useBeatController";
+import { Loader, Center } from "@mantine/core"; 
 
 const BeatPlay = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -22,44 +24,37 @@ const BeatPlay = () => {
   const [audioDuration, setAudioDuration] = useState({});
   const audioRefs = useRef({});
   const navigate = useNavigate();
-  const beatItems = useMemo(() => [
-    {
-      id: 0,
-      name: "eFELKIT",
-      waveform: "audio-waveform-1",
-      audioUrl: "/assets/audio.wav"
-    },
-    {
-      id: 1,
-      name: "eFELKIT",
-      waveform: "audio-waveform-2",
-      audioUrl: "/assets/sample-9s.mp3"
-    },
-    {
-      id: 2,
-      name: "eFELKIT",
-      waveform: "audio-waveform-3",
-      audioUrl: "/assets/sample-6s.mp3"
-    },
-    {
-      id: 3,
-      name: "eFELKIT",
-      waveform: "audio-waveform-4",
-      audioUrl: "/assets/audio.wav"
-    },
-    {
-      id: 4,
-      name: "eFELKIT",
-      waveform: "audio-waveform-5",
-      audioUrl: "/assets/sample-9s.mp3"
-    },
-    {
-      id: 5,
-      name: "eFELKIT",
-      waveform: "audio-waveform-6",
-      audioUrl: "/assets/sample-6s.mp3"
-    },
-  ], []);
+  const location = useLocation();
+  const { beats: reduxBeats, isLoading, fetchBeats } = useBeatController();
+
+  // Get category from query string
+  const queryParams = new URLSearchParams(location.search);
+  const category = queryParams.get("category");
+
+  const beatItems = useMemo(() => {
+    if (!reduxBeats) return [];
+    
+    // Filter by category if one is selected
+    let filtered = reduxBeats;
+    if (category) {
+      filtered = reduxBeats.filter((beat) => {
+        // Handle inconsistent category keys: "category", "category ", " category"
+        const beatCategory = (beat.category || beat["category "] || beat[" category"])?.toLowerCase()?.trim();
+        return beatCategory === category.toLowerCase().trim();
+      });
+    }
+
+    return filtered.map((beat) => ({
+      ...beat,
+      id: beat._id || beat.id,
+      waveform: `audio-waveform-${beat._id || beat.id}`,
+      audioUrl: beat.mp3_url, 
+    }));
+  }, [reduxBeats, category]);
+
+  useEffect(() => {
+    fetchBeats(category);
+  }, [fetchBeats, category]);
 
   const handleItemHover = () => {
     setIsHovered(true);
@@ -473,9 +468,14 @@ const BeatPlay = () => {
           }}
           className="!gap-6"
         >
-          {beatItems.map((beat, index) => (
-            <Box
-              key={index}
+          {isLoading ? (
+            <Center style={{ height: "200px", width: "100%" }}>
+              <Loader color="#F6F4D3" size="lg" variant="dots" />
+            </Center>
+          ) : beatItems.length > 0 ? (
+            beatItems.map((beat, index) => (
+              <Box
+                key={index}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -632,7 +632,22 @@ const BeatPlay = () => {
                 {downloadIcon()}
               </Box>
             </Box>
-          ))}
+          ))
+        ) : (
+          <Center style={{ height: "200px", width: "100%" }}>
+            <Text
+              style={{
+                color: "#F6F4D3",
+                fontSize: "1.2rem",
+                letterSpacing: "2px",
+                opacity: 0.6,
+              }}
+              className="!vision-font"
+            >
+              NO TRACKS FOUND IN THE DATABASE
+            </Text>
+          </Center>
+        )}
         </Box>
       </Box>
 

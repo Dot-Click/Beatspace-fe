@@ -7,15 +7,20 @@ const Beats = () => {
   const [selectedItem, setSelectedItem] = useState("PHONiX");
   const navigate = useNavigate();
 
-  const menuItems = ["SAPHIRE", "PHONiX", "HORUS", "SPALE RALOOON"];
+  const menuItems = [
+    { label: "SAPHIRE", value: "saphire" },
+    { label: "PHONiX", value: "phonix" },
+    { label: "HORUS", value: "horus" },
+    { label: "SPALE RALOOON", value: "spale_ralooon" }
+  ];
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
-    navigate("/beatplay");
+    setSelectedItem(item.label);
+    navigate(`/beatplay?category=${item.value}`);
   };
 
   const handleItemHover = (item) => {
-    setSelectedItem(item);
+    setSelectedItem(item.label);
   };
 
   const handleItemLeave = () => {
@@ -183,7 +188,7 @@ const Beats = () => {
         >
           {menuItems.map((item, index) => (
             <div
-              key={item}
+              key={item.value}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -197,7 +202,7 @@ const Beats = () => {
               onMouseEnter={() => handleItemHover(item)}
               onMouseLeave={handleItemLeave}
             >
-              {selectedItem === item && (
+              {selectedItem === item.label && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{
@@ -220,17 +225,17 @@ const Beats = () => {
 
               <Text
                 style={{
-                  color: selectedItem === item ? "#F6F4D3" : "#9ca3af",
+                  color: selectedItem === item.label ? "#F6F4D3" : "#9ca3af",
                   textShadow:
-                    selectedItem === item ? "0 0 10px #F6F4D3" : "none",
+                    selectedItem === item.label ? "0 0 10px #F6F4D3" : "none",
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
                 className="!text-lg vision-font min-md:!text-xl min-lg:!text-3xl"
               >
-                {item}
+                {item.label}
               </Text>
-              {selectedItem === item && (
+              {selectedItem === item.label && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{
