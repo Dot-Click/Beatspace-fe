@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 export default function MerchManagement() {
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newMerch, setNewMerch] = useState({ name: "", description: "", price: 0, sizes: [] });
   const toggleSize = (s) =>
     setNewMerch((m) =>
@@ -62,24 +61,18 @@ export default function MerchManagement() {
 
   const handleFileSelect = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    if (files.length) {
-      setSelectedFiles(files);
-      setIsAddModalOpen(true);
-    } else {
-      setSelectedFiles([]);
-    }
+    setSelectedFiles(files.length ? files : []);
   };
   const handleDrop = (e) => {
     e.preventDefault();
     const files = e.dataTransfer.files ? Array.from(e.dataTransfer.files) : [];
-    if (files.length) {
-      setSelectedFiles(files);
-      setIsAddModalOpen(true);
-    } else {
-      setSelectedFiles([]);
-    }
+    setSelectedFiles(files.length ? files : []);
   };
   const handleDragOver = (e) => e.preventDefault();
+  const handleUpload = () => {
+    // TODO: wire to API
+    console.log("Upload", { newMerch, selectedFiles });
+  };
 
   return (
     <div className="app alexandria-font">
@@ -225,12 +218,75 @@ export default function MerchManagement() {
               hidden
             />
 
-            <button className="btn">Select Files</button>
+            <button className="btn" onClick={() => document.getElementById("file-input")?.click()}>Select Files</button>
             {selectedFiles.length > 0 && (
               <div className="stats" style={{ fontSize: 14 }}>
                 {selectedFiles.length} file(s) selected
               </div>
-            )}
+            )}     
+                                                                                                                                                                                                       
+            {/* Inline form fields */}
+            <div style={{ width: "100%", maxWidth: 720, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Name</span>
+                <input
+                  value={newMerch.name}
+                  onChange={(e) => setNewMerch((m) => ({ ...m, name: e.target.value }))}
+                  placeholder="Product name"
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
+                />                                                                                                                                                              
+              </label>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Price (€)</span>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.01"
+                  value={newMerch.price}
+                  onChange={(e) => setNewMerch((m) => ({ ...m, price: Number(e.target.value) }))}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
+                />                                                                                 
+              </label>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)", gridColumn: "1 / -1" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Description</span>
+                <textarea
+                  value={newMerch.description}
+                  onChange={(e) => setNewMerch((m) => ({ ...m, description: e.target.value }))}
+                  placeholder="Enter product description"
+                  rows={3}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", resize: "vertical" }}
+                />
+              </label>
+              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)", gridColumn: "1 / -1" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Sizes</span>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {["S", "M", "L", "XL"].map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => toggleSize(s)}
+                      style={{
+                        background: newMerch.sizes.includes(s) ? "var(--yellow2)" : "#0f1016",
+                        color: newMerch.sizes.includes(s) ? "#191A22" : "#fff",
+                        border: "2px solid var(--tan)",
+                        borderRadius: 6,
+                        padding: "0.5rem 0.85rem",
+                        minWidth: 44,
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        fontSize: 13,
+                      }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button className="btn" onClick={handleUpload} style={{ marginTop: "0.5rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", alignItems: "center", gap: "0.5rem", fontSize: 14 }}>
+              <UploadArrowIcon /> UPLOAD MERCH ITEM
+            </button>
           </div>
         </div>
       </section>
@@ -311,63 +367,21 @@ export default function MerchManagement() {
           ))}
         </div>
       </section>
-      {isAddModalOpen && (
-        <div role="dialog" aria-modal="true" aria-labelledby="add-merch-title" style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
-        }}>
-          <div style={{
-            width: 520, maxWidth: "90%", background: "#191A22", border: "2px solid var(--tan)", borderRadius: 12, boxShadow: "0 10px 0 #000"
-          }} className="pixel">
-            <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", padding:"1rem 1.25rem", borderBottom: "1px solid var(--tan)", color: "var(--yellow2)"}}>
-              <h2 id="add-merch-title" style={{margin:0, fontSize:18}}>ADD MERCH ITEM</h2>
-              <button onClick={() => setIsAddModalOpen(false)} aria-label="Close" style={{background:"transparent", border:"none", color:"var(--tan)", cursor:"pointer", fontSize:18}}>✕</button>
-            </div>
-            <div style={{padding:"1.25rem", display:"grid", gap:"1rem", color:"var(--tan)"}}>
-              <label style={{display:"grid", gap:"0.5rem"}}>
-                <span style={{fontSize:13}}>Product Name</span>
-                <input value={newMerch.name} onChange={(e)=>setNewMerch(m=>({...m, name:e.target.value}))} placeholder="Enter Product Name" style={{
-                  width:"100%", background:"#0f1016", color:"#fff", border:"2px solid var(--tan)", borderRadius: 8, padding:"0.75rem 0.85rem"
-                }}/>
-              </label>
-              <label style={{display:"grid", gap:"0.5rem"}}>
-                <span style={{fontSize:13}}>Description</span>
-                <textarea value={newMerch.description} onChange={(e)=>setNewMerch(m=>({...m, description:e.target.value}))} placeholder="Enter Product Description" rows={4} style={{
-                  width:"100%", background:"#0f1016", color:"#fff", border:"2px solid var(--tan)", borderRadius: 8, padding:"0.75rem 0.85rem", resize:"vertical"
-                }}/>
-              </label>
-              <label style={{display:"grid", gap:"0.5rem"}}>
-                <span style={{fontSize:13}}>Price (€)</span>
-                <input type="number" min={0} value={newMerch.price} onChange={(e)=>setNewMerch(m=>({...m, price:Number(e.target.value)}))} style={{
-                  width:"100%", background:"#0f1016", color:"#fff", border:"2px solid var(--tan)", borderRadius: 8, padding:"0.75rem 0.85rem"
-                }}/>
-              </label>
-              <div style={{display:"grid", gap:"0.5rem"}}>
-                 <span style={{fontSize:13}}>Size</span>
-                 <div style={{display:"flex", gap:"0.5rem"}}>
-                  {["S","M","L","XL"].map(s=> (
-                    <button key={s} type="button" onClick={()=>toggleSize(s)} style={{
-                      background: newMerch.sizes.includes(s) ? "var(--yellow2)" : "#0f1016",
-                      color: newMerch.sizes.includes(s) ? "#000" : "#fff",
-                      border:"2px solid var(--tan)", borderRadius:8, padding:"0.5rem 0.75rem", minWidth:42, cursor:"pointer"
-                    }}>{s}</button>
-                  ))}
-                </div>
-              </div>
-              <div style={{display:"flex", justifyContent:"space-between", gap:"1rem", paddingTop:"0.5rem"}}>
-                <button className="btn" onClick={()=>setIsAddModalOpen(false)} style={{background:"#3a3a3a", color:"#fff"}}>Cancel</button>
-                <button className="btn" onClick={()=>{
-                  setIsAddModalOpen(false);
-                }} style={{background:"var(--button)", color:"var(--ink)"}}>Create</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }
 
 /* Inline SVGs (no external deps) */
+function UploadArrowIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  );
+}
 function TeeIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
