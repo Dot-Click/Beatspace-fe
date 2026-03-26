@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getMerchs, createMerch, deleteMerch } from "../../store/actions/adminActions";
+import { toast } from "sonner";
 
 export default function MerchManagement() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -9,55 +12,14 @@ export default function MerchManagement() {
         ? { ...m, sizes: m.sizes.filter((x) => x !== s) }
         : { ...m, sizes: [...m.sizes, s] }
     );
-  const merchItems = [
-    {
-      id: 1,
-      name: "RETRO SYNTH TEE",
-      price: "€24.99",
-      sizes: ["S", "M", "L"],
-      stock: "In Stock",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/691b1ac33d2668f34fc970584ced484ae724a734?width=114",
-    },
-    {
-      id: 2,
-      name: "PRODUCER CAP",
-      price: "€19.99",
-      sizes: ["S", "M"],
-      stock: "Out of Stock",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/a4381f6bc0f03ca236dad3e2462509abed714d5a?width=114",
-    },
-    {
-      id: 3,
-      name: "RETRO SYNTH TEE",
-      price: "€24.99",
-      sizes: ["S", "M", "L"],
-      stock: "In Stock",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/1a3606a5bace40e2d3d3e298f3fcedbe29bd5933?width=114",
-    },
-    {
-      id: 4,
-      name: "PRODUCER CAP",
-      price: "€19.99",
-      sizes: ["S", "M"],
-      stock: "Out of Stock",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/2a6c2029bb8e9dbfe1770d29df50167ac4b1d8b5?width=114",
-    },
-    {
-      id: 5,
-      name: "PRODUCER CAP",
-      price: "€19.99",
-      sizes: ["S", "M"],
-      stock: "Out of Stock",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/aa56137601af07548c414fb57bdcf4824f47ed9a?width=114",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { merchs: merchItems, isLoadingMerchs, isCreatingMerch } = useSelector((state) => state.admin);
 
-  const inStockCount = merchItems.filter((i) => i.stock === "In Stock").length;
+  useEffect(() => {
+    dispatch(getMerchs());
+  }, [dispatch]);
+
+  const inStockCount = merchItems.filter((i) => i.stock === "in stock" || i.stock === "In Stock").length;
 
   const handleFileSelect = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
@@ -69,9 +31,49 @@ export default function MerchManagement() {
     setSelectedFiles(files.length ? files : []);
   };
   const handleDragOver = (e) => e.preventDefault();
-  const handleUpload = () => {
-    // TODO: wire to API
-    console.log("Upload", { newMerch, selectedFiles });
+  const handleUpload = async () => {
+    if (!newMerch.name || !newMerch.price || newMerch.sizes.length === 0) {
+      toast.error("Please fill in all required fields (Name, Price, Sizes)");
+      return;
+    }
+    if (selectedFiles.length === 0) {
+      toast.error("Please select at least one image");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", newMerch.name);
+    formData.append("description", newMerch.description);
+    formData.append("price", newMerch.price);
+    formData.append("sizes", newMerch.sizes.join(","));
+
+    // First file as cover_img
+    formData.append("cover_img", selectedFiles[0]);
+    // All files as image (gallery)
+    selectedFiles.forEach((file) => {
+      formData.append("image", file);
+    });
+
+    const res = await dispatch(createMerch(formData));
+    if (res?.success) {
+      toast.success("Merch item uploaded successfully");
+      setNewMerch({ name: "", description: "", price: 0, sizes: [] });
+      setSelectedFiles([]);
+      dispatch(getMerchs()); // Refresh list
+    } else {
+      toast.error(res?.message || "Failed to upload merch item");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      const res = await dispatch(deleteMerch(id));
+      if (res?.success) {
+        toast.success("Item deleted successfully");
+      } else {
+        toast.error(res?.message || "Failed to delete item");
+      }
+    }
   };
 
   return (
@@ -284,8 +286,13 @@ export default function MerchManagement() {
               </div>
             </div>
 
-            <button className="btn" onClick={handleUpload} style={{ marginTop: "0.5rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", alignItems: "center", gap: "0.5rem", fontSize: 14 }}>
-              <UploadArrowIcon /> UPLOAD MERCH ITEM
+            <button 
+              className="btn" 
+              onClick={handleUpload} 
+              disabled={isCreatingMerch}
+              style={{ marginTop: "0.5rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", alignItems: "center", gap: "0.5rem", fontSize: 14, opacity: isCreatingMerch ? 0.7 : 1 }}
+            >
+              <UploadArrowIcon /> {isCreatingMerch ? "UPLOADING..." : "UPLOAD MERCH ITEM"}
             </button>
           </div>
         </div>
@@ -330,21 +337,21 @@ export default function MerchManagement() {
             <div className="row" key={item.id}>
               {/* Desktop row */}
               <div className="row-grid">
-                <img className="preview" src={item.image} alt={item.name} />
+                <img className="preview" src={item.prod_image || item.image} alt={item.name} />
                 <div style={{ fontSize: 20 }}>{item.name}</div>
                 <div className="price" style={{ fontSize: 20 }}>
-                  {item.price}
+                  €{item.price}
                 </div>
                 <div className="sizes" style={{ display: "flex", gap: "8px" }}>
-                  {item.sizes.map((s) => (
+                  {(item.sizes || []).map((s) => (
                     <div className="size" key={s}>
                       {s}
                     </div>
                   ))}
                 </div>
                 <div
-                  className={`stock ${item.stock === "In Stock" ? "in" : "out"}`}
-                  style={{ fontSize: 20 }}
+                  className={`stock ${item.stock === "in stock" || item.stock === "In Stock" ? "in" : "out"}`}
+                  style={{ fontSize: 20, textTransform: "capitalize" }}
                 >
                   {item.stock}
                 </div>
@@ -355,7 +362,11 @@ export default function MerchManagement() {
                   <button className="a-btn a-yellow" aria-label="Edit">
                     <PencilIcon />
                   </button>
-                  <button className="a-btn a-red" aria-label="Delete">
+                  <button 
+                    className="a-btn a-red" 
+                    aria-label="Delete"
+                    onClick={() => handleDelete(item._id)}
+                  >
                     <XIcon />
                   </button>
                 </div>
