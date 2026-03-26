@@ -1038,17 +1038,53 @@
 import React, { useState } from "react";
 import { Box, Text, Image, TextInput, Button } from "@mantine/core";
 import { heartIcon } from "../../customIcons";
+import { useDispatch } from "react-redux";
+import { playBeatAction } from "../../store/actions/beatActions";
 
 const SupportArtistModal = ({
   isOpen,
   onClose,
   beatName,
   artistName,
+  audioUrl,
+  id,
   imageSrc = "/assets/artist.png",
 }) => {
+  const dispatch = useDispatch();
   const [donationAmount, setDonationAmount] = useState("");
 
   if (!isOpen) return null;
+
+  const handleDownload = async () => {
+    if (!audioUrl) {
+      console.error("No audio URL provided for download");
+      return;
+    }
+
+    // Track download on backend
+    if (id) {
+      dispatch(playBeatAction(id, true));
+    }
+
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      // Extract filename from URL or use beatName
+      const filename = audioUrl.split("/").pop() || `${beatName}.mp3`;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback: try opening in new tab
+      window.open(audioUrl, "_blank");
+    }
+  };
 
   const handleCheckout = () => {
     console.log("Checkout:", donationAmount);
@@ -1191,6 +1227,23 @@ const SupportArtistModal = ({
           }}
         >
           CHECKOUT
+        </Button>
+
+        <Button
+          mt={10}
+          fullWidth
+          variant="outline"
+          onClick={handleDownload}
+          style={{
+            borderColor: "#c8c48a",
+            color: "#c8c48a",
+            fontWeight: 700,
+            height: 42,
+            letterSpacing: 1,
+            background: "transparent",
+          }}
+        >
+          DOWNLOAD THE BEAT
         </Button>
       </Box>
 

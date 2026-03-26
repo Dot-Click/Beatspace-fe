@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
+import { useDispatch } from "react-redux";
+import { playBeatAction } from "../../store/actions/beatActions";
 import {
   beatsIcon,
   playIcon,
@@ -26,6 +28,7 @@ const BeatPlay = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { beats: reduxBeats, isLoading, fetchBeats } = useBeatController();
+  const dispatch = useDispatch();
 
   // Get category from query string
   const queryParams = new URLSearchParams(location.search);
@@ -293,6 +296,8 @@ const BeatPlay = () => {
         // Play this audio
         await audio.play();
         setCurrentlyPlaying(beatId);
+        // Track play on backend
+        dispatch(playBeatAction(beatId, false));
       } catch (error) {
         console.error("Error playing audio:", error);
         if (error.name === "NotSupportedError" || error.name === "NotAllowedError") {
@@ -305,12 +310,35 @@ const BeatPlay = () => {
     }
   };
 
-  const handleDownload = (beatName) => {
-    console.log(`Downloading: ${beatName}`);
+  const handleDownload = async (beat) => {
+    const audioUrl = beat.audioUrl;
+    const beatName = beat.name;
+
+    if (!audioUrl) {
+      console.error("No audio URL provided for download");
+      return;
+    }
+
+    try {
+      const response = await fetch(audioUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const filename = audioUrl.split("/").pop() || `${beatName}.mp3`;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      window.open(audioUrl, "_blank");
+    }
   };
 
   const handleBeatNameClick = (beat) => {
-    console.log("Beat name clicked:", beat);
+    console.log("Beat name clicked (opening modal):", beat);
     setSelectedBeat(beat);
     setIsModalOpen(true);
   };
@@ -667,6 +695,8 @@ const BeatPlay = () => {
         onClose={handleCloseModal}
         beatName={selectedBeat?.name || "eFELKIT"}
         artistName="SAPPHIRE"
+        audioUrl={selectedBeat?.audioUrl}
+        id={selectedBeat?.id}
       />
     </Box>
   );

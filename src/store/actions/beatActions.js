@@ -111,3 +111,25 @@ export const updateBeat = (id, formData) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+
+export const playBeatAction = (id, isDownload = false) => async (dispatch) => {
+  dispatch({
+    type: BEAT_CONSTANTS.PLAY_BEAT_REQUEST,
+  });
+  try {
+    const res = await custAxios.get(`/admin/playBeat/${id}${isDownload ? '?download=true' : ''}`);
+    if (res?.data?.success) {
+      dispatch({
+        type: BEAT_CONSTANTS.PLAY_BEAT_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: BEAT_CONSTANTS.PLAY_BEAT_FAILURE,
+      payload: error?.response?.data?.message || "Server Error",
+    });
+    return error?.response?.data;
+  }
+};

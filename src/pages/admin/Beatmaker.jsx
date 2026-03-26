@@ -3,6 +3,9 @@ import { DiskIcon, MusicIcon, UploadIcon } from "../../customIcons";
 import { useBeatController } from "../../hooks/useBeatController";
 import { toast } from "sonner";
 import { Modal } from "@mantine/core";
+import { useDispatch, useSelector } from "react-redux";
+import { dashboard } from "../../store/actions/adminActions";
+import { playBeatAction } from "../../store/actions/beatActions";
 
 const AudioVisualizer = ({ isDark }) => (
   <div className="flex items-end gap-[2px] h-4 mb-1">
@@ -198,6 +201,9 @@ const Beat = () => {
     removeBeat,
     editBeat,
   } = useBeatController();
+
+  const dispatch = useDispatch();
+  const { dashboardData } = useSelector((state) => state.admin);
 
   // Local state for UI interactions (playing, volume, etc.)
   const [beats, setBeats] = useState([]);
@@ -420,7 +426,8 @@ const Beat = () => {
 
   useEffect(() => {
     fetchBeats();
-  }, [fetchBeats]);
+    dispatch(dashboard());
+  }, [fetchBeats, dispatch]);
 
   // Reset page when search or filters change
   useEffect(() => {
@@ -611,6 +618,10 @@ const Beat = () => {
         if (currentlyPlayingId === id && pausedTime > 0) {
           audioRef.current.currentTime = pausedTime;
         }
+
+        // Increment play count on backend
+        dispatch(playBeatAction(id, false));
+
         setCurrentlyPlayingId(id);
         return prevBeats.map((beat) => ({
           ...beat,
@@ -644,19 +655,29 @@ const Beat = () => {
   );
 
   const stats = [
-    { value: beats.length.toString(), label: "Total Beats" },
     {
-      value: beats.reduce((acc, b) => acc + (b.plays || 0), 0).toLocaleString(),
+      value: (dashboardData?.stats?.totalBeats || beats.length).toString(),
+      label: "Total Beats",
+    },
+    {
+      value: (
+        dashboardData?.stats?.totalPlays ||
+        beats.reduce((acc, b) => acc + (b.plays || 0), 0)
+      ).toLocaleString(),
       label: "Total Plays",
     },
     {
-      value: beats
-        .reduce((acc, b) => acc + (b.no_of_downloads || 0), 0)
-        .toLocaleString(),
+      value: (
+        dashboardData?.stats?.totalDownloads ||
+        beats.reduce((acc, b) => acc + (b.no_of_downloads || 0), 0)
+      ).toLocaleString(),
       label: "Total Downloads",
     },
     {
-      value: `€${beats.reduce((acc, b) => acc + (b.donations?.amount || 0), 0).toFixed(2)}`,
+      value: `€${(
+        dashboardData?.stats?.totalDonations ||
+        beats.reduce((acc, b) => acc + (b.donations?.amount || 0), 0)
+      ).toFixed(2)}`,
       label: "Total Donations",
     },
   ];
