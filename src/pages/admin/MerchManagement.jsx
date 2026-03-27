@@ -8,6 +8,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 export default function MerchManagement() {
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [replaceIndex, setReplaceIndex] = useState(null);
   const [newMerch, setNewMerch] = useState({ name: "", description: "", price: 0, sizes: [] });
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -36,12 +37,27 @@ export default function MerchManagement() {
 
   const handleFileSelect = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles(files.length ? files : []);
+    if (files.length > 0) {
+      if (replaceIndex !== null) {
+        setSelectedFiles((prev) => {
+          const newFiles = [...prev];
+          newFiles.splice(replaceIndex, files.length, ...files);
+          return newFiles.slice(0, 3);
+        });
+        setReplaceIndex(null);
+      } else {
+        setSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
+      }
+    }
+    e.target.value = null;
   };
   const handleDrop = (e) => {
     e.preventDefault();
     const files = e.dataTransfer.files ? Array.from(e.dataTransfer.files) : [];
-    setSelectedFiles(files.length ? files : []);
+    if (files.length > 0) {
+      setSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
+    }
+    setReplaceIndex(null);
   };
   const handleDragOver = (e) => e.preventDefault();
   const handleUpload = async () => {
@@ -77,6 +93,23 @@ export default function MerchManagement() {
     }
   };
 
+  const handleEditFileSelect = (e) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (files.length > 0) {
+      if (replaceIndex !== null) {
+        setEditSelectedFiles((prev) => {
+          const newFiles = [...prev];
+          newFiles.splice(replaceIndex, files.length, ...files);
+          return newFiles.slice(0, 3);
+        });
+        setReplaceIndex(null);
+      } else {
+        setEditSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
+      }
+    }
+    e.target.value = null;
+  };
+
   const handleEditUpload = async () => {
     if (!editMerch.name || !editMerch.price || editMerch.sizes.length === 0) {
       toast.error("Please fill in all required fields (Name, Price, Sizes)");
@@ -90,9 +123,19 @@ export default function MerchManagement() {
     formData.append("sizes", editMerch.sizes.join(","));
 
     if (editSelectedFiles.length > 0) {
-      formData.append("cover_img", editSelectedFiles[0]);
+      if (editSelectedFiles[0] instanceof File) {
+        formData.append("cover_img", editSelectedFiles[0]);
+      } else {
+        formData.append("existing_cover", editSelectedFiles[0]);
+      }
+
       editSelectedFiles.forEach((file) => {
-        formData.append("image", file);
+        if (file instanceof File) {
+          formData.append("image", file);
+          formData.append("existing_images", "NEW_FILE");
+        } else {
+          formData.append("existing_images", file);
+        }
       });
     }
 
@@ -117,7 +160,7 @@ export default function MerchManagement() {
       price: item.price,
       sizes: item.sizes || [],
     });
-    setEditSelectedFiles([]);
+    setEditSelectedFiles(item.images ? [...item.images] : (item.prod_image ? [item.prod_image] : []));
     setEditModalOpen(true);
   };
 
@@ -287,11 +330,31 @@ export default function MerchManagement() {
 
             <div
               className="icons"
-              onClick={() => document.getElementById("file-input")?.click()}
+              onClick={() => {
+                setReplaceIndex(null);
+                document.getElementById("file-input")?.click();
+              }}
             >
               {[0, 1, 2].map((i) => (
-                <div className="icon-box" key={i} aria-hidden>
-                  <TeeIcon />
+                <div 
+                  className="icon-box" 
+                  key={i} 
+                  aria-hidden
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setReplaceIndex(i);
+                    document.getElementById("file-input")?.click();
+                  }}
+                >
+                  {selectedFiles[i] ? (
+                    <img 
+                      src={URL.createObjectURL(selectedFiles[i])} 
+                      alt={`preview-${i}`} 
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                    />
+                  ) : (
+                    <TeeIcon />
+                  )}
                 </div>
               ))}
             </div>
@@ -545,15 +608,47 @@ export default function MerchManagement() {
               </div>
 
               <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Replace Images (Optional)</span>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Merch Images</span>
+                <div
+                  className="icons"
+                  style={{ justifyContent: "center" }}
+                  onClick={() => {
+                    setReplaceIndex(null);
+                    document.getElementById("edit-file-input")?.click();
+                  }}
+                >
+                  {[0, 1, 2].map((i) => (
+                    <div 
+                      className="icon-box" 
+                      key={i} 
+                      aria-hidden
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setReplaceIndex(i);
+                        document.getElementById("edit-file-input")?.click();
+                      }}
+                    >
+                      {editSelectedFiles[i] ? (
+                        <img 
+                          src={typeof editSelectedFiles[i] === 'string' ? editSelectedFiles[i] : URL.createObjectURL(editSelectedFiles[i])} 
+                          alt={`preview-${i}`} 
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                        />
+                      ) : (
+                        <TeeIcon />
+                      )}
+                    </div>
+                  ))}
+                </div>
                 <input
+                  id="edit-file-input"
                   type="file" accept="image/png,image/jpeg" multiple
-                  onChange={(e) => setEditSelectedFiles(e.target.files ? Array.from(e.target.files) : [])}
-                  style={{ color: "#fff" }}
+                  onChange={handleEditFileSelect}
+                  hidden
                 />
-                {editSelectedFiles.length > 0 && (
-                  <span style={{ color: "var(--green2)", fontSize: 12 }}>{editSelectedFiles.length} new file(s) selected for replacement</span>
-                )}
+                <div style={{ textAlign: "center", color: "var(--green2)", fontSize: 12 }}>
+                  {editSelectedFiles.length} file(s) selected
+                </div>
               </div>
 
               <button 
