@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-
-// VolumeSlider Component
+import ConfirmModal from "../../components/ConfirmModal";
 const VolumeSlider = ({ value = 70, onChange }) => {
   const handleSliderChange = (event) => {
     const newValue = parseInt(event.target.value);
@@ -335,6 +334,9 @@ const Settings = () => {
   const [pauseRadioOnBeat, setPauseRadioOnBeat] = useState(false);
   const [audioQuality, setAudioQuality] = useState('high');
 
+  // Confirmation Modals State
+  const [resetConfirm, setResetConfirm] = useState(false);
+
   // Handlers
   const handleFileSelect = (file) => {
     setUploadedFile(file);
@@ -379,17 +381,20 @@ const Settings = () => {
     }
   };
 
-  const handleResetSettings = async () => {
-    if (window.confirm('Are you sure you want to reset all settings to default? This action cannot be undone.')) {
-      setIsResetting(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log('Settings reset to default');
-      } catch (error) {
-        console.error('Reset failed:', error);
-      } finally {
-        setIsResetting(false);
-      }
+  const handleResetSettings = () => {
+    setResetConfirm(true);
+  };
+
+  const confirmResetSettings = async () => {
+    setIsResetting(true);
+    setResetConfirm(false);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('Settings reset to default');
+    } catch (error) {
+      console.error('Reset failed:', error);
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -752,6 +757,14 @@ const Settings = () => {
         </div>
 
       </div>
+
+      <ConfirmModal 
+        isOpen={resetConfirm}
+        title="RESET SETTINGS"
+        message="Are you sure you want to reset all settings to default? This action cannot be undone."
+        onConfirm={confirmResetSettings}
+        onCancel={() => setResetConfirm(false)}
+      />
     </main>
   );
 };

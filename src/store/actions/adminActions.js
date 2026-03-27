@@ -54,7 +54,7 @@ export const getMerchs = () => async (dispatch) => {
     type: ADMIN_CONSTANTS.GET_MERCHS_REQUEST,
   });
   try {
-    const res = await custAxios.get('/admin/getMerchs');
+    const res = await custAxios.get('/public/merchs');
     if (res?.data?.success) {
       dispatch({
         type: ADMIN_CONSTANTS.GET_MERCHS_SUCCESS,
@@ -87,6 +87,32 @@ export const deleteMerch = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ADMIN_CONSTANTS.DELETE_MERCH_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
+export const updateMerch = (id, formData) => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.UPDATE_MERCH_REQUEST,
+  });
+  try {
+    const res = await custAxios.patch(`/admin/updateMerch/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.UPDATE_MERCH_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.UPDATE_MERCH_FAILURE,
       payload: error?.response?.data?.message || 'Server Error',
     });
     return error?.response?.data;

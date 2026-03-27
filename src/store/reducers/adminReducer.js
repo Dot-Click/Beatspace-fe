@@ -11,6 +11,8 @@ const initialState = {
   merchsError: null,
   createMerchError: null,
   deleteMerchError: null,
+  isUpdatingMerch: false,
+  updateMerchError: null,
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -101,6 +103,28 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         isDeletingMerch: false,
         deleteMerchError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_MERCH_REQUEST:
+      return {
+        ...state,
+        isUpdatingMerch: true,
+        updateMerchError: null,
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_MERCH_SUCCESS:
+      return {
+        ...state,
+        isUpdatingMerch: false,
+        updateMerchError: null,
+        merchs: state.merchs.map((m) => (m._id === action.payload._id ? action.payload : m)),
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_MERCH_FAILURE:
+      return {
+        ...state,
+        isUpdatingMerch: false,
+        updateMerchError: action.payload,
       };
 
     default:

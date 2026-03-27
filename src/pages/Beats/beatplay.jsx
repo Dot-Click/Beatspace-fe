@@ -15,6 +15,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AudioWaveform from "../../components/AudioWaveform";
 import { useBeatController } from "../../hooks/useBeatController";
 import { Loader, Center } from "@mantine/core"; 
+import { toast } from "sonner";
 
 const BeatPlay = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -158,7 +159,7 @@ const BeatPlay = () => {
 
     // Check if audio URL is provided
     if (!beat.audioUrl || beat.audioUrl.trim() === "") {
-      alert(`No audio URL provided for ${beat.name}. Please add an audio URL in the beatItems array.`);
+      toast.error(`No audio URL provided for ${beat.name}. Please add an audio URL in the beatItems array.`);
       return;
     }
 
@@ -210,7 +211,7 @@ const BeatPlay = () => {
 
       newAudio.addEventListener("error", (e) => {
         console.error(`Error loading audio for ${beat.name}:`, e);
-        alert(`Failed to load audio for ${beat.name}. Please check if the URL is valid and accessible.`);
+        toast.error(`Failed to load audio for ${beat.name}. Please check if the URL is valid and accessible.`);
         setCurrentlyPlaying(null);
       });
 
@@ -222,7 +223,7 @@ const BeatPlay = () => {
         setCurrentlyPlaying(beatId);
       } catch (error) {
         console.error("Error playing audio:", error);
-        alert(`Error playing ${beat.name}: ${error.message}`);
+        toast.error(`Error playing ${beat.name}: ${error.message}`);
       }
       return;
     }
@@ -251,7 +252,7 @@ const BeatPlay = () => {
           await audio.play();
           setCurrentlyPlaying(beatId);
         } catch (err) {
-          alert(`Audio source not available for ${beat.name}. Please check if the file exists at ${beat.audioUrl}`);
+          toast.error(`Audio source not available for ${beat.name}. Please check if the file exists at ${beat.audioUrl}`);
         }
       }, 100);
       return;
@@ -301,9 +302,9 @@ const BeatPlay = () => {
       } catch (error) {
         console.error("Error playing audio:", error);
         if (error.name === "NotSupportedError" || error.name === "NotAllowedError") {
-          alert(`Cannot play audio for ${beat.name}. Please check if the audio format is supported and if autoplay is allowed.`);
+          toast.error(`Cannot play audio for ${beat.name}. Please check if the audio format is supported and if autoplay is allowed.`);
         } else {
-          alert(`Error playing ${beat.name}: ${error.message}`);
+          toast.error(`Error playing ${beat.name}: ${error.message}`);
         }
         setCurrentlyPlaying(null);
       }

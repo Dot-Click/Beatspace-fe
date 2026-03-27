@@ -6,6 +6,7 @@ import { Modal } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { dashboard } from "../../store/actions/adminActions";
 import { playBeatAction } from "../../store/actions/beatActions";
+import ConfirmModal from "../../components/ConfirmModal";
 
 const AudioVisualizer = ({ isDark }) => (
   <div className="flex items-end gap-[2px] h-4 mb-1">
@@ -235,6 +236,9 @@ const Beat = () => {
   const [duration, setDuration] = useState(0);
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState(null);
   const [pausedTime, setPausedTime] = useState(0);
+
+  // Confirm Modal State
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
 
   // Audio ref - single instance
   const audioRef = useRef(new Audio());
@@ -519,27 +523,33 @@ const Beat = () => {
     }
   };
 
-  const handleDeleteBeat = async (id) => {
-    if (window.confirm("Are you sure you want to delete this beat?")) {
-      // Stop playback if deleting currently playing beat
-      if (currentlyPlayingId === id) {
-        audioRef.current.pause();
-        setCurrentlyPlayingId(null);
-        setPausedTime(0);
-        setCurrentTime(0);
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
-        }
-      }
+  const handleDeleteBeat = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
 
-      const res = await removeBeat(id);
-      if (res?.success) {
-        toast.success("Beat deleted successfully");
-        fetchBeats();
-      } else {
-        toast.error(res?.message || "Delete failed");
+  const confirmDeleteBeat = async () => {
+    if (!deleteConfirm.id) return;
+    const id = deleteConfirm.id;
+
+    // Stop playback if deleting currently playing beat
+    if (currentlyPlayingId === id) {
+      audioRef.current.pause();
+      setCurrentlyPlayingId(null);
+      setPausedTime(0);
+      setCurrentTime(0);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     }
+
+    const res = await removeBeat(id);
+    if (res?.success) {
+      toast.success("Beat deleted successfully");
+      fetchBeats();
+    } else {
+      toast.error(res?.message || "Delete failed");
+    }
+    setDeleteConfirm({ isOpen: false, id: null });
   };
 
   const handleOpenEditModal = (beat) => {
@@ -1165,6 +1175,14 @@ const Beat = () => {
           </div>
         </div>
       </Modal>
+
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="DELETE BEAT"
+        message="Are you sure you want to permanently delete this beat?"
+        onConfirm={confirmDeleteBeat}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
     </div>
   );
 };

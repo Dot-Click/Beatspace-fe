@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMerchs, createMerch, deleteMerch } from "../../store/actions/adminActions";
+import { useNavigate } from "react-router-dom";
+import { getMerchs, createMerch, updateMerch, deleteMerch } from "../../store/actions/adminActions";
 import { toast } from "sonner";
+import ConfirmModal from "../../components/ConfirmModal";
 
 export default function MerchManagement() {
+  const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [newMerch, setNewMerch] = useState({ name: "", description: "", price: 0, sizes: [] });
+
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [viewItem, setViewItem] = useState(null);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editMerch, setEditMerch] = useState({ id: null, name: "", description: "", price: 0, sizes: [] });
+  const [editSelectedFiles, setEditSelectedFiles] = useState([]);
+
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
+
   const toggleSize = (s) =>
     setNewMerch((m) =>
       m.sizes.includes(s)
@@ -13,7 +26,7 @@ export default function MerchManagement() {
         : { ...m, sizes: [...m.sizes, s] }
     );
   const dispatch = useDispatch();
-  const { merchs: merchItems, isLoadingMerchs, isCreatingMerch } = useSelector((state) => state.admin);
+  const { merchs: merchItems, isLoadingMerchs, isCreatingMerch, isUpdatingMerch } = useSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(getMerchs());
@@ -47,14 +60,13 @@ export default function MerchManagement() {
     formData.append("price", newMerch.price);
     formData.append("sizes", newMerch.sizes.join(","));
 
-    // First file as cover_img
     formData.append("cover_img", selectedFiles[0]);
-    // All files as image (gallery)
     selectedFiles.forEach((file) => {
       formData.append("image", file);
     });
 
     const res = await dispatch(createMerch(formData));
+
     if (res?.success) {
       toast.success("Merch item uploaded successfully");
       setNewMerch({ name: "", description: "", price: 0, sizes: [] });
@@ -65,15 +77,68 @@ export default function MerchManagement() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this item?")) {
-      const res = await dispatch(deleteMerch(id));
-      if (res?.success) {
-        toast.success("Item deleted successfully");
-      } else {
-        toast.error(res?.message || "Failed to delete item");
-      }
+  const handleEditUpload = async () => {
+    if (!editMerch.name || !editMerch.price || editMerch.sizes.length === 0) {
+      toast.error("Please fill in all required fields (Name, Price, Sizes)");
+      return;
     }
+
+    const formData = new FormData();
+    formData.append("name", editMerch.name);
+    formData.append("description", editMerch.description);
+    formData.append("price", editMerch.price);
+    formData.append("sizes", editMerch.sizes.join(","));
+
+    if (editSelectedFiles.length > 0) {
+      formData.append("cover_img", editSelectedFiles[0]);
+      editSelectedFiles.forEach((file) => {
+        formData.append("image", file);
+      });
+    }
+
+    const res = await dispatch(updateMerch(editMerch.id, formData));
+
+    if (res?.success) {
+      toast.success("Merch item updated successfully");
+      setEditMerch({ id: null, name: "", description: "", price: 0, sizes: [] });
+      setEditSelectedFiles([]);
+      setEditModalOpen(false);
+      dispatch(getMerchs());
+    } else {
+      toast.error(res?.message || "Failed to update merch item");
+    }
+  };
+
+  const handleEdit = (item) => {
+    setEditMerch({
+      id: item._id,
+      name: item.name,
+      description: item.description || "",
+      price: item.price,
+      sizes: item.sizes || [],
+    });
+    setEditSelectedFiles([]);
+    setEditModalOpen(true);
+  };
+
+  const handleView = (item) => {
+    setViewItem(item);
+    setViewModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirm.id) return;
+    const res = await dispatch(deleteMerch(deleteConfirm.id));
+    if (res?.success) {
+      toast.success("Item deleted successfully");
+    } else {
+      toast.error(res?.message || "Failed to delete item");
+    }
+    setDeleteConfirm({ isOpen: false, id: null });
   };
 
   return (
@@ -164,6 +229,26 @@ export default function MerchManagement() {
         .a-yellow{color:#FFEF2E}
         .a-red{color:var(--red); background:rgba(235,24,27,0.13)}
         .preview{width:57px;height:57px;object-fit:cover}
+
+        /* Modal specific styles */
+        .modal-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+          display: flex; justify-content: center; align-items: center;
+          z-index: 1000; padding: 1rem;
+        }
+        .modal-content {
+          background: var(--header-dark); border: 2px solid var(--tan);
+          border-radius: 8px; width: 100%; max-width: 600px;
+          max-height: 90vh; overflow-y: auto; padding: 2rem;
+          position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        }
+        .modal-close {
+          position: absolute; top: 1rem; right: 1rem;
+          background: transparent; border: none; color: var(--tan);
+          cursor: pointer; padding: 0.5rem; display: flex;
+        }
+        .modal-close:hover { color: var(--red); }
+
         /* Responsive - keep table horizontal with scroll */
         @media (max-width: 1199px){
           .table-head{display:block}
@@ -286,14 +371,16 @@ export default function MerchManagement() {
               </div>
             </div>
 
-            <button 
-              className="btn" 
-              onClick={handleUpload} 
-              disabled={isCreatingMerch}
-              style={{ marginTop: "0.5rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", alignItems: "center", gap: "0.5rem", fontSize: 14, opacity: isCreatingMerch ? 0.7 : 1 }}
-            >
-              <UploadArrowIcon /> {isCreatingMerch ? "UPLOADING..." : "UPLOAD MERCH ITEM"}
-            </button>
+            <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
+              <button 
+                className="btn" 
+                onClick={handleUpload} 
+                disabled={isCreatingMerch}
+                style={{ background: "var(--yellow)", color: "var(--ink)", display: "flex", alignItems: "center", gap: "0.5rem", fontSize: 14, opacity: isCreatingMerch ? 0.7 : 1 }}
+              >
+                <UploadArrowIcon /> {isCreatingMerch ? "UPLOADING..." : "UPLOAD MERCH ITEM"}
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -356,10 +443,10 @@ export default function MerchManagement() {
                   {item.stock}
                 </div>
                 <div className="actions">
-                  <button className="a-btn a-green" aria-label="View">
+                  <button className="a-btn a-green" aria-label="View" onClick={() => handleView(item)}>
                     <EyeIcon />
                   </button>
-                  <button className="a-btn a-yellow" aria-label="Edit">
+                  <button className="a-btn a-yellow" aria-label="Edit" onClick={() => handleEdit(item)}>
                     <PencilIcon />
                   </button>
                   <button 
@@ -378,6 +465,118 @@ export default function MerchManagement() {
           ))}
         </div>
       </section>
+
+      {/* View Modal */}
+      {viewModalOpen && viewItem && (
+        <div className="modal-overlay" onClick={() => setViewModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setViewModalOpen(false)}>
+              <XIcon />
+            </button>
+            <h2 className="pixel" style={{ color: "var(--yellow)", marginBottom: "1.5rem" }}>MERCH DETAILS</h2>
+            <div style={{ display: "flex", gap: "2rem", flexDirection: "column", alignItems: "center" }}>
+              <img src={viewItem.prod_image || viewItem.image} alt={viewItem.name} style={{ width: "200px", height: "200px", objectFit: "contain", background: "rgba(0,0,0,0.5)", borderRadius: "8px", padding: "1rem" }} />
+              <div style={{ width: "100%", display: "grid", gap: "1rem" }}>
+                <div><span style={{ color: "var(--tan)", fontSize: "12px", textTransform: "uppercase", fontFamily: '"Press Start 2P"' }}>Name</span><div style={{ fontSize: "20px", marginTop: "0.25rem" }}>{viewItem.name}</div></div>
+                <div><span style={{ color: "var(--tan)", fontSize: "12px", textTransform: "uppercase", fontFamily: '"Press Start 2P"' }}>Price</span><div style={{ fontSize: "20px", marginTop: "0.25rem", color: "var(--cyan)" }}>€{viewItem.price}</div></div>
+                <div><span style={{ color: "var(--tan)", fontSize: "12px", textTransform: "uppercase", fontFamily: '"Press Start 2P"' }}>Sizes</span><div style={{ display: "flex", gap: "0.5rem", marginTop: "0.25rem" }}>{(viewItem.sizes || []).map(s => <span className="size" key={s}>{s}</span>)}</div></div>
+                <div><span style={{ color: "var(--tan)", fontSize: "12px", textTransform: "uppercase", fontFamily: '"Press Start 2P"' }}>Stock</span><div className={`stock ${(viewItem.stock || "").toLowerCase() === "in stock" ? "in" : "out"}`} style={{ fontSize: "20px", marginTop: "0.25rem", textTransform: "capitalize" }}>{viewItem.stock}</div></div>
+                <div><span style={{ color: "var(--tan)", fontSize: "12px", textTransform: "uppercase", fontFamily: '"Press Start 2P"' }}>Description</span><div style={{ fontSize: "16px", marginTop: "0.25rem", color: "#ccc", whiteSpace: "pre-wrap" }}>{viewItem.description || "N/A"}</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModalOpen && editMerch && (
+        <div className="modal-overlay" onClick={() => setEditModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setEditModalOpen(false)}>
+              <XIcon />
+            </button>
+            <h2 className="pixel" style={{ color: "var(--yellow)", marginBottom: "1.5rem" }}>EDIT MERCH ITEM</h2>
+            
+            <div style={{ display: "grid", gap: "1rem" }}>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Name</span>
+                <input
+                  value={editMerch.name}
+                  onChange={(e) => setEditMerch((m) => ({ ...m, name: e.target.value }))}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
+                />                                                                                                                                                              
+              </label>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Price (€)</span>
+                <input
+                  type="number" min={0} step="0.01"
+                  value={editMerch.price}
+                  onChange={(e) => setEditMerch((m) => ({ ...m, price: Number(e.target.value) }))}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
+                />                                                                                 
+              </label>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Description</span>
+                <textarea
+                  value={editMerch.description}
+                  onChange={(e) => setEditMerch((m) => ({ ...m, description: e.target.value }))}
+                  rows={3}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", resize: "vertical" }}
+                />
+              </label>
+
+              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Sizes</span>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {["S", "M", "L", "XL"].map((s) => (
+                    <button
+                      key={s} type="button"
+                      onClick={() => setEditMerch(m => ({ ...m, sizes: m.sizes.includes(s) ? m.sizes.filter(x => x !== s) : [...m.sizes, s] }))}
+                      style={{
+                        background: editMerch.sizes.includes(s) ? "var(--yellow2)" : "#0f1016",
+                        color: editMerch.sizes.includes(s) ? "#191A22" : "#fff",
+                        border: "2px solid var(--tan)", borderRadius: 6, padding: "0.5rem 0.85rem", cursor: "pointer", fontWeight: 700, fontSize: 13,
+                      }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Replace Images (Optional)</span>
+                <input
+                  type="file" accept="image/png,image/jpeg" multiple
+                  onChange={(e) => setEditSelectedFiles(e.target.files ? Array.from(e.target.files) : [])}
+                  style={{ color: "#fff" }}
+                />
+                {editSelectedFiles.length > 0 && (
+                  <span style={{ color: "var(--green2)", fontSize: 12 }}>{editSelectedFiles.length} new file(s) selected for replacement</span>
+                )}
+              </div>
+
+              <button 
+                className="btn" 
+                onClick={handleEditUpload} 
+                disabled={isUpdatingMerch}
+                style={{ marginTop: "1rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.8rem", fontSize: 14, opacity: isUpdatingMerch ? 0.7 : 1 }}
+              >
+                <PencilIcon /> {isUpdatingMerch ? "UPDATING..." : "SAVE CHANGES"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirm Modal */}
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="DELETE MERCH ITEM"
+        message="Are you sure you want to permanently delete this item?"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
 
     </div>
   );
