@@ -28,25 +28,25 @@ const Dashboard = () => {
       {
         title: 'Tracks',
         value: statsData.totalBeats?.toLocaleString() || '0',
-        subtitle: `+${statsData.beatsThisWeek || 0} this week`,
+        subtitle: `${statsData.beatsThisWeek > 0 ? '+' : ''}${statsData.beatsThisWeek || 0} this week`,
         icon: MusicIcon1
       },
       {
         title: 'Products',
         value: statsData.totalMerch?.toLocaleString() || '0',
-        subtitle: `+${statsData.merchThisWeek || 0} new items`,
+        subtitle: `${statsData.merchThisWeek > 0 ? '+' : ''}${statsData.merchThisWeek || 0} new items`,
         icon: ClothesIcon
       },
       {
         title: 'This Month',
         value: `€ ${statsData.totalDonations?.toFixed(2) || '0.00'}`,
-        subtitle: `+ €${statsData.donationsThisWeek?.toFixed(2) || '0.00'} this week`,
+        subtitle: `${statsData.donationsThisWeek > 0 ? '+ ' : ''}€${statsData.donationsThisWeek?.toFixed(2) || '0.00'} this week`,
         icon: DollarIcon
       },
       {
         title: 'Total',
         value: statsData.totalDownloads?.toLocaleString() || '0',
-        subtitle: `+${statsData.downloadsThisWeek || 0} this week`,
+        subtitle: `${statsData.downloadsThisWeek > 0 ? '+' : ''}${statsData.downloadsThisWeek || 0} this week`,
         icon: DownloadIcon
       }
     ];
