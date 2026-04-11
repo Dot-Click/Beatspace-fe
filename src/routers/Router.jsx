@@ -23,24 +23,27 @@ import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
 import AdminMobileBlock from "../components/AdminMobileBlock";
 import ShopList from "../pages/Merch/shoplist";
+import UserLayout from "../layouts/UserLayout";
 
 
 const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/menu" element={<ListOfHorus />} />
-      <Route path="/beats" element={<Beats />} />
-      <Route path="/beatplay" element={<BeatPlay />} />
-      <Route path="/games" element={<Games />} />
-      <Route path="/comics" element={<Comics />} />
-      <Route path="/comics/select" element={<Selectcomic />} />
-      <Route path="/comics/select-chapter" element={<Selectchapter />} />
-      <Route path="/comics/chapter/:chapterNumber" element={<Comicview />} />
-      <Route path="/comics/read" element={<Comicread />} />
-      <Route path="/shop-list" element={<ShopList />} />
-      <Route path="/merch" element={<Merch />} />
-      <Route path="/buyshirt" element={<BuyShirt />} />
+      <Route element={<UserLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/menu" element={<ListOfHorus />} />
+        <Route path="/beats" element={<Beats />} />
+        <Route path="/beatplay" element={<BeatPlay />} />
+        <Route path="/games" element={<Games />} />
+        <Route path="/comics" element={<Comics />} />
+        <Route path="/comics/select" element={<Selectcomic />} />
+        <Route path="/comics/select-chapter" element={<Selectchapter />} />
+        <Route path="/comics/chapter/:chapterNumber" element={<Comicview />} />
+        <Route path="/comics/read" element={<Comicread />} />
+        <Route path="/shop-list" element={<ShopList />} />
+        <Route path="/merch" element={<Merch />} />
+        <Route path="/buyshirt" element={<BuyShirt />} />
+      </Route>
 
       {/* Admin Routes */}
       {/* Redirect /admin to login */}

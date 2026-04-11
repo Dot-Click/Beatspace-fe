@@ -1,25 +1,7 @@
 import React, { useState } from "react";
-import { Box, Text, Image } from "@mantine/core";
-import { useNavigate } from "react-router-dom";
-import { BackButtonIcon } from "../../customIcons";
-
-// Constants
-const CHAPTERS = [
-  {
-    id: 1,
-    number: "01",
-    title: "The Beginning",
-    pages: 3,
-    fullTitle: "Chapter 1 : The Beginning",
-  },
-  {
-    id: 2,
-    number: "02",
-    title: "The Adventure continues",
-    pages: 3,
-    fullTitle: "Chapter 2 : The Adventure continues",
-  },
-];
+import { Box, Text } from "@mantine/core";
+import { useNavigate, useLocation } from "react-router-dom";
+import UserHeader from "../../components/common/UserHeader";
 
 const COLORS = {
   background: "#111827",
@@ -32,7 +14,8 @@ const COLORS = {
 };
 
 // Chapter Item Component
-const ChapterItem = ({ chapter, isHovered, onHover, onClick }) => {
+const ChapterItem = ({ chapter, index, isHovered, onHover, onClick }) => {
+  const chapterNumber = String(index + 1).padStart(2, '0');
   return (
     <Box
       style={{
@@ -47,10 +30,10 @@ const ChapterItem = ({ chapter, isHovered, onHover, onClick }) => {
         transition: "all 0.2s ease",
         minHeight: "64px",
       }}
-      onClick={() => onClick(chapter.id)}
-      onMouseEnter={() => onHover(chapter.id)}
+      onClick={() => onClick(index + 1)}
+      onMouseEnter={() => onHover(index + 1)}
       onMouseLeave={() => onHover(null)}
-      className="alexandria-font"
+      className="vision-font"
     >
       <Box style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <Box
@@ -66,49 +49,47 @@ const ChapterItem = ({ chapter, isHovered, onHover, onClick }) => {
           }}
           className="max-sm:!h-[25px] max-sm:!w-[25px] min-sm:!h-[25px] min-sm:!w-[25px] min-md:!h-[35px] min-md:!w-[35px] min-lg:!h-[45px] min-lg:!w-[45px]"
         >
-          <Text
-            style={{
-              fontSize: "1.2rem",
-              color: "#000",
-              fontWeight: "bold",
-            }}
-            className="max-sm:!text-[0.5rem] min-sm:!text-[0.5rem] min-md:!text-[0.7rem] min-lg:!text-[1rem]"
-          >
-            {chapter.number}
-          </Text>
+            <Text
+              style={{
+                color: "#000",
+                fontWeight: "900",
+              }}
+              className="!vision-font max-sm:!text-[0.9rem] min-sm:!text-[1rem] min-md:!text-[1.2rem] min-lg:!text-[1.8rem]"
+            >
+              {chapterNumber}
+            </Text>
         </Box>
         <Box>
           <Text
             style={{
-              fontSize: "0.9rem",
               color: COLORS.primary,
-              fontWeight: "500",
+              fontWeight: "900",
               marginBottom: "0.2rem",
+              textTransform: "uppercase"
             }}
-            className="max-sm:!text-[0.5rem] min-sm:!text-[0.5rem] min-md:!text-[0.7rem] min-lg:!text-[1rem]"
+            className="!vision-font max-sm:!text-[1rem] min-sm:!text-[1.1rem] min-md:!text-[1.3rem] min-lg:!text-[2rem]"
           >
-            {chapter.fullTitle}
+            Chapter {index + 1} : {chapter.chapter_title}
           </Text>
           <Text
             style={{
-              fontSize: "0.7rem",
               color: COLORS.textSecondary,
+              fontWeight: "700",
             }}
-            className="max-sm:!text-[0.5rem] min-sm:!text-[0.5rem] min-md:!text-[0.7rem] min-lg:!text-[1rem]"
+            className="!vision-font max-sm:!text-[0.8rem] min-sm:!text-[0.9rem] min-md:!text-[1.1rem] min-lg:!text-[1.5rem]"
           >
-            {chapter.pages} Pages
+            {chapter.images?.length || 0} Pages
           </Text>
         </Box>
       </Box>
       <Box style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
         <Text
           style={{
-            fontSize: "0.8rem",
             color: COLORS.accent,
-            fontWeight: "500",
-            letterSpacing: "0.5px",
+            fontWeight: "900",
+            letterSpacing: "1px",
           }}
-          className="max-sm:!text-[0.5rem] min-sm:!text-[0.5rem] min-md:!text-[0.7rem] min-lg:!text-[1rem]"
+          className="!vision-font max-sm:!text-[0.8rem] min-sm:!text-[0.9rem] min-md:!text-[1.1rem] min-lg:!text-[1.5rem]"
         >
           READ
         </Text>
@@ -129,125 +110,33 @@ const ChapterItem = ({ chapter, isHovered, onHover, onClick }) => {
 const SelectChapter = () => {
   const [hoveredChapter, setHoveredChapter] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const comic = location.state?.comic;
 
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate("/comics");
-    }
+  if (!comic) {
+    return (
+      <Box style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text className="vision-font" style={{ color: COLORS.primary }}>NO COMIC SELECTED</Text>
+      </Box>
+    );
+  }
+
+  const handleChapterClick = (chapterIndex) => {
+    navigate(`/comics/chapter/${chapterIndex}`, { state: { comic, chapterIndex: chapterIndex - 1 } });
   };
 
-  const handleChapterClick = (chapterNumber) => {
-    navigate(`/comics/chapter/${chapterNumber}`);
-  };
-
-  const handleChapterHover = (chapterNumber) => {
-    setHoveredChapter(chapterNumber);
+  const handleChapterHover = (chapterIndex) => {
+    setHoveredChapter(chapterIndex);
   };
 
   return (
-    <Box
-      style={{
-        minHeight: "100vh",
-        backgroundColor: COLORS.background,
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      {/* Background Video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
-        }}
-      >
-        <source src="/assets/bgvideo.mp4" type="video/mp4" />
-      </video>
-
-      {/* Global Vision Logo */}
-      <Box
-        style={{
-          position: "absolute",
-          top: "8rem",
-          right: "12rem",
-          zIndex: 3,
-          pointerEvents: "auto",
-        }}
-        className="min-sm:!top-[14%] min-sm:!right-[11%] max-sm:!top-[14%] max-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[11%] min-lg:!top-[14%] min-lg:!right-[11%] min-xl:!top-[14%] min-xl:!right-[11%]"
-      >
-        <Image
-          src="/assets/logo.png"
-          alt="GLOBAL VISION"
-          style={{
-            width: "120px",
-            height: "auto",
-            filter: "brightness(1.2)",
-          }}
-          className="max-sm:!w-9 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
-        />
-      </Box>
-
-      {/* Header Section */}
-      <Box
-        style={{
-          position: "absolute",
-          top: "8rem",
-          left: "12rem",
-          zIndex: 5,
-          pointerEvents: "auto",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        className="!top-[12%] !left-[11%] min-lg:!left-[11%] max-sm:!top-[12%] max-sm:!left-[11%] min-md:!top-[12%] min-md:!left-[11%]"
-      >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className="!w-fit !gap-0">
-          <Box
-            role="button"
-            aria-label="Back to Comics"
-            onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="!scale-[0.4] min-md:!scale-[0.5] max-sm:!scale-[0.35] min-lg:!scale-[0.6]"
-          >
-            <BackButtonIcon />
-          </Box>
-          <Text
-            style={{
-              fontSize: "1.25rem",
-              color: COLORS.primary,
-              letterSpacing: "2px",
-            }}
-            className="vision-font max-sm:!text-[0.9rem] min-md:!text-[1.1rem]"
-          >
-            COMICS
-          </Text>
-        </Box>
-        <Text
-          style={{
-            fontSize: "0.75rem",
-            color: COLORS.primary,
-            letterSpacing: "2px",
-            marginTop: "-0.5rem",
-          }}
-          className="vision-font max-sm:!scale-[0.6] min-md:!scale-[0.8] max-sm:!ml-[-1rem] min-md:!ml-[-0.5rem]"
-        >
-          SPACERACOON
-        </Text>
-      </Box>
+    <>
+      <UserHeader title="COMICS" subtitle={comic.author_name.toUpperCase()} />
 
       {/* Main Content */}
       <Box
         style={{
-          position: "absolute",
-          inset: 0,
+          height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -265,7 +154,7 @@ const SelectChapter = () => {
             width: "100%",
             padding: "0 2rem",
           }}
-          className="!absolute top-1/2 -translate-y-1/2 max-sm:!h-[65%] max-sm:!overflow-y-auto min-md:!h-fit"
+          className="max-sm:!h-[65%] max-sm:!overflow-y-auto min-md:!h-fit"
         >
           {/* Comic Title Section */}
           <Box
@@ -277,27 +166,32 @@ const SelectChapter = () => {
             }}
             className="h-full"
           >
-            <Box style={{ textAlign: "center", order: 2 }} className="vision-font">
+            <Box
+              style={{ textAlign: "center", order: 2 }}
+              className="vision-font"
+            >
               <Text
                 style={{
                   fontSize: "1.25rem",
                   color: COLORS.primary,
                   letterSpacing: "0.5px",
                   marginBottom: "0.2rem",
+                  textTransform: "uppercase"
                 }}
                 className="max-sm:!text-[1.2rem] min-md:!text-[2rem] min-lg:!text-[3rem]"
               >
-                M€ and th€ Boys
+                {comic.title}
               </Text>
               <Text
                 style={{
                   fontSize: "0.6rem",
                   color: COLORS.accentDark,
                   letterSpacing: "1px",
+                  textTransform: "uppercase"
                 }}
-                className="alexandria-font max-sm:!text-[0.6rem] min-md:!text-[0.7rem] min-lg:!text-[1.5rem]"
+                className="vision-font max-sm:!text-[0.6rem] min-md:!text-[0.7rem] min-lg:!text-[1.5rem]"
               >
-                by SpaceRacoon
+                by {comic.author_name}
               </Text>
             </Box>
           </Box>
@@ -311,17 +205,23 @@ const SelectChapter = () => {
               width: "100%",
               maxWidth: "550px",
             }}
-            className="alexandria-font lg:mt-0 mt-12"
+            className="vision-font lg:mt-0 mt-12 overflow-y-auto pr-2"
+            sx={{ maxHeight: '400px' }}
           >
-            {CHAPTERS.map((chapter) => (
-              <ChapterItem
-                key={chapter.id}
-                chapter={chapter}
-                isHovered={hoveredChapter === chapter.id}
-                onHover={handleChapterHover}
-                onClick={handleChapterClick}
-              />
-            ))}
+            {comic.chapter_info && comic.chapter_info.length > 0 ? (
+              comic.chapter_info.map((chapter, index) => (
+                <ChapterItem
+                  key={index}
+                  chapter={chapter}
+                  index={index}
+                  isHovered={hoveredChapter === index + 1}
+                  onHover={handleChapterHover}
+                  onClick={handleChapterClick}
+                />
+              ))
+            ) : (
+              <Text style={{ color: COLORS.textSecondary, textAlign: 'center' }}>NO CHAPTERS AVAILABLE</Text>
+            )}
           </Box>
         </Box>
       </Box>
@@ -338,17 +238,17 @@ const SelectChapter = () => {
         }}
       >
         <Text
-          className="alexandria-font max-sm:!text-[0.5rem] min-md:!text-[0.75rem] min-lg:!text-[1rem]"
+          className="vision-font max-sm:!text-[1.1rem] min-md:!text-[1.3rem] min-lg:!text-[1.8rem] font-bold"
           style={{
             color: COLORS.textSecondary,
-            letterSpacing: "1px",
+            letterSpacing: "1.5px",
             textAlign: "center",
           }}
         >
           Click on a chapter to start reading
         </Text>
       </Box>
-    </Box>
+    </>
   );
 };
 

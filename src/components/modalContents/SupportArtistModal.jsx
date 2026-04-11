@@ -920,7 +920,7 @@
 
 //           {/* Beat Info */}
 //           <Text
-//             className="max-sm:!font-xs min-md:!text-lg min-lg:!text-xl pixel-font"
+//             className="max-sm:!font-xs min-md:!text-lg min-lg:!text-xl vision-font"
 //             style={{
 //               color: "#F6F4D3",
 //               lineHeight: 1.3,
@@ -947,7 +947,7 @@
 
 //           {/* Message */}
 //           <Text
-//             className="font-xs pixel-font max-sm:scale-[0.7] min-md:scale-[0.8]"
+//             className="font-xs vision-font max-sm:scale-[0.7] min-md:scale-[0.8]"
 //             style={{
 //               color: "#F6F4D3",
 //               fontSize: "0.7rem",
@@ -964,7 +964,7 @@
 //           {/* Donation Section */}
 //           <Box style={{ width: "100%", marginBottom: "1rem" }}>
 //             <Text
-//               className="max-sm:font-xs pixel-font min-md:!text-2xl min-lg:!text-3xl"
+//               className="max-sm:font-xs vision-font min-md:!text-2xl min-lg:!text-3xl"
 //               style={{
 //                 color: "#F6F4D3",
 //                 marginBottom: "0.5rem",
@@ -1003,7 +1003,7 @@
 //           }}
 //         >
 //           <Button
-//             className="pixel-font"
+//             className="vision-font"
 //             onClick={handleCheckout}
 //             style={{
 //               width: "100%",
@@ -1049,6 +1049,7 @@ const SupportArtistModal = ({
   audioUrl,
   id,
   imageSrc = "/assets/artist.png",
+  type = "beat", // New prop to handle different content types
 }) => {
   const dispatch = useDispatch();
   const [donationAmount, setDonationAmount] = useState("");
@@ -1162,9 +1163,9 @@ const SupportArtistModal = ({
           SUPPORT ARTIST
         </Text>
 
-        {/* Beat info */}
+        {/* Info */}
         <Text align="center" mt={8} size="sm" opacity={0.85}>
-          Beat: {beatName}
+          {type === "comic" ? "Comic" : "Beat"}: {beatName}
         </Text>
         <Text align="center" size="sm" opacity={0.85}>
           By: {artistName}
@@ -1184,9 +1185,19 @@ const SupportArtistModal = ({
           opacity={0.8}
           style={{ lineHeight: 1.5 }}
         >
-          This beat is free to download.
-          <br />
-          Support the artist if you can.
+          {type === "comic" ? (
+            <>
+              Next chapter soon! Stay tuned!
+              <br />
+              You can support {artistName} and their project by giving any amount you want
+            </>
+          ) : (
+            <>
+              This beat is free to download.
+              <br />
+              Support the artist if you can.
+            </>
+          )}
         </Text>
 
         {/* Donation */}
@@ -1229,29 +1240,31 @@ const SupportArtistModal = ({
           CHECKOUT
         </Button>
 
-        <Button
-          mt={10}
-          fullWidth
-          variant="outline"
-          onClick={handleDownload}
-          style={{
-            borderColor: "#c8c48a",
-            color: "#c8c48a",
-            fontWeight: 700,
-            height: 42,
-            letterSpacing: 1,
-            background: "transparent",
-          }}
-        >
-          DOWNLOAD THE BEAT
-        </Button>
+        {type !== "comic" && (
+          <Button
+            mt={10}
+            fullWidth
+            variant="outline"
+            onClick={handleDownload}
+            style={{
+              borderColor: "#c8c48a",
+              color: "#c8c48a",
+              fontWeight: 700,
+              height: 42,
+              letterSpacing: 1,
+              background: "transparent",
+            }}
+          >
+            DOWNLOAD THE BEAT
+          </Button>
+        )}
       </Box>
 
       {/* Responsive fixes for horizontal mobile */}
       <style>
         {`
         .vision-font {
-          font-family: 'vision-font', cursive;
+          font-family: 'Vision Font', sans-serif;
         }
 
         /* Mobile landscape (horizontal) */

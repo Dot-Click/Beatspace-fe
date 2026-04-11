@@ -1,0 +1,147 @@
+import React from "react";
+import { Box, Text, Image, Flex } from "@mantine/core";
+import { useNavigate, useLocation } from "react-router-dom";
+import { BackButtonIcon } from "../../customIcons";
+import { BACK_NAVIGATION_MAP } from "../../configs/navigationMapping";
+
+const COLORS = {
+  primary: "#F6F4D3",
+  accent: "#d1c676",
+};
+
+const UserHeader = ({ title, subtitle, showBack = true, prefix, suffix }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleBack = () => {
+    const pathname = location.pathname;
+
+    if (BACK_NAVIGATION_MAP[pathname]) {
+      const target = BACK_NAVIGATION_MAP[pathname];
+      if (target === -1) {
+        navigate(-1);
+      } else {
+        navigate(target);
+      }
+      return;
+    }
+
+    if (pathname.includes("/comics/chapter/")) {
+      navigate("/comics/select-chapter");
+      return;
+    }
+
+    navigate(BACK_NAVIGATION_MAP["default"] || "/menu");
+  };
+
+  const handleLogoClick = () => {
+    navigate("/menu");
+  };
+
+  return (
+    <Box
+      style={{
+        position: "fixed",
+        top: "8%",
+        left: 0,
+        right: 0,
+        height: "15%",
+        zIndex: 100,
+        pointerEvents: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 10%",
+      }}
+    >
+      {/* Left Column: Back Button / Prefix */}
+      <Box
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          pointerEvents: "auto",
+        }}
+      >
+        {showBack && (
+          <Box
+            w={"fit-content"}
+            role="button"
+            aria-label="Back"
+            onClick={handleBack}
+            style={{ cursor: "pointer" }}
+            className="!scale-[0.7]  md:!scale-[0.9] lg:!scale-[1.2]"
+          >
+            <BackButtonIcon />
+          </Box>
+        )}
+        {prefix && prefix}
+      </Box>
+
+      <Box
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          pointerEvents: "auto",
+        }}
+      >
+        {title && (
+          <Text
+            style={{
+              fontSize: "1.8rem",
+              color: COLORS.primary,
+              letterSpacing: "4px",
+              textShadow: "0 0 15px rgba(246, 244, 211, 0.4)",
+              fontWeight: 900,
+            }}
+            className="vision-font max-sm:!text-[1.2rem] md:!text-[2rem] lg:!text-[2.9rem]"
+          >
+            {title}
+          </Text>
+        )}
+        {subtitle && (
+          <Text
+            style={{
+              color: COLORS.primary,
+              letterSpacing: "2px",
+              marginTop: "-0.9rem",
+            }}
+            className="vision-font max-sm:!text-[0.6rem] md:!text-[0.8rem] lg:!text-[1.2rem]"
+          >
+            {subtitle}
+          </Text>
+        )}
+      </Box>
+
+      {/* Right Column: Suffix & Logo */}
+      <Box
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          gap: "1rem",
+          pointerEvents: "auto",
+        }}
+      >
+        {suffix && suffix}
+        <Box onClick={handleLogoClick} style={{ cursor: "pointer" }}>
+          <Image
+            src="/assets/logo.png"
+            alt="GLOBAL VISION"
+            style={{
+              width: "120px",
+              height: "auto",
+              filter: "brightness(1.2)",
+            }}
+            className="max-sm:!w-10 md:!w-20 lg:!w-28 xl:!w-32"
+          />
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default UserHeader;

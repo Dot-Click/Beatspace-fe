@@ -9,14 +9,14 @@ export default function ConfirmModal({ isOpen, title, message, onConfirm, onCanc
       display: "flex", justifyContent: "center", alignItems: "center",
       zIndex: 2000, padding: "1rem"
     }} onClick={onCancel}>
-      <div className="alexandria-font" style={{
+      <div className="vision-font" style={{
         background: "#2F2D0E", border: "2px solid #CBC895",
         borderRadius: "8px", width: "100%", maxWidth: "400px",
         padding: "2rem", position: "relative", boxShadow: "0 10px 25px rgba(0,0,0,0.8)",
         color: "#ffffff"
       }} onClick={e => e.stopPropagation()}>
-        <h2 className="pixel" style={{ color: "#EBE23C", marginBottom: "1rem", fontSize: "16px", lineHeight: "1.5", fontFamily: '"Press Start 2P"' }}>{title}</h2>
-        <p style={{ marginBottom: "2rem", fontSize: "14px", lineHeight: "1.5", fontFamily: "monospace", opacity: 0.9 }}>{message}</p>
+        <h2 className="vision-font" style={{ color: "#EBE23C", marginBottom: "1rem", fontSize: "1.2rem", lineHeight: "1.5", letterSpacing: "2px" }}>{title}</h2>
+        <p className="vision-font" style={{ marginBottom: "2rem", fontSize: "1rem", lineHeight: "1.5", opacity: 0.9 }}>{message}</p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
           <button 
             onClick={onCancel}

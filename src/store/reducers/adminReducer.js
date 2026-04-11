@@ -13,6 +13,15 @@ const initialState = {
   deleteMerchError: null,
   isUpdatingMerch: false,
   updateMerchError: null,
+  comics: [],
+  isLoadingComics: false,
+  isCreatingComic: false,
+  isDeletingComic: false,
+  isUpdatingComic: false,
+  comicsError: null,
+  createComicError: null,
+  deleteComicError: null,
+  updateComicError: null,
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -125,6 +134,94 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         isUpdatingMerch: false,
         updateMerchError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.GET_COMICS_REQUEST:
+      return {
+        ...state,
+        isLoadingComics: true,
+        comicsError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_COMICS_SUCCESS:
+      return {
+        ...state,
+        comics: action.payload,
+        isLoadingComics: false,
+        comicsError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_COMICS_FAILURE:
+      return {
+        ...state,
+        isLoadingComics: false,
+        comicsError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.CREATE_COMIC_REQUEST:
+      return {
+        ...state,
+        isCreatingComic: true,
+        createComicError: null,
+      };
+
+    case ADMIN_CONSTANTS.CREATE_COMIC_SUCCESS:
+      return {
+        ...state,
+        isCreatingComic: false,
+        createComicError: null,
+        comics: [action.payload, ...state.comics],
+      };
+
+    case ADMIN_CONSTANTS.CREATE_COMIC_FAILURE:
+      return {
+        ...state,
+        isCreatingComic: false,
+        createComicError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.DELETE_COMIC_REQUEST:
+      return {
+        ...state,
+        isDeletingComic: true,
+        deleteComicError: null,
+      };
+
+    case ADMIN_CONSTANTS.DELETE_COMIC_SUCCESS:
+      return {
+        ...state,
+        comics: state.comics.filter((c) => c._id !== action.payload),
+        isDeletingComic: false,
+        deleteComicError: null,
+      };
+
+    case ADMIN_CONSTANTS.DELETE_COMIC_FAILURE:
+      return {
+        ...state,
+        isDeletingComic: false,
+        deleteComicError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_COMIC_REQUEST:
+      return {
+        ...state,
+        isUpdatingComic: true,
+        updateComicError: null,
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_COMIC_SUCCESS:
+      return {
+        ...state,
+        isUpdatingComic: false,
+        updateComicError: null,
+        comics: state.comics.map((c) => (c._id === action.payload._id ? action.payload : c)),
+      };
+
+    case ADMIN_CONSTANTS.UPDATE_COMIC_FAILURE:
+      return {
+        ...state,
+        isUpdatingComic: false,
+        updateComicError: action.payload,
       };
 
     default:

@@ -1,113 +1,53 @@
 import React, { useState } from "react";
 import { Box, Text, Image } from "@mantine/core";
-import { useParams, useNavigate } from "react-router-dom";
-import { BackButtonIcon, BookreadIcon, SliderIcon } from "../../customIcons";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { BookreadIcon, SliderIcon } from "../../customIcons";
+import UserHeader from "../../components/common/UserHeader";
 
 const Comicview = () => {
   const { chapterNumber } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [hoverL, setHoverL] = useState(false);
   const [hoverR, setHoverR] = useState(false);
-  const pages = ["/assets/Me-and-the-boys.png"];
+  
+  const comic = location.state?.comic;
+  const chapterIndex = location.state?.chapterIndex ?? 0;
+  
+  const chapter = comic?.chapter_info?.[chapterIndex];
+  const pages = chapter?.images?.length > 0 ? chapter.images : [comic?.image]; // Fallback to cover if no pages
+  
   const [idx, setIdx] = useState(0);
-  const prev = () => setIdx((n) => (n > 0 ? n - 1 : n));
-  const next = () => setIdx((n) => (n < pages.length - 1 ? n + 1 : n));
-
-  const handleBack = () => {
-    try {
-      if (window.history.length > 1) {
-        navigate(-1);
-      } else {
-        navigate("/comics/select-chapter");
-      }
-    } catch {
-      navigate("/comics/select-chapter");
-    }
+  
+  const prev = (e) => {
+    e.stopPropagation();
+    setIdx((n) => (n > 0 ? n - 1 : n));
+  };
+  const next = (e) => {
+    e.stopPropagation();
+    setIdx((n) => (n < pages.length - 1 ? n + 1 : n));
   };
 
+  const openReader = () => {
+    navigate("/comics/read", { state: { comic, chapterIndex, initialPage: idx } });
+  };
+
+  if (!comic || !chapter) {
+    return (
+      <Box style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Text className="vision-font" style={{ color: "#F6F4D3" }}>COMIC OR CHAPTER NOT FOUND</Text>
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#111827",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
+    <>
+      <UserHeader title="COMICS" subtitle={`${comic.title} - ${chapter.chapter_title}`} />
+
+      {/* Viewer Area */}
+      <Box
         style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
           height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
-        }}
-      >
-        <source src="/assets/bgvideo.mp4" type="video/mp4" />
-      </video>
- 
-      <Box
-        style={{ position: "absolute", top: "8rem", right: "12rem", zIndex: 3 }}
-        className="min-sm:!top-[14%] min-sm:!right-[11%] min-md:!top-[14%] min-md:!right-[11%]
-        min-lg:!top-[14%] min-lg:!right-[11%] min-xl:!top-[14%] min-xl:!right-[11%]"
-      >
-        <Image
-          src="/assets/logo.png"
-          alt="GLOBAL VISION"
-          style={{ width: "120px", height: "auto", filter: "brightness(1.2)" }}
-          className="!w-14 max-sm:!w-12 min-md:!w-20 min-lg:!w-28 min-xl:!w-32"
-        />
-      </Box>
-
-      {/* Header */}
-      <Box
-        style={{
-          position: "absolute",
-          top: "8rem",
-          left: "12rem",
-          zIndex: 5,
-          display: "flex",
-          flexDirection: "column",
-          pointerEvents: "auto",
-        }}
-        className="min-sm:!top-[14%]  min-sm:!left-[11%] min-md:!top-[14%] min-md:!left-[11%]
-        min-lg:!top-[14%] min-lg:!left-[11%] min-xl:!top-[14%] min-xl:!left-[11%]"
-      >
-        <Box style={{ display: "flex", alignItems: "center", gap: "0.5rem" }} className="min-md:!gap-0">
-          <Box
-            role="button"
-            aria-label="Back"
-            onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="min-sm:!scale-[0.4] min-md:!scale-[0.4] min-lg:!scale-[0.5] min-xl:!scale-[0.6]"
-          >
-            <BackButtonIcon />
-          </Box>
-          <Text
-            style={{ fontSize: "1.25rem", color: "#F6F4D3", letterSpacing: "2px" }}
-            className="vision-font"
-          >
-            COMICS
-          </Text>
-        </Box>
-        <Text
-          style={{ fontSize: "0.75rem", color: "#F6F4D3", letterSpacing: "2px" }}
-          className="alexandria-font min-sm:!scale-[0.4] min-md:!scale-[0.4] min-lg:!scale-[0.5] min-xl:!scale-[0.6] min-sm:-translate-x-12 min-sm:-translate-y-4"
-        >
-          Me and the Boys - The Beginning 
-        </Text>
-      </Box>
-
-      {/* Viewer */}
-      <Box
-        style={{
-          position: "absolute",
-          inset: 0,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -118,7 +58,7 @@ const Comicview = () => {
         <Box
           style={{
             position: "absolute",
-            left: "12rem",
+            left: "12%",
             top: "50%",
             transform: "translateY(-50%)",
             display: "flex",
@@ -126,7 +66,6 @@ const Comicview = () => {
             gap: "1rem",
             zIndex: 10,
           }}
-          className="min-sm:!left-[13%] min-md:!left-[13%] min-lg:!left-[13%] min-xl:!left-[13%]"
         >
           <Box
             style={{
@@ -141,10 +80,10 @@ const Comicview = () => {
             }}
           >
             <Text
-              className="alexandria-font"
-              style={{ fontSize: "0.9rem", color: "#000", fontWeight: "bold" }}
+              className="vision-font"
+              style={{ fontSize: "1.2rem", color: "#000", fontWeight: "900" }}
             >
-              {String(chapterNumber || 1).padStart(2, "0")}
+              {String(chapterIndex + 1).padStart(2, "0")}
             </Text>
           </Box>
         </Box>
@@ -161,6 +100,7 @@ const Comicview = () => {
             left: "35%",
             transform: "translateX(-160px)",
             cursor: "pointer",
+            visibility: idx > 0 ? 'visible' : 'hidden'
           }}
         >
           <Box
@@ -179,7 +119,7 @@ const Comicview = () => {
         <Box
           role="button"
           aria-label="Open Reader" 
-          onClick={() => navigate("/comics/read")}
+          onClick={openReader}
           style={{
             border: "3px solid #d1c676",
             boxShadow: "0 0 0 3px #000 inset",
@@ -189,16 +129,15 @@ const Comicview = () => {
             cursor: "pointer",
             overflow: "hidden",
           }}
-          className="mt-12 min-sm:!w-[110px] min-sm:!h-[160px]
-           min-md:!w-[140px] min-md:!h-[200px] min-xl:!w-[180px] min-xl:!h-[260px]"
+          className="mt-12 min-sm:!w-[110px] min-sm:!h-[160px] min-md:!w-[140px] min-md:!h-[200px] min-xl:!w-[180px] min-xl:!h-[260px]"
         >
           <Image
             src={pages[idx]}
-            alt={`Chapter ${chapterNumber} page ${idx + 1}`}
+            alt={`Chapter ${chapterIndex + 1} page ${idx + 1}`}
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "fill",
+              objectFit: "cover",
             }}
           />
         </Box>
@@ -215,8 +154,8 @@ const Comicview = () => {
             right: "35%",
             transform: "translateX(160px)",
             cursor: "pointer",
+            visibility: idx < pages.length - 1 ? 'visible' : 'hidden'
           }}
-
         >
           <Box
             style={{
@@ -230,25 +169,24 @@ const Comicview = () => {
           />
         </Box>
 
-        {/* Small UI icons top-right inside viewer */}
+        {/* Small UI icons right */}
         <Box
           style={{
             position: "absolute",
             top: "50%",
             transform: "translateY(-50%)",
-            right: "12rem",
+            right: "12%",
             display: "flex",
             alignItems: "center",
             gap: "0.8rem",
             zIndex: 10,
           }}
-          className="min-sm:!right-[13%] min-md:!right-[13%] min-lg:!right-[13%] min-xl:!right-[13%]"
         >
           <BookreadIcon />
           <SliderIcon />
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

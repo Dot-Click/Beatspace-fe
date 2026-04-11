@@ -106,7 +106,7 @@ const AdminLogin = () => {
         <Box style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Text
             size="xl"
-            className="pixel-font"
+            className="alexandria-font"
             style={{
               color: '#F59E0B',
               textShadow: '0 0 10px rgba(245, 158, 11, 0.5)',
@@ -116,7 +116,7 @@ const AdminLogin = () => {
             ADMIN ACCESS
           </Text>
           <Text
-            className="pixel-font"
+            className="alexandria-font"
             style={{
               fontSize: '0.8rem',
               color: '#9CA3AF',
@@ -236,7 +236,7 @@ const AdminLogin = () => {
         {/* Footer */}
         <Group justify="center" style={{ marginTop: '2rem' }}>
           <Text
-              className="pixel-font"
+              className="alexandria-font"
               style={{
                 color: '#6B7280',
                 fontSize: '0.7rem',

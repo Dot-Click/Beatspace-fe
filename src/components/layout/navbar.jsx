@@ -57,10 +57,10 @@ const Navbar = ({ opened, toggle }) => {
       <div className="flex flex-col w-full lg:flex-row justify-between   md:gap-3 items-center">
         {/* Left side - Title and subtitle */}
         <div className="md:flex md:flex-col md:items-start md:gap-2 lg:translate-x-24 lg:block">
-          <h1 className="scale-[1] md:scale-[1.5] font-bold text-black pixel-font mb-1">
+          <h1 className="scale-[1] md:scale-[1.5] font-bold text-black pixel-font mb-1 !text-[12px]">
             ADMIN DASHBOARD
           </h1>
-          <p className="scale-[0.8] w-full md:scale-[1.2] text-black/80 alexandria-font">
+          <p className="scale-[0.8] w-full md:scale-[1.2] text-black/80 pixel-font !text-[8px]">
             SYSTEM CONTROL INTERFACE - {getCurrentDate()}
           </p>
         </div>

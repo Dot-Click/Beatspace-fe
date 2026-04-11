@@ -34,6 +34,12 @@
   font-display: swap;
 }
 
+body {
+  font-family: 'Vision Font', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 @font-face {
   font-family: 'Vision';
   src: url('/fonts/Vision-Regular.otf') format('opentype');
@@ -56,17 +62,15 @@
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
   }
 
+  .vision-font {
+    font-family: 'Vision Font', sans-serif !important;
+  }
+
   .pixel-font {
-    font-family: 'Press Start 2P', monospace;
-    font-weight: normal;
-    letter-spacing: 0px;
-    font-size: var(--font-size-pixel) !important;
+    font-family: 'Press Start 2P', cursive !important;
   }
 
-  .alexandria-font {
-    font-family: 'Alexandria', sans-serif !important;
-  }
-
+  .alexandria-font,
   .alexandria-font * {
     font-family: 'Alexandria', sans-serif !important;
   }

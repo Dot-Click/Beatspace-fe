@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, Image, Button } from "@mantine/core";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useMediaQuery } from "@mantine/hooks";
 import { BackButtonIcon, BookreadIcon, SliderIcon } from "../../customIcons";
 
 const Comicread = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSupportOpen, setIsSupportOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const pages = Array(3).fill("/assets/comicpage.png"); // Mocking more pages for testing navigation
+  
+  const comic = location.state?.comic;
+  const chapterIndex = location.state?.chapterIndex ?? 0;
+  const initialPage = location.state?.initialPage ?? 0;
+  
+  const chapter = comic?.chapter_info?.[chapterIndex];
+  
+  // Dynamic page resolution: prefer structured pages over legacy images
+  const pages = React.useMemo(() => {
+    if (chapter?.pages?.length > 0) {
+      return [...chapter.pages]
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .map(p => p.url);
+    }
+    if (chapter?.images?.length > 0) return chapter.images;
+    return [comic?.thumbnailUrl || comic?.image];
+  }, [chapter, comic]);
+  
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   // Mobile detection
   const isMobileMediaQuery = useMediaQuery("(max-width: 1024px)");
@@ -31,33 +49,39 @@ const Comicread = () => {
       if (window.history.length > 1) {
         navigate(-1);
       } else {
-        navigate("/comics/chapter/1");
+        navigate("/comics");
       }
     } catch {
-      navigate("/comics/chapter/1");
+      navigate("/comics");
     }
   };
 
   const nextPage = (e) => {
     if (e) e.stopPropagation();
     if (currentPage < pages.length - 1) {
-      console.log("Navigating to next page:", currentPage + 1);
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const prevPage = (e) => {
     if (e) e.stopPropagation();
     if (currentPage > 0) {
-      console.log("Navigating to previous page:", currentPage - 1);
-      setCurrentPage(prev => prev - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
+
+  if (!comic || !chapter) {
+    return (
+      <Box style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#000' }}>
+        <Text className="vision-font" style={{ color: "#F6F4D3" }}>COMIC OR CHAPTER NOT FOUND</Text>
+      </Box>
+    );
+  }
 
   if (isMobile) {
     return (
       <Box
-      className="custom-scrollbar"
+        className="custom-scrollbar"
         style={{
           height: "100vh",
           width: "100vw",
@@ -67,8 +91,8 @@ const Comicread = () => {
           scrollSnapType: "x mandatory",
           display: "flex",
           flexDirection: "column",
-          paddingBottom:"55px",
-          paddingTop:"10px",
+          paddingBottom: "55px",
+          paddingTop: "10px",
           position: "fixed",
           top: 0,
           left: 0,
@@ -91,20 +115,22 @@ const Comicread = () => {
           onClick={handleBack}
           style={{
             position: "fixed",
-            top: "1.5rem",
-            left: "1.5rem",
+            top: "8%",
+            left: "10%",
             zIndex: 100,
             cursor: "pointer",
-            background: "rgba(0,0,0,0.4)",
+            background: "rgba(0,0,0,0.5)",
             borderRadius: "50%",
-            width: "40px",
-            height: "40px",
+            width: "50px",
+            height: "50px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            transition: "all 0.3s ease",
           }}
+          className="!scale-[0.7] md:!scale-[0.9] lg:!scale-[1.2]"
         >
-          <Box style={{ transform: "scale(0.8)" }}>
+          <Box style={{ transform: "scale(1.2)" }}>
             <BackButtonIcon />
           </Box>
         </Box>
@@ -128,8 +154,8 @@ const Comicread = () => {
               style={{
                 height: "100%",
                 width: "100%",
-                paddingBottom: '20px',
-                paddingTop: '20px',
+                paddingBottom: "20px",
+                paddingTop: "20px",
                 maxWidth: "none",
                 objectFit: "fill",
               }}
@@ -149,17 +175,35 @@ const Comicread = () => {
             justifyContent: "center",
             scrollSnapAlign: "start",
             gap: "2.5rem",
-            backgroundColor: "#000"
+            backgroundColor: "#000",
           }}
         >
-          <Box style={{ border: "2px solid #d1c676", padding: "1.5rem", textAlign: "center", width: "80%" }}>
-            <Text className="vision-font" style={{ color: "#F6F4D3", fontSize: "1.5rem", letterSpacing: "3px" }}>
-              COMING SOON
+          <Box
+            style={{
+              border: "2px solid #d1c676",
+              padding: "1.5rem",
+              textAlign: "center",
+              width: "80%",
+            }}
+          >
+            <Text
+              className="vision-font"
+              style={{
+                color: "#F6F4D3",
+                fontSize: "1.5rem",
+                letterSpacing: "3px",
+              }}
+            >
+              END OF CHAPTER
             </Text>
           </Box>
           <Button
             onClick={() => setIsSupportOpen(true)}
-            style={{ backgroundColor: "#d1c676", color: "#000", fontWeight: "bold" }}
+            style={{
+              backgroundColor: "#d1c676",
+              color: "#000",
+              fontWeight: "bold",
+            }}
           >
             Support Artist
           </Button>
@@ -169,9 +213,10 @@ const Comicread = () => {
           <SupportArtistModal
             isOpen={isSupportOpen}
             onClose={() => setIsSupportOpen(false)}
-            beatName={"Me and the Boys"}
-            artistName={"Space Racoon"}
-            imageSrc={"/assets/comic.png"}
+            beatName={comic.title}
+            artistName={comic.author_name}
+            imageSrc={comic.thumbnailUrl || comic.image}
+            type="comic"
           />
         )}
       </Box>
@@ -182,7 +227,6 @@ const Comicread = () => {
   return (
     <Box
       style={{
-        
         height: "100vh",
         width: "100vw",
         backgroundColor: "#000",
@@ -193,7 +237,7 @@ const Comicread = () => {
         top: 0,
         left: 0,
         zIndex: 9999,
-        overflow: "hidden"
+        overflow: "hidden",
       }}
     >
       {/* Back Button */}
@@ -201,23 +245,27 @@ const Comicread = () => {
         onClick={handleBack}
         style={{
           position: "absolute",
-          top: "2.5rem",
-          left: "2.5rem",
-          zIndex: 20,
+          top: "8%",
+          left: "10%",
+          zIndex: 100,
           cursor: "pointer",
-          opacity: 0.6,
           transition: "all 0.3s ease",
           background: "rgba(0,0,0,0.5)",
-          padding: "10px",
-          borderRadius: "50%"
+          borderRadius: "50%",
+          width: "50px",
+          height: "50px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
+        className="!scale-[0.7] md:!scale-[0.9] lg:!scale-[1.2]"
         onMouseEnter={(e) => {
-          e.currentTarget.style.opacity = "1";
-          e.currentTarget.style.transform = "scale(1.1)";
+          e.currentTarget.style.background = "rgba(0,0,0,0.8)";
+          e.currentTarget.style.transform = "scale(1.3)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.opacity = "0.6";
-          e.currentTarget.style.transform = "scale(1)";
+          e.currentTarget.style.background = "rgba(0,0,0,0.5)";
+          e.currentTarget.style.transform = "scale(1.2)";
         }}
       >
         <Box style={{ transform: "scale(1.2)" }}>
@@ -233,7 +281,7 @@ const Comicread = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          position: "relative"
+          position: "relative",
         }}
       >
         <Image
@@ -267,18 +315,27 @@ const Comicread = () => {
               alignItems: "center",
               justifyContent: "center",
               transition: "all 0.3s ease",
-              border: "1px solid rgba(246, 244, 211, 0.2)"
+              border: "1px solid rgba(246, 244, 211, 0.2)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.3)";
+              e.currentTarget.style.backgroundColor =
+                "rgba(246, 244, 211, 0.3)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.1)";
+              e.currentTarget.style.backgroundColor =
+                "rgba(246, 244, 211, 0.1)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
             }}
           >
-            <Text style={{ color: "#F6F4D3", fontSize: "2rem", fontWeight: "bold", userSelect: "none" }}>
+            <Text
+              style={{
+                color: "#F6F4D3",
+                fontSize: "2rem",
+                fontWeight: "bold",
+                userSelect: "none",
+              }}
+            >
               «
             </Text>
           </Box>
@@ -303,18 +360,27 @@ const Comicread = () => {
               alignItems: "center",
               justifyContent: "center",
               transition: "all 0.3s ease",
-              border: "1px solid rgba(246, 244, 211, 0.2)"
+              border: "1px solid rgba(246, 244, 211, 0.2)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.3)";
+              e.currentTarget.style.backgroundColor =
+                "rgba(246, 244, 211, 0.3)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(246, 244, 211, 0.1)";
+              e.currentTarget.style.backgroundColor =
+                "rgba(246, 244, 211, 0.1)";
               e.currentTarget.style.transform = "translateY(-50%) scale(1)";
             }}
           >
-            <Text style={{ color: "#F6F4D3", fontSize: "2rem", fontWeight: "bold", userSelect: "none" }}>
+            <Text
+              style={{
+                color: "#F6F4D3",
+                fontSize: "2rem",
+                fontWeight: "bold",
+                userSelect: "none",
+              }}
+            >
               »
             </Text>
           </Box>
@@ -323,12 +389,28 @@ const Comicread = () => {
         {/* Click-to-Next Global Overlay (Invisible side zones for easy clicking) */}
         <Box
           onClick={prevPage}
-          style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15%", zIndex: 5, cursor: "pointer" }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: "15%",
+            zIndex: 5,
+            cursor: "pointer",
+          }}
         />
         {currentPage < pages.length - 1 && (
           <Box
             onClick={nextPage}
-            style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15%", zIndex: 5, cursor: "pointer" }}
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: "15%",
+              zIndex: 5,
+              cursor: "pointer",
+            }}
           />
         )}
 
@@ -342,11 +424,27 @@ const Comicread = () => {
               flexDirection: "column",
               alignItems: "center",
               gap: "1rem",
-              zIndex: 20
+              zIndex: 20,
             }}
           >
-            <Box style={{ backgroundColor: "rgba(0,0,0,0.85)", border: "2px solid #d1c676", borderRadius: "12px", padding: "1.5rem 3rem", textAlign: "center" }}>
-              <Text className="vision-font" style={{ color: "#F6F4D3", fontSize: "1.2rem", marginBottom: "1rem", letterSpacing: "2px" }}>
+            <Box
+              style={{
+                backgroundColor: "rgba(0,0,0,0.85)",
+                border: "2px solid #d1c676",
+                borderRadius: "12px",
+                padding: "1.5rem 3rem",
+                textAlign: "center",
+              }}
+            >
+              <Text
+                className="vision-font"
+                style={{
+                  color: "#F6F4D3",
+                  fontSize: "1.2rem",
+                  marginBottom: "1rem",
+                  letterSpacing: "2px",
+                }}
+              >
                 END OF CHAPTER
               </Text>
               <Button
@@ -357,7 +455,7 @@ const Comicread = () => {
                   fontWeight: "900",
                   height: "45px",
                   borderRadius: "8px",
-                  letterSpacing: "1px"
+                  letterSpacing: "1px",
                 }}
                 className="vision-font"
               >
@@ -372,10 +470,11 @@ const Comicread = () => {
       {isSupportOpen && (
         <SupportArtistModal
           isOpen={isSupportOpen}
-          onClose={(ww) => setIsSupportOpen(false)}
-          beatName={"Me and the Boys"}
-          artistName={"Space Racoon"}
-          imageSrc={"/assets/comic.png"}
+          onClose={() => setIsSupportOpen(false)}
+          beatName={comic.title}
+          artistName={comic.author_name}
+          imageSrc={comic.image}
+          type="comic"
         />
       )}
     </Box>
@@ -383,7 +482,3 @@ const Comicread = () => {
 };
 
 export default Comicread;
-
-
-
-

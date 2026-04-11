@@ -118,3 +118,99 @@ export const updateMerch = (id, formData) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+
+export const getComics = () => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.GET_COMICS_REQUEST,
+  });
+  try {
+    const res = await custAxios.get('/public/comics');
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.GET_COMICS_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.GET_COMICS_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
+export const createComic = (formData) => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.CREATE_COMIC_REQUEST,
+  });
+  try {
+    const res = await custAxios.post('/admin/addComic', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.CREATE_COMIC_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.CREATE_COMIC_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
+export const deleteComic = (id) => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.DELETE_COMIC_REQUEST,
+  });
+  try {
+    const res = await custAxios.delete(`/admin/deleteComic/${id}`);
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.DELETE_COMIC_SUCCESS,
+        payload: id,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.DELETE_COMIC_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
+export const updateComic = (id, formData) => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.UPDATE_COMIC_REQUEST,
+  });
+  try {
+    const res = await custAxios.patch(`/admin/updateComic/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.UPDATE_COMIC_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.UPDATE_COMIC_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
