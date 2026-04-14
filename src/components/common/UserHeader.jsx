@@ -16,22 +16,30 @@ const UserHeader = ({ title, subtitle, showBack = true, prefix, suffix }) => {
   const handleBack = () => {
     const pathname = location.pathname;
 
-    if (BACK_NAVIGATION_MAP[pathname]) {
-      const target = BACK_NAVIGATION_MAP[pathname];
-      if (target === -1) {
-        navigate(-1);
-      } else {
-        navigate(target);
-      }
-      return;
-    }
-
     if (pathname.includes("/comics/chapter/")) {
-      navigate("/comics/select-chapter");
+      navigate("/comics/select-chapter", {
+        state: { comic: location.state?.comic },
+      });
       return;
     }
 
-    navigate(BACK_NAVIGATION_MAP["default"] || "/menu");
+    if (pathname === "/comics/read") {
+      navigate(-1); // Go back to comicview with state preserved by history
+      return;
+    }
+
+    const target =
+      BACK_NAVIGATION_MAP[pathname] ||
+      BACK_NAVIGATION_MAP["default"] ||
+      "/menu";
+
+    if (target === -1) {
+      navigate(-1);
+    } else {
+      // For comic chapter select, we don't necessarily need state unless we want to filter by author again
+      // but let's just use the target path.
+      navigate(target);
+    }
   };
 
   const handleLogoClick = () => {
@@ -54,12 +62,13 @@ const UserHeader = ({ title, subtitle, showBack = true, prefix, suffix }) => {
         padding: "0 10%",
       }}
     >
-      {/* Left Column: Back Button / Prefix */}
+      {/* Left Column: Back Button + Title */}
       <Box
         style={{
           flex: 1,
           display: "flex",
           alignItems: "center",
+          gap: "0.75rem",
           pointerEvents: "auto",
         }}
       >
@@ -69,56 +78,49 @@ const UserHeader = ({ title, subtitle, showBack = true, prefix, suffix }) => {
             role="button"
             aria-label="Back"
             onClick={handleBack}
-            style={{ cursor: "pointer" }}
-            className="!scale-[0.7]  md:!scale-[0.9] lg:!scale-[1.2]"
+            style={{ cursor: "pointer", flexShrink: 0 }}
+            className="!scale-[0.7] md:!scale-[0.9] lg:!scale-[1.2]"
           >
             <BackButtonIcon />
           </Box>
         )}
         {prefix && prefix}
-      </Box>
-
-      <Box
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          pointerEvents: "auto",
-        }}
-      >
-        {title && (
-          <Text
-            style={{
-              fontSize: "1.8rem",
-              color: COLORS.primary,
-              letterSpacing: "4px",
-              textShadow: "0 0 15px rgba(246, 244, 211, 0.4)",
-              fontWeight: 900,
-            }}
-            className="vision-font max-sm:!text-[1.2rem] md:!text-[2rem] lg:!text-[2.9rem]"
-          >
-            {title}
-          </Text>
-        )}
-        {subtitle && (
-          <Text
-            style={{
-              color: COLORS.primary,
-              letterSpacing: "2px",
-              marginTop: "-0.9rem",
-            }}
-            className="vision-font max-sm:!text-[0.6rem] md:!text-[0.8rem] lg:!text-[1.2rem]"
-          >
-            {subtitle}
-          </Text>
+        {(title || subtitle) && (
+          <Box style={{ display: "flex", flexDirection: "column" }}>
+            {title && (
+              <Text
+                style={{
+                  fontSize: "1.8rem",
+                  color: COLORS.primary,
+                  letterSpacing: "4px",
+                  textShadow: "0 0 15px rgba(246, 244, 211, 0.4)",
+                  fontWeight: 900,
+                  lineHeight: 1,
+                }}
+                className="vision-font max-sm:!text-[1.2rem] md:!text-[2rem] lg:!text-[2.9rem]"
+              >
+                {title}
+              </Text>
+            )}
+            {subtitle && (
+              <Text
+                style={{
+                  color: COLORS.primary,
+                  letterSpacing: "2px",
+                  marginTop: "0.1rem",
+                }}
+                className="vision-font max-sm:!text-[0.6rem] md:!text-[0.8rem] lg:!text-[1.2rem]"
+              >
+                {subtitle}
+              </Text>
+            )}
+          </Box>
         )}
       </Box>
 
       {/* Right Column: Suffix & Logo */}
       <Box
         style={{
-          flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "flex-end",

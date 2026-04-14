@@ -2,11 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Box, Text, Image, Loader, Center } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { playBeatAction } from "../../store/actions/beatActions";
-import {
-  playIcon,
-  pauseIcon,
-  downloadIcon,
-} from "../../customIcons";
+import { playIcon, pauseIcon, downloadIcon } from "../../customIcons";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
@@ -34,12 +30,18 @@ const BeatPlay = () => {
 
   const beatItems = useMemo(() => {
     if (!reduxBeats) return [];
-    
+
     // Filter by category if one is selected
     let filtered = reduxBeats;
     if (category) {
       filtered = reduxBeats.filter((beat) => {
-        const beatCategory = (beat.category || beat["category "] || beat[" category"])?.toLowerCase()?.trim();
+        const beatCategory = (
+          beat.category ||
+          beat["category "] ||
+          beat[" category"]
+        )
+          ?.toLowerCase()
+          ?.trim();
         return beatCategory === category.toLowerCase().trim();
       });
     }
@@ -48,7 +50,7 @@ const BeatPlay = () => {
       ...beat,
       id: beat._id || beat.id,
       waveform: `audio-waveform-${beat._id || beat.id}`,
-      audioUrl: beat.mp3_url, 
+      audioUrl: beat.mp3_url,
     }));
   }, [reduxBeats, category]);
 
@@ -71,7 +73,11 @@ const BeatPlay = () => {
 
   useEffect(() => {
     beatItems.forEach((beat) => {
-      if (!audioRefs.current[beat.id] && beat.audioUrl && beat.audioUrl.trim() !== "") {
+      if (
+        !audioRefs.current[beat.id] &&
+        beat.audioUrl &&
+        beat.audioUrl.trim() !== ""
+      ) {
         const audio = new Audio();
         audio.preload = "metadata";
         audio.crossOrigin = "anonymous";
@@ -79,7 +85,10 @@ const BeatPlay = () => {
 
         audio.addEventListener("loadedmetadata", () => {
           if (audio.duration && !isNaN(audio.duration)) {
-            setAudioDuration((prev) => ({ ...prev, [beat.id]: audio.duration }));
+            setAudioDuration((prev) => ({
+              ...prev,
+              [beat.id]: audio.duration,
+            }));
           }
         });
 
@@ -87,7 +96,10 @@ const BeatPlay = () => {
           if (audio.duration && !isNaN(audio.duration)) {
             const progress = audio.currentTime / audio.duration;
             setAudioProgress((prev) => ({ ...prev, [beat.id]: progress }));
-            setAudioCurrentTime((prev) => ({ ...prev, [beat.id]: audio.currentTime }));
+            setAudioCurrentTime((prev) => ({
+              ...prev,
+              [beat.id]: audio.currentTime,
+            }));
           }
         });
 
@@ -264,7 +276,9 @@ const BeatPlay = () => {
                       }
                       progress={audioProgress[beat.id] || 0}
                       audioRef={
-                        currentlyPlaying === beat.id ? audioRefs.current[beat.id] : null
+                        currentlyPlaying === beat.id
+                          ? audioRefs.current[beat.id]
+                          : null
                       }
                     />
                   </Box>

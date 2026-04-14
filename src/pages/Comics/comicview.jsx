@@ -10,15 +10,15 @@ const Comicview = () => {
   const location = useLocation();
   const [hoverL, setHoverL] = useState(false);
   const [hoverR, setHoverR] = useState(false);
-  
+
   const comic = location.state?.comic;
   const chapterIndex = location.state?.chapterIndex ?? 0;
-  
+
   const chapter = comic?.chapter_info?.[chapterIndex];
   const pages = chapter?.images?.length > 0 ? chapter.images : [comic?.image]; // Fallback to cover if no pages
-  
+
   const [idx, setIdx] = useState(0);
-  
+
   const prev = (e) => {
     e.stopPropagation();
     setIdx((n) => (n > 0 ? n - 1 : n));
@@ -29,20 +29,34 @@ const Comicview = () => {
   };
 
   const openReader = () => {
-    navigate("/comics/read", { state: { comic, chapterIndex, initialPage: idx } });
+    navigate("/comics/read", {
+      state: { comic, chapterIndex, initialPage: idx },
+    });
   };
 
   if (!comic || !chapter) {
     return (
-      <Box style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Text className="vision-font" style={{ color: "#F6F4D3" }}>COMIC OR CHAPTER NOT FOUND</Text>
+      <Box
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text className="vision-font" style={{ color: "#F6F4D3" }}>
+          COMIC OR CHAPTER NOT FOUND
+        </Text>
       </Box>
     );
   }
 
   return (
     <>
-      <UserHeader title="COMICS" subtitle={`${comic.title} - ${chapter.chapter_title}`} />
+      <UserHeader
+        title="COMICS"
+        subtitle={`${comic.title} - ${chapter.chapter_title}`}
+      />
 
       {/* Viewer Area */}
       <Box
@@ -52,6 +66,7 @@ const Comicview = () => {
           alignItems: "center",
           justifyContent: "center",
           zIndex: 3,
+          marginTop: "30px",
         }}
       >
         {/* Chapter badge left */}
@@ -97,20 +112,22 @@ const Comicview = () => {
           onClick={prev}
           style={{
             position: "absolute",
-            left: "35%",
-            transform: "translateX(-160px)",
+            left: "50%",
+            transform: "translateX(-260px)",
             cursor: "pointer",
-            visibility: idx > 0 ? 'visible' : 'hidden'
+            visibility: idx > 0 ? "visible" : "hidden",
+            zIndex: 15,
           }}
+          className="max-md:!left-[10%] max-md:!transform-none"
         >
           <Box
             style={{
               width: 0,
               height: 0,
-              borderLeft: "10px solid transparent",
-              borderRight: "10px solid transparent",
-              borderTop: `10px solid ${hoverL ? "#F6F4D3" : "#d1c676"}`,
-              transform: "rotate(-270deg)",
+              borderLeft: "15px solid transparent",
+              borderRight: "15px solid transparent",
+              borderTop: `15px solid ${hoverL ? "#F6F4D3" : "#d1c676"}`,
+              transform: "rotate(90deg)",
             }}
           />
         </Box>
@@ -118,26 +135,29 @@ const Comicview = () => {
         {/* Comic image with frame */}
         <Box
           role="button"
-          aria-label="Open Reader" 
+          aria-label="Open Reader"
           onClick={openReader}
           style={{
-            border: "3px solid #d1c676",
-            boxShadow: "0 0 0 3px #000 inset",
+            border: "4px solid #d1c676",
+            boxShadow: "0 0 15px rgba(209,198,118,0.4)",
             backgroundColor: "#0b0b0b",
             display: "flex",
             justifyContent: "center",
             cursor: "pointer",
             overflow: "hidden",
+            zIndex: 5,
           }}
-          className="mt-12 min-sm:!w-[110px] min-sm:!h-[160px] min-md:!w-[140px] min-md:!h-[200px] min-xl:!w-[180px] min-xl:!h-[260px]"
+          className="mt-16 max-sm:!w-[160px] max-sm:!h-[225px] sm:!w-[225px] sm:!h-[320px] md:!w-[300px] md:!h-[430px] lg:!w-[340px] lg:!h-[485px]"
         >
           <Image
+            key={idx}
             src={pages[idx]}
             alt={`Chapter ${chapterIndex + 1} page ${idx + 1}`}
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              animation: "fadeIn 0.4s ease-in-out",
             }}
           />
         </Box>
@@ -151,20 +171,22 @@ const Comicview = () => {
           onClick={next}
           style={{
             position: "absolute",
-            right: "35%",
-            transform: "translateX(160px)",
+            right: "50%",
+            transform: "translateX(260px)",
             cursor: "pointer",
-            visibility: idx < pages.length - 1 ? 'visible' : 'hidden'
+            visibility: idx < pages.length - 1 ? "visible" : "hidden",
+            zIndex: 15,
           }}
+          className="max-md:!right-[10%] max-md:!transform-none"
         >
           <Box
             style={{
               width: 0,
               height: 0,
-              borderLeft: "10px solid transparent",
-              borderRight: "10px solid transparent",
-              borderTop: `10px solid ${hoverR ? "#F6F4D3" : "#d1c676"}`,
-              transform: "rotate(270deg)",
+              borderLeft: "15px solid transparent",
+              borderRight: "15px solid transparent",
+              borderTop: `15px solid ${hoverR ? "#F6F4D3" : "#d1c676"}`,
+              transform: "rotate(-90deg)",
             }}
           />
         </Box>

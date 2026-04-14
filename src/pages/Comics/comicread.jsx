@@ -37,12 +37,8 @@ const Comicread = () => {
     setIsMobile(isMobileMediaQuery);
   }, [isMobileMediaQuery]);
 
-  // Automatically open support modal when last page is reached
-  useEffect(() => {
-    if (currentPage === pages.length - 1 && !isSupportOpen) {
-      setIsSupportOpen(true);
-    }
-  }, [currentPage, pages.length]);
+  // Auto-opening removed as per user request to only open on click
+
 
   const handleBack = () => {
     try {
@@ -414,35 +410,38 @@ const Comicread = () => {
           />
         )}
 
-        {/* End Interaction (on last page) */}
+        {/* End Interaction (on last page) - Moved to bottom right to avoid covering content */}
         {currentPage === pages.length - 1 && (
           <Box
             style={{
               position: "absolute",
-              bottom: "5%",
+              bottom: "2rem",
+              right: "2rem",
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
-              gap: "1rem",
-              zIndex: 20,
+              alignItems: "flex-end",
+              gap: "0.8rem",
+              zIndex: 100,
             }}
           >
             <Box
               style={{
-                backgroundColor: "rgba(0,0,0,0.85)",
+                backgroundColor: "rgba(0,0,0,0.92)",
                 border: "2px solid #d1c676",
-                borderRadius: "12px",
-                padding: "1.5rem 3rem",
-                textAlign: "center",
+                borderRadius: "8px",
+                padding: "1rem 2rem",
+                textAlign: "right",
+                boxShadow: "0 0 20px rgba(0,0,0,0.8), 0 0 10px rgba(209,198,118,0.2)",
               }}
             >
               <Text
                 className="vision-font"
                 style={{
                   color: "#F6F4D3",
-                  fontSize: "1.2rem",
-                  marginBottom: "1rem",
-                  letterSpacing: "2px",
+                  fontSize: "1rem",
+                  marginBottom: "0.6rem",
+                  letterSpacing: "1.5px",
+                  fontWeight: "bold"
                 }}
               >
                 END OF CHAPTER
@@ -450,12 +449,13 @@ const Comicread = () => {
               <Button
                 onClick={() => setIsSupportOpen(true)}
                 style={{
-                  backgroundColor: "#BEB97A",
+                  backgroundColor: "#d1c676",
                   color: "#000",
                   fontWeight: "900",
-                  height: "45px",
-                  borderRadius: "8px",
-                  letterSpacing: "1px",
+                  height: "38px",
+                  borderRadius: "4px",
+                  letterSpacing: "0.5px",
+                  fontSize: "0.85rem"
                 }}
                 className="vision-font"
               >

@@ -401,7 +401,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
       // FIXED: Properly map existing pages from chapter_info with legacy fallback
       const chapter = editingComic.chapter_info?.[0];
       const existingPages = chapter?.pages || [];
-      
+
       let mappedPages = [];
       if (existingPages.length > 0) {
         mappedPages = existingPages.map((p, idx) => ({
@@ -416,7 +416,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         mappedPages = chapter.images.map((url, idx) => ({
           id: `legacy-${idx}-${Date.now()}`,
           url: url,
-          isThumbnail: idx === 0, 
+          isThumbnail: idx === 0,
           order: idx + 1,
           isNew: false,
         }));
@@ -485,7 +485,11 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
     setPages((prev) => {
       const pageToRemove = prev.find((p) => p.id === id);
       // Cleanup object URL for new pages
-      if (pageToRemove?.isNew && typeof pageToRemove.url === "string" && pageToRemove.url.startsWith("blob:")) {
+      if (
+        pageToRemove?.isNew &&
+        typeof pageToRemove.url === "string" &&
+        pageToRemove.url.startsWith("blob:")
+      ) {
         URL.revokeObjectURL(pageToRemove.url);
       }
       return prev.filter((p) => p.id !== id);
@@ -517,7 +521,11 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
   const handleModalClose = () => {
     // Cleanup all blob URLs for new pages
     pages.forEach((page) => {
-      if (page.isNew && typeof page.url === "string" && page.url.startsWith("blob:")) {
+      if (
+        page.isNew &&
+        typeof page.url === "string" &&
+        page.url.startsWith("blob:")
+      ) {
         URL.revokeObjectURL(page.url);
       }
     });
@@ -553,7 +561,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         chapter_title: formData.chapter_title,
         pages: chapterPages,
         // Backend Zod schema requires images array
-        images: pages.filter(p => !p.isNew).map(p => p.url),
+        images: pages.filter((p) => !p.isNew).map((p) => p.url),
       };
 
       data.append("chapter_info", JSON.stringify([chapter]));
@@ -574,7 +582,11 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
 
       // Cleanup URLs after successful save
       pages.forEach((page) => {
-        if (page.isNew && typeof page.url === "string" && page.url.startsWith("blob:")) {
+        if (
+          page.isNew &&
+          typeof page.url === "string" &&
+          page.url.startsWith("blob:")
+        ) {
           URL.revokeObjectURL(page.url);
         }
       });
@@ -599,7 +611,10 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         size="70%"
         padding="xl"
         centered
-        className="alexandria-font"
+        className="alexandria-font "
+        classNames={{
+          content: "custom-scrollbar",
+        }}
         title={
           <Text size="xl" weight={800} className="tracking-widest uppercase">
             {editingComic ? "EDIT COMIC" : "CREATE NEW COMIC"}
@@ -632,7 +647,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
           onChange={setActiveTab}
           color="yellow"
           variant="outline"
-          className="alexandria-font"
+          className="alexandria-font "
         >
           <Tabs.List className="mb-6">
             <Tabs.Tab

@@ -6,7 +6,7 @@ import UserHeader from "../../components/common/UserHeader";
 const COLORS = {
   background: "#111827",
   primary: "#F6F4D3",
-  accent: "#d1c676",
+  accent: "#C7C048",
   accentDark: "#d1a94c",
   textSecondary: "#9ca3af",
   dark: "#0e0e0e",
@@ -15,94 +15,83 @@ const COLORS = {
 
 // Chapter Item Component
 const ChapterItem = ({ chapter, index, isHovered, onHover, onClick }) => {
-  const chapterNumber = String(index + 1).padStart(2, '0');
+  const chapterNumber = String(index + 1).padStart(2, "0");
   return (
-    <Box
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0.75rem 1rem",
-        backgroundColor: isHovered ? COLORS.darkHover : COLORS.dark,
-        border: `2px solid ${COLORS.accent}`,
-        boxShadow: `0 0 0 2px ${COLORS.accent} inset`,
-        cursor: "pointer",
-        transition: "all 0.2s ease",
-        minHeight: "64px",
-      }}
-      onClick={() => onClick(index + 1)}
-      onMouseEnter={() => onHover(index + 1)}
-      onMouseLeave={() => onHover(null)}
-      className="vision-font"
-    >
-      <Box style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <Box
-          style={{
-            width: "44px",
-            height: "44px",
-            backgroundColor: COLORS.accent,
-            borderRadius: "2px",
-            border: "2px solid #000",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          className="max-sm:!h-[25px] max-sm:!w-[25px] min-sm:!h-[25px] min-sm:!w-[25px] min-md:!h-[35px] min-md:!w-[35px] min-lg:!h-[45px] min-lg:!w-[45px]"
-        >
+    <div className="border-4 border-[#C0BC75] p-2">
+      <Box
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0.75rem 1rem",
+          backgroundColor: isHovered ? COLORS.darkHover : COLORS.dark,
+          // border: `0.5px solid ${COLORS.accent}`,
+          boxShadow: `0 0 0 2px ${COLORS.accent} inset`,
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          minHeight: "64px",
+        }}
+        onClick={() => onClick(index + 1)}
+        onMouseEnter={() => onHover(index + 1)}
+        onMouseLeave={() => onHover(null)}
+        className="border-0 !border-[#C0BC75]  vision-font"
+      >
+        <Box style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <Text
+            style={{
+              color: "#000",
+              backgroundColor: COLORS.accent,
+              fontWeight: "600",
+              padding: "4px 10px",
+            }}
+            className="pixel-font max-sm:!text-[0.9rem] min-sm:!text-[1rem] min-md:!text-[1.2rem] min-lg:!text-[1.8rem]"
+          >
+            {chapterNumber}
+          </Text>
+          <Box>
             <Text
               style={{
-                color: "#000",
+                color: COLORS.primary,
                 fontWeight: "900",
+                textTransform: "uppercase",
               }}
-              className="!vision-font max-sm:!text-[0.9rem] min-sm:!text-[1rem] min-md:!text-[1.2rem] min-lg:!text-[1.8rem]"
+              className="!vision-font max-sm:!text-[1rem] min-sm:!text-[1.1rem] min-md:!text-[1.3rem] min-lg:!text-[2rem]"
             >
-              {chapterNumber}
+              Chapter {index + 1} : {chapter.chapter_title}
             </Text>
+            <Text
+              style={{
+                color: COLORS.textSecondary,
+                fontWeight: "700",
+              }}
+              className="!vision-font max-sm:!text-[0.8rem] min-sm:!text-[0.9rem] min-md:!text-[1.1rem] min-lg:!text-[1.5rem]"
+            >
+              {chapter.images?.length || 0} Pages
+            </Text>
+          </Box>
         </Box>
-        <Box>
+        <Box style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <Text
             style={{
-              color: COLORS.primary,
+              color: COLORS.accent,
               fontWeight: "900",
-              marginBottom: "0.2rem",
-              textTransform: "uppercase"
-            }}
-            className="!vision-font max-sm:!text-[1rem] min-sm:!text-[1.1rem] min-md:!text-[1.3rem] min-lg:!text-[2rem]"
-          >
-            Chapter {index + 1} : {chapter.chapter_title}
-          </Text>
-          <Text
-            style={{
-              color: COLORS.textSecondary,
-              fontWeight: "700",
+              letterSpacing: "1px",
             }}
             className="!vision-font max-sm:!text-[0.8rem] min-sm:!text-[0.9rem] min-md:!text-[1.1rem] min-lg:!text-[1.5rem]"
           >
-            {chapter.images?.length || 0} Pages
+            READ
           </Text>
+          <Box
+            style={{
+              height: "1px",
+              width: isHovered ? "64px" : "48px",
+              backgroundColor: COLORS.accent,
+              transition: "width 0.2s ease",
+            }}
+          />
         </Box>
       </Box>
-      <Box style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <Text
-          style={{
-            color: COLORS.accent,
-            fontWeight: "900",
-            letterSpacing: "1px",
-          }}
-          className="!vision-font max-sm:!text-[0.8rem] min-sm:!text-[0.9rem] min-md:!text-[1.1rem] min-lg:!text-[1.5rem]"
-        >
-          READ
-        </Text>
-        <Box
-          style={{
-            height: "1px",
-            width: isHovered ? "64px" : "48px",
-            backgroundColor: COLORS.accent,
-            transition: "width 0.2s ease",
-          }}
-        />
-      </Box>
-    </Box>
+    </div>
   );
 };
 
@@ -115,14 +104,25 @@ const SelectChapter = () => {
 
   if (!comic) {
     return (
-      <Box style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Text className="vision-font" style={{ color: COLORS.primary }}>NO COMIC SELECTED</Text>
+      <Box
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text className="vision-font" style={{ color: COLORS.primary }}>
+          NO COMIC SELECTED
+        </Text>
       </Box>
     );
   }
 
   const handleChapterClick = (chapterIndex) => {
-    navigate(`/comics/chapter/${chapterIndex}`, { state: { comic, chapterIndex: chapterIndex - 1 } });
+    navigate(`/comics/chapter/${chapterIndex}`, {
+      state: { comic, chapterIndex: chapterIndex - 1 },
+    });
   };
 
   const handleChapterHover = (chapterIndex) => {
@@ -136,9 +136,10 @@ const SelectChapter = () => {
       {/* Main Content */}
       <Box
         style={{
-          height: "100%",
+          height: "80vh",
+          marginTop: "18vh",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "center",
           zIndex: 3,
           pointerEvents: "auto",
@@ -162,21 +163,35 @@ const SelectChapter = () => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              gap: "1rem",
+              justifyContent: "center",
+              gap: "1.25rem",
             }}
-            className="h-full"
           >
-            <Box
-              style={{ textAlign: "center", order: 2 }}
-              className="vision-font"
-            >
+            {/* Thumbnail */}
+            {(comic.thumbnailUrl || comic.image) && (
+              <img
+                src={comic.thumbnailUrl || comic.image}
+                alt={comic.title}
+                style={{
+                  width: "80px",
+                  height: "110px",
+                  objectFit: "cover",
+                  border: `2px solid ${COLORS.accent}`,
+                  flexShrink: 0,
+                }}
+                className="max-sm:!w-[60px] max-sm:!h-[85px] min-lg:!w-[110px] min-lg:!h-[150px]"
+              />
+            )}
+
+            {/* Title & Author */}
+            <Box className="vision-font">
               <Text
                 style={{
-                  fontSize: "1.25rem",
                   color: COLORS.primary,
                   letterSpacing: "0.5px",
                   marginBottom: "0.2rem",
-                  textTransform: "uppercase"
+                  textTransform: "uppercase",
+                  fontWeight: "900",
                 }}
                 className="max-sm:!text-[1.2rem] min-md:!text-[2rem] min-lg:!text-[3rem]"
               >
@@ -184,10 +199,9 @@ const SelectChapter = () => {
               </Text>
               <Text
                 style={{
-                  fontSize: "0.6rem",
                   color: COLORS.accentDark,
                   letterSpacing: "1px",
-                  textTransform: "uppercase"
+                  textTransform: "uppercase",
                 }}
                 className="vision-font max-sm:!text-[0.6rem] min-md:!text-[0.7rem] min-lg:!text-[1.5rem]"
               >
@@ -203,10 +217,13 @@ const SelectChapter = () => {
               flexDirection: "column",
               gap: "0.75rem",
               width: "100%",
-              maxWidth: "550px",
+              maxWidth: "800px",
+              maxHeight: "55vh",
+              overflowY: "auto",
+              marginTop: "2rem",
+              paddingRight: "10px",
             }}
-            className="vision-font lg:mt-0 mt-12 overflow-y-auto pr-2"
-            sx={{ maxHeight: '400px' }}
+            className="vision-font lg:mt-0 mt-12 custom-scrollbar"
           >
             {comic.chapter_info && comic.chapter_info.length > 0 ? (
               comic.chapter_info.map((chapter, index) => (
@@ -220,7 +237,11 @@ const SelectChapter = () => {
                 />
               ))
             ) : (
-              <Text style={{ color: COLORS.textSecondary, textAlign: 'center' }}>NO CHAPTERS AVAILABLE</Text>
+              <Text
+                style={{ color: COLORS.textSecondary, textAlign: "center" }}
+              >
+                NO CHAPTERS AVAILABLE
+              </Text>
             )}
           </Box>
         </Box>

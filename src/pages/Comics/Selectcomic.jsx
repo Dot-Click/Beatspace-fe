@@ -11,7 +11,7 @@ const Selectcomic = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { comics, isLoadingComics } = useSelector((state) => state.admin);
-  
+
   const selectedAuthor = location.state?.author || "";
 
   useEffect(() => {
@@ -20,8 +20,8 @@ const Selectcomic = () => {
     }
   }, [dispatch, comics.length]);
 
-  const filteredComics = selectedAuthor 
-    ? comics.filter(comic => comic.author_name === selectedAuthor)
+  const filteredComics = selectedAuthor
+    ? comics.filter((comic) => comic.author_name === selectedAuthor)
     : comics;
 
   const handleComicClick = (comic) => {
@@ -32,127 +32,163 @@ const Selectcomic = () => {
     <>
       <UserHeader title="COMICS" subtitle={selectedAuthor.toUpperCase()} />
 
-      {/* Main Content */}
+      {/* Main Content Scrollable Area */}
       <Box
         style={{
-          height: "100%",
-          marginTop: "3rem",
+          height: "75vh",
+          marginTop: "20vh",
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "center",
           padding: "2rem",
-          gap: "2rem",
+          gap: "2.5rem",
           zIndex: 5,
+          overflowY: "auto",
         }}
-        className="!p-13"
+        className="custom-scrollbar"
       >
         {isLoadingComics ? (
-          <Text className="vision-font" style={{ color: "#F6F4D3" }}>LOADING...</Text>
+          <Text className="vision-font" style={{ color: "#F6F4D3" }}>
+            LOADING...
+          </Text>
         ) : filteredComics.length > 0 ? (
           filteredComics.map((comic) => (
-            <Box key={comic._id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+              key={comic._id}
+              className="comic-card-container"
+              onClick={() => handleComicClick(comic)}
+              onMouseEnter={() => setIsHovered(comic._id)}
+              onMouseLeave={() => setIsHovered(null)}
+              style={{
+                width: "300px",
+                height: "420px",
+                backgroundColor: "#000",
+                border: "2px solid #d1c676",
+                padding: "8px",
+                display: "flex",
+                flexDirection: "column",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                boxShadow:
+                  isHovered === comic._id ? "0 0 20px #d1c676" : "none",
+              }}
+            >
+              {/* Image Section with Frame */}
               <Box
                 style={{
-                  position: "relative",
-                  width: "210px",
-                  height: "440px",
-                  border: "3px solid #d1c676",
-                  boxShadow: isHovered === comic._id ? "0 0 20px #d1c676" : "0 0 15px rgba(209,198,118,0.6), inset 0 0 5px #000",
+                  width: "100%",
+                  height: "260px",
+                  border: "2px solid #d1c676",
+                  overflow: "hidden",
+                  backgroundColor: "#000",
+                  flexShrink: 0,
+                }}
+              >
+                <Image
+                  src={comic.thumbnailUrl || comic.image}
+                  alt={comic.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    transition: "transform 0.5s ease",
+                    transform:
+                      isHovered === comic._id ? "scale(1.1)" : "scale(1)",
+                  }}
+                />
+              </Box>
+
+              {/* Gap / Divider Area */}
+              <Box style={{ height: "8px", flexShrink: 0 }} />
+
+              {/* Text Description Box with Frame */}
+              <Box
+                style={{
+                  width: "100%",
+                  flex: 1,
+                  border: "2px solid #d1c676",
+                  padding: "10px",
                   display: "flex",
                   flexDirection: "column",
-                  cursor: "pointer",
-                  overflow: "hidden",
-                  transition: "all 0.3s ease",
+                  backgroundColor: "#0b0b0b",
                 }}
-                className="max-sm:!h-[210px] min-md:!h-fit !h-fit"
-                onMouseEnter={() => setIsHovered(comic._id)}
-                onMouseLeave={() => setIsHovered(null)}
-                onClick={() => handleComicClick(comic)}
               >
-                <Box
-                  className="custom-scrollbar !overflow-y-auto !scroll-smooth"
-                  style={{
-                    flex: 1,
-                    height: "100%",
-                    scrollbarWidth: "thin",
-                  }}
-                >
-                  <Image
-                    src={comic.thumbnailUrl || comic.image}
-                    alt={comic.title}
-                    style={{
-                      width: "100%",
-                      height: "auto",
-                      minHeight: "300px",
-                      objectFit: "cover",
-                    }}
-                  />
-
-                  <Box
-                    style={{
-                      background: "#0b0b0b",
-                      borderTop: "6px solid #d1c676",
-                      height: "120px",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      padding: "10px",
-                      userSelect: "none",
-                    }}
-                  >
-                    <Text
-                      className="vision-font"
-                      style={{
-                        color: "#F6F4D3",
-                        fontSize: "5px",
-                        lineHeight: 1.2,
-                        textAlign: "left",
-                        wordBreak: "break-word",
-                        textTransform: "uppercase"
-                      }}
-                    >
-                      {comic.title}
-                    </Text>
-
-                    <Text
-                      className="vision-font"
-                      style={{
-                        color: "#d1a94c",
-                        fontSize: "10px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {comic.chapter_info?.length || 0} Chapters
-                    </Text>
-                  </Box>
-                </Box>
-              </Box>
-              {isHovered === comic._id && (
                 <Text
                   className="vision-font"
                   style={{
-                    fontSize: "1.2rem",
-                    color: "#f6f4d3",
-                    letterSpacing: "1.5px",
-                    marginTop: "1.5rem",
-                    textAlign: "center",
-                    transition: "all 0.3s ease",
-                    textShadow: "0 0 6px rgba(209,198,118,0.8)",
-                    zIndex: 10,
+                    color: "#F6F4D3",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
+                    lineHeight: 1.1,
+                    marginBottom: "4px",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {comic.title}
+                </Text>
+
+                <Text
+                  className="vision-font"
+                  style={{
+                    color: "#d1c676",
+                    fontSize: "12px",
                     fontWeight: "bold",
                   }}
                 >
-                  Click to view chapters
+                  Chapter {comic.chapter_info?.length || 0}
                 </Text>
-              )}
+
+                {/* Decorative line near bottom of text box */}
+                <Box
+                  style={{
+                    height: "1px",
+                    backgroundColor: "#d1c676",
+                    marginTop: "auto",
+                    width: "100%",
+                    opacity: 0.8,
+                  }}
+                />
+              </Box>
             </Box>
           ))
         ) : (
-          <Text className="vision-font" style={{ color: "#9ca3af" }}>NO COMICS FOUND FOR THIS ARTIST</Text>
+          <Text className="vision-font" style={{ color: "#9ca3af" }}>
+            NO COMICS FOUND FOR THIS ARTIST
+          </Text>
         )}
       </Box>
+
+      {/* Global Instruction Fixed at the bottom */}
+      {!isLoadingComics && filteredComics.length > 0 && (
+        <Box
+          style={{
+            position: "fixed",
+            bottom: "2rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "100%",
+            textAlign: "center",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        >
+          <Text
+            className="vision-font"
+            style={{
+              fontSize: "1.2rem",
+              color: "#d1c676",
+              fontWeight: "bold",
+              letterSpacing: "1px",
+              textShadow: "0 0 10px rgba(0,0,0,0.8)",
+            }}
+          >
+            Click on a comic to view chapters
+          </Text>
+        </Box>
+      )}
     </>
   );
 };
