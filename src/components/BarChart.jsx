@@ -1,145 +1,41 @@
-// import React from 'react';
-// import Chart from 'react-apexcharts';
-
-// const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025" }) => {
-//   const chartData = {
-//     series: [{
-//       name: 'Donations',
-//       data: [850, 750, 900, 800, 950, 1100, 750, 800, 850, 1000, 1200, 1150]
-//     }],
-//     options: {
-//       chart: {
-//         type: 'bar',
-//         height: 300,
-//         background: 'transparent',
-//         toolbar: {
-//           show: false
-//         }
-//       },
-//       plotOptions: {
-//         bar: {
-//           horizontal: false,
-//           columnWidth: '60%',
-//           endingShape: 'rounded',
-//           borderRadius: 4,
-//         },
-//       },
-//       dataLabels: {
-//         enabled: false,
-//       },
-//       stroke: {
-//         show: true,
-//         width: 2,
-//         colors: ['transparent']
-//       },
-//       xaxis: {
-//         categories: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-//         labels: {
-//           style: {
-//             colors: '#C1BE91',
-//             fontSize: '12px',
-//             fontFamily: 'Alexandria, sans-serif'
-//           }
-//         },
-//         axisBorder: {
-//           show: false
-//         },
-//         axisTicks: {
-//           show: false
-//         }
-//       },
-//       yaxis: {
-//         labels: {
-//           style: {
-//             colors: '#C1BE91',
-//             fontSize: '12px',
-//             fontFamily: 'Alexandria, sans-serif'
-//           },
-//           formatter: function (val) {
-//             return '€' + val;
-//           }
-//         }
-//       },
-//       fill: {
-//         colors: ['#C1BE91'],
-//         opacity: 1
-//       },
-//       tooltip: {
-//         theme: 'dark',
-//         y: {
-//           formatter: function (val) {
-//             return "€" + val;
-//           }
-//         },
-//         style: {
-//           fontSize: '12px',
-//           fontFamily: 'Alexandria, sans-serif'
-//         }
-//       },
-//       grid: {
-//         borderColor: '#444',
-//         strokeDashArray: 0,
-//         xaxis: {
-//           lines: {
-//             show: false
-//           }
-//         },
-//         yaxis: {
-//           lines: {
-//             show: true
-//           }
-//         }
-//       },
-//       legend: {
-//         show: false
-//       }
-//     }
-//   };
-
-//   return (
-//     <div className="bg-[#2A2B35] max-sm:w-[280px]   border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font">
-//       {/* Header */}
-//       <div className="flex justify-between items-center">
-//         <h3 className="text-[#C1BE91] text-sm font-semibold uppercase">
-//           {title}
-//         </h3>
-//         <div className="bg-[#C1BE91] text-black px-3 py-1 rounded text-xs font-semibold">
-//           {year} ▼
-//         </div>
-//       </div>
-
-//       {/* Chart */}
-//       <div className="h-[250px] max-sm:overflow-hidden  w-full max-sm:overflow-x-auto ">
-//         <Chart
-//           options={chartData.options}
-//           series={chartData.series}
-//           type="bar"
-//           height="100%"
-         
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BarChart;
-
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Chart from "react-apexcharts";
 
-const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025", monthlyDonations = [] }) => {
+const BarChart = ({ title, monthlyDonations = [] }) => {
+  const currentYear = new Date().getFullYear();
+
+  const availableYears = useMemo(() => {
+    if (!monthlyDonations || monthlyDonations.length === 0)
+      return [currentYear];
+    const years = [
+      ...new Set(monthlyDonations.map((item) => item.year)),
+    ].filter(Boolean);
+    if (!years.includes(currentYear)) years.push(currentYear);
+    return years.sort((a, b) => b - a); // descending
+  }, [monthlyDonations, currentYear]);
+
+  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
+
+  // Update selected year if availableYears changes and current selection is not in it
+  useEffect(() => {
+    if (availableYears.length > 0 && !availableYears.includes(selectedYear)) {
+      setSelectedYear(availableYears[0]);
+    }
+  }, [availableYears, selectedYear]);
+
   // Transform monthly donations data to match chart format
   const chartData = useMemo(() => {
     // Initialize array with 12 months (0-11), all starting at 0
     const monthlyData = new Array(12).fill(0);
-    
+
     if (monthlyDonations && monthlyDonations.length > 0) {
       monthlyDonations.forEach((item) => {
-        // month is 0-indexed in JavaScript Date, but API uses 1-indexed (1-12)
-        // So we subtract 1 to convert to 0-indexed array
-        const monthIndex = item.month - 1;
-        if (monthIndex >= 0 && monthIndex < 12) {
-          monthlyData[monthIndex] = item.amount || 0;
+        if (item.year === selectedYear) {
+          // month is 0-indexed in JavaScript Date, but API uses 1-indexed (1-12)
+          const monthIndex = item.month - 1;
+          if (monthIndex >= 0 && monthIndex < 12) {
+            monthlyData[monthIndex] = item.amount || 0;
+          }
         }
       });
     }
@@ -152,91 +48,103 @@ const BarChart = ({ title = "DONATIONS OVER TIME", year = "Year 2025", monthlyDo
         },
       ],
       options: {
-      chart: {
-        type: "bar",
-        height: 300,
-        background: "transparent",
-        toolbar: { show: false },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: "60%",
-          endingShape: "rounded",
-          borderRadius: 4,
+        chart: {
+          type: "bar",
+          height: 300,
+          background: "transparent",
+          toolbar: { show: false },
         },
-      },
-      dataLabels: { enabled: false },
-      stroke: { show: true, width: 2, colors: ["transparent"] },
-      xaxis: {
-        categories: [
-          "JAN",
-          "FEB",
-          "MAR",
-          "APR",
-          "MAY",
-          "JUN",
-          "JUL",
-          "AUG",
-          "SEP",
-          "OCT",
-          "NOV",
-          "DEC",
-        ],
-        labels: {
-          style: {
-            colors: "#C1BE91",
-            fontSize: "12px",
-            fontFamily: "Alexandria, sans-serif",
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "60%",
+            endingShape: "rounded",
+            borderRadius: 4,
           },
         },
-        axisBorder: { show: false },
-        axisTicks: { show: false },
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: "#C1BE91",
-            fontSize: "12px",
-            fontFamily: "Alexandria, sans-serif",
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        xaxis: {
+          categories: [
+            "JAN",
+            "FEB",
+            "MAR",
+            "APR",
+            "MAY",
+            "JUN",
+            "JUL",
+            "AUG",
+            "SEP",
+            "OCT",
+            "NOV",
+            "DEC",
+          ],
+          labels: {
+            style: {
+              colors: "#F6F4D3",
+              fontSize: "10px",
+              fontFamily: "monospace",
+            },
           },
-          formatter: (val) => "€" + val,
+          axisBorder: { show: false },
+          axisTicks: { show: false },
         },
+        yaxis: {
+          labels: {
+            style: {
+              colors: "#C1BE91",
+              fontSize: "12px",
+              fontFamily: "Alexandria, sans-serif",
+            },
+            formatter: (val) => "€" + val,
+          },
+        },
+        fill: {
+          colors: ["#E0BC5A"],
+          opacity: 1,
+        },
+        tooltip: {
+          theme: "dark",
+          y: { formatter: (val) => "€" + val },
+          style: { fontSize: "10px", fontFamily: "'Press Start 2P', cursive" },
+        },
+        grid: {
+          borderColor: "rgba(181, 179, 135, 0.2)",
+          strokeDashArray: 3,
+          xaxis: { lines: { show: false } },
+          yaxis: { lines: { show: true } },
+        },
+        legend: { show: false },
       },
-      fill: {
-        colors: ["#C1BE91"],
-        opacity: 1,
-      },
-      tooltip: {
-        theme: "dark",
-        y: { formatter: (val) => "€" + val },
-        style: { fontSize: "12px", fontFamily: "Alexandria, sans-serif" },
-      },
-      grid: {
-        borderColor: "#444",
-        strokeDashArray: 0,
-        xaxis: { lines: { show: false } },
-        yaxis: { lines: { show: true } },
-      },
-      legend: { show: false },
-    },
-  };
-  }, [monthlyDonations]);
+    };
+  }, [monthlyDonations, selectedYear]);
 
   return (
-    <div className="bg-[#2A2B35] border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font max-sm:w-[280px]">
+    <div className="alexandria-font w-full h-full">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h3 className="text-[#C1BE91] text-sm font-semibold uppercase">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-[#CBC895] text-xs font-bold uppercase tracking-widest">
           {title}
         </h3>
-        <div className="bg-[#C1BE91] text-black px-3 py-1 rounded text-xs font-semibold">
-          {year} ▼
-        </div>
+        <select
+          className="bg-[#CBC895]/20 text-[#CBC895] px-3 py-1 border border-[#CBC895]/30 rounded text-[10px] sm:text-xs font-bold outline-none appearance-none cursor-pointer focus:ring-1 focus:ring-[#CBC895]"
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
+        >
+          {availableYears.map((year) => (
+            <option
+              key={year}
+              value={year}
+              className="bg-[#131319] text-[#CBC895]"
+            >
+              Year {year}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Chart wrapper with horizontal scroll on small screens */}
-      <div className="h-[250px] overflow-y-hidden max-sm:overflow-x-auto max-sm:w-full">
+      {/* Chart wrapper */}
+      <div className="h-[280px] w-full">
         <div className="min-w-[600px] h-full sm:min-w-0 md:overflow-hidden">
           {" "}
           {/* 👈 force scrollable width on small screens */}

@@ -1,15 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { 
-  DashboardIcon, 
-  BeatmakerIcon, 
-  BeatIcon, 
-  MerchIcon, 
-  ComicsIcon, 
-  GamesIcon, 
-  DonationsIcon, 
-  AssessmentIcon, 
-  SettingsIcon 
+import {
+  DashboardIcon,
+  BeatmakerIcon,
+  BeatIcon,
+  MerchIcon,
+  ComicsIcon,
+  GamesIcon,
+  DonationsIcon,
+  AssessmentIcon,
+  SettingsIcon,
 } from "../../customIcons";
 
 const adminMenu = [
@@ -88,41 +88,51 @@ const Sidebar = ({ opened, toggle }) => {
   };
 
   return (
-    <div className="h-screen bg-[#D4C5A0] flex flex-col">
+    <div className="h-screen overflow-x-hidden bg-[#CBC895] flex flex-col">
       {/* Logo Section */}
       <div className="p-6 border-b border-[#B8A882]">
-        <div className="flex items-center justify-center">
-          <img 
-            src="/assets/logo1.png" 
-            alt="Global Vision Logo" 
-            className="hidden lg:inline h-16 w-auto object-contain"
+        <div className="flex items-center justify-start">
+          <img
+            src="/assets/logo1.png"
+            alt="Global Vision Logo"
+            className="hidden lg:inline h-20 w-auto object-contain"
           />
         </div>
       </div>
 
       {/* Navigation Menu */}
       <div className="flex-1 py-6">
-        <nav className="space-y-2 px-4">
+        <nav className="space-y-2">
           {adminMenu.map((item) => {
             const IconComponent = item.icon;
             return (
               <button
                 key={item.id}
                 onClick={() => navigate(item.link)}
-                className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 alexandria-font flex items-center gap-3 ${
+                className={`w-full text-left px-4 py-3 transition-colors duration-200 alexandria-font flex items-center gap-3 ${
                   isActive(item.link)
-                    ? 'bg-[#191A22] text-[#C1BE91] font-semibold'
-                    : 'text-[#25262F] hover:bg-[#C4B594] hover:text-[#25262F]'
+                    ? "bg-[#191A22] text-[#C1BE91] font-semibold"
+                    : "text-[#25262F] hover:bg-[#C4B594] hover:text-[#25262F]"
                 }`}
               >
                 <div className="flex-shrink-0">
-                  <IconComponent color={isActive(item.link) ? '#C1BE91' : '#25262F'} />
+                  <IconComponent
+                    color={isActive(item.link) ? "#C1BE91" : "#25262F"}
+                  />
                 </div>
                 <span className="lg:inline hidden">{item.label}</span>
               </button>
             );
           })}
         </nav>
+      </div>
+
+      <div className="absolute bottom-0 z-0 left-0 right-0 w-60">
+        <img
+          src="/assets/beatssss.png"
+          alt="Global Vision Logo"
+          className="hidden lg:inline object-contain"
+        />
       </div>
     </div>
   );

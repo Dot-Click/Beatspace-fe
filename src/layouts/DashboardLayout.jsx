@@ -17,9 +17,7 @@ const DashboardLayout = () => {
           className={
             "min-h-screen flex items-center justify-center bg-slate-100"
           }
-        >
-          {/* Loader Placeholder */}
-        </div>
+        ></div>
       ) : (
         <div className="flex h-screen bg-gray-100">
           {/* Sidebar */}
@@ -28,12 +26,15 @@ const DashboardLayout = () => {
           </div>
 
           {/* Main Content Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col custom-scrollbar overflow-y-auto bg-[#1A1A23]">
             {/* Topbar */}
-            <Navbar opened={opened} toggle={toggle} />
+            <div className="px-6 sticky top-0 z-50 mb-2">
+              <div className="pt-4 bg-[#1A1A23]">
+                <Navbar opened={opened} toggle={toggle} />
+              </div>
+            </div>
 
-            {/* Page Content */}
-            <div className="flex-1 overflow-auto bg-white p-6">
+            <div className="flex-1 p-6">
               <Outlet />
             </div>
 

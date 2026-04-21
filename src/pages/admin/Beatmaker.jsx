@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { dashboard } from "../../store/actions/adminActions";
 import { playBeatAction } from "../../store/actions/beatActions";
 import ConfirmModal from "../../components/ConfirmModal";
+import CategoryAPI from "../../services/category.service";
 
 const AudioVisualizer = ({ isDark }) => (
   <div className="flex items-end gap-[2px] h-4 mb-1">
@@ -254,22 +255,33 @@ const Beat = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  // Genres and Categories
-  const GENRE_OPTIONS = [
-    "HIP-HOP",
-    "TRAP",
-    "R&B",
-    "POP",
-    "ELECTRONICS",
-    "LO-FI",
-    "BOOM BAP",
-  ];
-  const CATEGORY_OPTIONS = [
-    { label: "SAPHIRE", value: "saphire" },
-    { label: "PHONIX", value: "phonix" },
-    { label: "HORUS", value: "horus" },
-    { label: "SPALE RALOOON", value: "spale_ralooon" },
-  ];
+  // Dynamic Genres and Categories
+  const [availableGenres, setAvailableGenres] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchSelectOptions = async () => {
+      try {
+        const [genresRes, categoriesRes] = await Promise.all([
+          CategoryAPI.getAll('genre'),
+          CategoryAPI.getAll('category')
+        ]);
+        setAvailableGenres(genresRes.data.data);
+        setAvailableCategories(categoriesRes.data.data);
+        
+        // Auto-select first option if available
+        if (genresRes.data.data.length > 0) {
+          setNewBeatForm(prev => ({ ...prev, genre: genresRes.data.data[0].name }));
+        }
+        if (categoriesRes.data.data.length > 0) {
+          setNewBeatForm(prev => ({ ...prev, category: categoriesRes.data.data[0].name }));
+        }
+      } catch (error) {
+        console.error("Error fetching category options:", error);
+      }
+    };
+    fetchSelectOptions();
+  }, []);
   const currentlyPlayingIdRef = useRef(currentlyPlayingId);
   useEffect(() => {
     currentlyPlayingIdRef.current = currentlyPlayingId;
@@ -777,12 +789,12 @@ const Beat = () => {
               name="genre"
               value={newBeatForm.genre}
               onChange={handleInputChange}
-              className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
+              className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
               style={{ fontFamily: "monospace" }}
             >
-              {GENRE_OPTIONS.map((g) => (
-                <option key={g} value={g}>
-                  {g}
+              {availableGenres.map((g) => (
+                <option key={g._id} value={g.name}>
+                  {g.name}
                 </option>
               ))}
             </select>
@@ -809,12 +821,12 @@ const Beat = () => {
               name="category"
               value={newBeatForm.category}
               onChange={handleInputChange}
-              className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
+              className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
               style={{ fontFamily: "monospace" }}
             >
-              {CATEGORY_OPTIONS.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
+              {availableCategories.map((c) => (
+                <option key={c._id} value={c.name}>
+                  {c.name.toUpperCase()}
                 </option>
               ))}
             </select>
@@ -900,8 +912,8 @@ const Beat = () => {
               <table className="w-full min-w-[800px] text-left border-collapse">
                 <thead className="bg-black sticky top-0 z-10 shadow-md">
                   <tr
-                    className="text-[#FFD700] font-black text-xs lg:text-sm tracking-widest uppercase"
-                    style={{ fontFamily: "monospace" }}
+                    className="pixel-font text-[#FFD700] text-[10px] lg:text-[11px] tracking-widest uppercase"
+                    style={{ fontWeight: 400 }}
                   >
                     <th className="px-3 lg:px-6 py-6">
                       <div className="flex items-center gap-2">
@@ -1090,11 +1102,12 @@ const Beat = () => {
                     name="genre"
                     value={editBeatForm.genre}
                     onChange={handleEditInputChange}
-                    className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-[#FFD700] font-bold focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer text-sm"
+                    className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
+                    style={{ fontFamily: "monospace" }}
                   >
-                    {GENRE_OPTIONS.map((g) => (
-                      <option key={g} value={g}>
-                        {g}
+                    {availableGenres.map((g) => (
+                      <option key={g._id} value={g.name}>
+                        {g.name}
                       </option>
                     ))}
                   </select>
@@ -1136,11 +1149,12 @@ const Beat = () => {
                     name="category"
                     value={editBeatForm.category}
                     onChange={handleEditInputChange}
-                    className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-[#FFD700] font-bold focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer text-sm"
+                    className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
+                    style={{ fontFamily: "monospace" }}
                   >
-                    {CATEGORY_OPTIONS.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
+                    {availableCategories.map((c) => (
+                      <option key={c._id} value={c.name}>
+                        {c.name.toUpperCase()}
                       </option>
                     ))}
                   </select>

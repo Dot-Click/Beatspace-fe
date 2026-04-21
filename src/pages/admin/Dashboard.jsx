@@ -1,65 +1,84 @@
-import React, {useEffect, useMemo} from 'react';
-import StatCard from '../../components/StatCard';
-import BarChart from '../../components/BarChart';
-import DonutChart from '../../components/DonutChart';
-import RecentActivityTable from '../../components/tables/admin/RecentActivityTable';
-import { MusicIcon1, ClothesIcon, DollarIcon, DownloadIcon } from '../../customIcons';
-import { useDispatch, useSelector } from 'react-redux';
-import { me } from '../../store/actions/authActions';
-import { dashboard } from '../../store/actions/adminActions';
-import { Loader } from '@mantine/core';
+import React, { useEffect, useMemo } from "react";
+import StatCard from "../../components/StatCard";
+import BarChart from "../../components/BarChart";
+import DonutChart from "../../components/DonutChart";
+import RecentActivityTable from "../../components/tables/admin/RecentActivityTable";
+import {
+  MusicIcon1,
+  ClothesIcon,
+  DollarIcon,
+  DownloadIcon,
+} from "../../customIcons";
+import { useDispatch, useSelector } from "react-redux";
+import { me } from "../../store/actions/authActions";
+import { dashboard } from "../../store/actions/adminActions";
+import { Loader } from "@mantine/core";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const { dashboardData, isLoading } = useSelector((state) => state.admin);
-
 
   useEffect(() => {
     dispatch(me());
     dispatch(dashboard());
-  }, []);
+  }, [dispatch]);
 
   const stats = useMemo(() => {
     if (!dashboardData?.stats) return [];
-    
-    const { stats: statsData } = dashboardData;
+    const { stats: s } = dashboardData;
     return [
       {
-        title: 'Tracks',
-        value: statsData.totalBeats?.toLocaleString() || '0',
-        subtitle: `${statsData.beatsThisWeek > 0 ? '+' : ''}${statsData.beatsThisWeek || 0} this week`,
-        icon: MusicIcon1
+        title: "TRACKS",
+        value: s.totalBeats?.toLocaleString() || "0",
+        subtitle: `+${s.beatsThisWeek || 0} this week`,
+        icon: MusicIcon1,
+        label: "Total Beats",
       },
       {
-        title: 'Products',
-        value: statsData.totalMerch?.toLocaleString() || '0',
-        subtitle: `${statsData.merchThisWeek > 0 ? '+' : ''}${statsData.merchThisWeek || 0} new items`,
-        icon: ClothesIcon
+        title: "PRODUCTS",
+        value: s.totalMerch?.toLocaleString() || "0",
+        subtitle: `+${s.merchThisWeek || 0} new items`,
+        icon: ClothesIcon,
+        label: "Merch Items",
       },
       {
-        title: 'This Month',
-        value: `€ ${statsData.totalDonations?.toFixed(2) || '0.00'}`,
-        subtitle: `${statsData.donationsThisWeek > 0 ? '+ ' : ''}€${statsData.donationsThisWeek?.toFixed(2) || '0.00'} this week`,
-        icon: DollarIcon
+        title: "THIS MONTH",
+        value: `€ ${s.totalDonations?.toLocaleString() || "0,00"}`,
+        subtitle: `+ €${s.donationsThisWeek?.toFixed(0) || "0"} this week`,
+        icon: DollarIcon,
+        label: "Donations",
       },
       {
-        title: 'Total',
-        value: statsData.totalDownloads?.toLocaleString() || '0',
-        subtitle: `${statsData.downloadsThisWeek > 0 ? '+' : ''}${statsData.downloadsThisWeek || 0} this week`,
-        icon: DownloadIcon
-      }
+        title: "TOTAL",
+        value: s.totalDownloads?.toLocaleString() || "0",
+        subtitle: `+${s.downloadsThisWeek || 0} this week`,
+        icon: DownloadIcon,
+        label: "Downloads",
+      },
     ];
   }, [dashboardData]);
 
   if (isLoading) {
-    return <div className='flex justify-center items-center h-screen'><Loader type='dots' color='#2A2B35'/></div>;
+    return (
+      <div className="flex justify-center items-center h-screen bg-[#040404]">
+        <Loader type="dots" color="#B5B387" />
+      </div>
+    );
   }
-                                                                                                                                                                              
+
+  const CornerAccents = () => (
+    <>
+      <div className="absolute top-0 left-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute top-0 right-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+    </>
+  );
+
   return (
-    <div>
+    <div className="bg-[#1A1A23] min-h-screen">
       {/* Stats Cards Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {stats.map((stat, index) => (
           <StatCard
             key={index}
@@ -67,43 +86,55 @@ const Dashboard = () => {
             title={stat.title}
             value={stat.value}
             subtitle={stat.subtitle}
+            label={stat.label}
           />
         ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-        {/* Bar Chart - Takes 3 columns (3/4 width) */}
-        <div className="lg:col-span-3">
-          <BarChart monthlyDonations={dashboardData?.charts?.monthlyDonations} />
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
+        {/* Revenue Chart Section */}
+        <div className="lg:col-span-8 bg-[#2F2E24] border border-[#B5B387]/30 p-6 relative overflow-hidden">
+          <CornerAccents />
+          <h2 className="pixel-font text-[#F6F4D3] text-[12px] uppercase tracking-widest mb-10">
+            DONATIONS OVER TIME
+          </h2>
+          <div className="relative">
+            <BarChart
+              monthlyDonations={dashboardData?.charts?.monthlyDonations}
+            />
+          </div>
         </div>
-        
-        
-        {/* Donut Chart - Takes 1 column (1/4 width) */}
-        <div className="lg:col-span-1">
-          <DonutChart 
-            title="GENRE DISTRIBUTION" 
-            genreDistribution={dashboardData?.charts?.genreDistribution} 
-          />
+
+        {/* Donut Chart Section */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="bg-[#2F2E24] border border-[#B5B387]/30 p-6 relative h-full min-h-[400px]">
+            <CornerAccents />
+            <h2 className="pixel-font text-[#F6F4D3] text-[12px] uppercase tracking-widest mb-10 leading-relaxed">
+              MOST PLAYED
+              <br />
+              GENRES & CATEGORIES
+            </h2>
+            <DonutChart
+              genreDistribution={[
+                ...(dashboardData?.charts?.genreDistribution || []),
+                ...(dashboardData?.charts?.categoryDistribution || []).map((cat) => ({
+                  genre: cat.category,
+                  count: cat.count,
+                  percentage: cat.percentage
+                }))
+              ]}
+            />
+          </div>
         </div>
       </div>
 
-      {/* New Row for Category Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-        <div className="lg:col-span-1">
-          <DonutChart 
-            title="CATEGORY DISTRIBUTION" 
-            genreDistribution={dashboardData?.charts?.categoryDistribution?.map(c => ({
-              genre: c.category.toUpperCase().replace('_', ' '),
-              count: c.count,
-              percentage: c.percentage
-            }))} 
-          />
-        </div>
-      </div>
-
-      {/* Recent Activity Table */}
-      <div className="w-full">
+      {/* Recent Activity Section */}
+      <div className="bg-[#2F2E24] border border-[#B5B387]/30  relative">
+        <CornerAccents />
+        <h2 className="pixel-font text-[#F6F4D3] text-[12px] uppercase tracking-widest p-6">
+          RECENT ACTIVITY LOG
+        </h2>
         <RecentActivityTable activity={dashboardData?.activity} />
       </div>
     </div>

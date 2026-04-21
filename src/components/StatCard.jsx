@@ -1,39 +1,48 @@
-import React from 'react';
+import React from "react";
 
-const StatCard = ({ icon: Icon, title, value, subtitle, className = "" }) => {
+const StatCard = ({
+  icon: Icon,
+  title,
+  value,
+  subtitle,
+  label,
+  className = "",
+}) => {
   return (
-    <div className={`relative ${className}`}>  
-      {/* Main card */}
-      <div className="bg-[#2A2B35] rounded-lg p-6 relative min-h-[180px] alexandria-font">
-        {/* Top right category label */}
-        <div className="absolute top-4 right-4 text-[#C1BE91] text-xs font-semibold uppercase tracking-wide">
-          {title}
-        </div>
-        
-        {/* Icon */}
-        <div className="absolute top-7 left-4">
-          <Icon className="text-[#C1BE91] text-xl" />
-        </div>
-        
-        {/* Main title */}
-        <div className="absolute top-25 left-4 text-[#C1BE91] text-sm font-semibold">
-          {title === 'Tracks' ? 'Total Beats' : 
-           title === 'Products' ? 'Merch Items' :
-           title === 'This Month' ? 'Donations' :
-           title === 'Total' ? 'Downloads' : title}
-        </div>
-        
-        {/* Value */}
-        <div className="absolute top-30 left-4 text-[#C1BE91] text-2xl font-bold">
-          {value}
-        </div>
-        
-        {/* Subtitle */}
-        {subtitle && (
-          <div className="absolute bottom-4 left-4 text-[#C1BE91] text-xs">
-            {subtitle}
+    <div
+      className={`relative bg-[#2F2E24] border border-[#B5B387]/30 p-5 min-h-[160px] overflow-hidden ${className}`}
+    >
+      {/* Corner Accents */}
+      <div className="absolute top-0 left-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute top-0 right-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+      <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#F6F4D3] z-20"></div>
+
+      {/* Content */}
+      <div className="relative z-10 alexandria-font h-full flex flex-col justify-between">
+        <div className="flex justify-between items-start">
+          <div className="p-2 border border-[#F6F4D3]/20">
+            <Icon className="text-[#F6F4D3] text-xl" />
           </div>
-        )}
+          <span className="text-[#F6F4D3] text-[10px] uppercase font-bold tracking-widest opacity-60">
+            {title}
+          </span>
+        </div>
+
+        <div className="mt-4">
+          <div className="text-[#F6F4D3] text-xs font-medium uppercase opacity-80 mb-1">
+            {label}
+          </div>
+          <div className="text-3xl font-bold text-[#F6F4D3] mb-1 tracking-tight">
+            {value}
+          </div>
+
+          {subtitle && (
+            <div className="text-[#F6F4D3] text-[11px] opacity-60">
+              {subtitle}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

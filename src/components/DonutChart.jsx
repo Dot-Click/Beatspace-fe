@@ -13,7 +13,7 @@ const DonutChart = ({ title = "MOST PLAYED GENRES", genreDistribution = [] }) =>
       };
     }
 
-    const colorPalette = ['#C1BE91', '#FF9800', '#2196F3', '#4CAF50', '#9C27B0', '#E91E63', '#00BCD4', '#FFC107'];
+    const colorPalette = ['#E0BC5A', '#FF9800', '#2196F3', '#4CAF50', '#9C27B0', '#E91E63', '#00BCD4', '#FFC107'];
     
     const seriesData = genreDistribution.map(item => item.count || 0);
     const labelsData = genreDistribution.map(item => item.genre || '');
@@ -23,6 +23,16 @@ const DonutChart = ({ title = "MOST PLAYED GENRES", genreDistribution = [] }) =>
       percentage: `${item.percentage || 0}%`,
       color: colorPalette[index % colorPalette.length]
     }));
+
+    const total = seriesData.reduce((a, b) => a + b, 0);
+    if (total === 0) {
+      return {
+        series: [1],
+        labels: ['No Data'],
+        colors: ['#444444'],
+        legendData: legendDataFormatted
+      };
+    }
 
     return {
       series: seriesData,
@@ -88,17 +98,11 @@ const DonutChart = ({ title = "MOST PLAYED GENRES", genreDistribution = [] }) =>
   };
 
   return (
-    <div className="bg-[#2A2B35]  border-2 border-[#C1BE91] rounded-lg p-3 alexandria-font">
-      {/* Header */}
-      <div className="mb-4">
-        <h3 className="text-[#C1BE91] text-sm font-semibold uppercase tracking-wide">
-          {title}
-        </h3>
-      </div>
+    <div className="alexandria-font w-full">
       
       {/* Chart */}
       <div className="flex justify-center mb-4">
-        <div className="w-35 h-35">
+        <div className="w-[220px] h-[220px]">
           <Chart
             options={chartData.options}
             series={chartData.series}
@@ -117,9 +121,9 @@ const DonutChart = ({ title = "MOST PLAYED GENRES", genreDistribution = [] }) =>
                className="w-3 h-3 mr-2 flex-shrink-0"
                style={{ backgroundColor: item.color }}
              ></div>
-             <span className="text-[#C1BE91] text-xs uppercase tracking-wide">
-               {item.label} {item.percentage}
-             </span>
+              <span className="text-[#F6F4D3] text-[10px] uppercase font-bold tracking-tight opacity-80">
+                {item.label} {item.percentage}
+              </span>
            </div>
          ))}
        </div>
