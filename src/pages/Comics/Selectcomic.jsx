@@ -79,7 +79,7 @@ const Selectcomic = () => {
               <Box
                 style={{
                   width: "100%",
-                  height: "260px",
+                  height: "220px",
                   border: "2px solid #d1c676",
                   overflow: "hidden",
                   backgroundColor: "#000",
