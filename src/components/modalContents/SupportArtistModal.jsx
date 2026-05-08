@@ -1040,6 +1040,8 @@ import { Box, Text, Image, TextInput, Button } from "@mantine/core";
 import { heartIcon } from "../../customIcons";
 import { useDispatch } from "react-redux";
 import { playBeatAction } from "../../store/actions/beatActions";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SupportArtistModal = ({
   isOpen,
@@ -1052,6 +1054,7 @@ const SupportArtistModal = ({
   type = "beat", // New prop to handle different content types
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [donationAmount, setDonationAmount] = useState("");
 
   if (!isOpen) return null;
@@ -1088,7 +1091,11 @@ const SupportArtistModal = ({
   };
 
   const handleCheckout = () => {
-    console.log("Checkout:", donationAmount);
+    if (!donationAmount || isNaN(donationAmount) || parseFloat(donationAmount) <= 0) {
+      toast.error("Please enter a valid donation amount");
+      return;
+    }
+    navigate("/checkout", { state: { amount: parseFloat(donationAmount), type: 'donation' } });
     onClose();
   };
 

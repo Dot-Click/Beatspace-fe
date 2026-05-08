@@ -22,9 +22,12 @@ import MerchManagement from "../pages/admin/MerchManagement";
 import ComicManagment from "../pages/admin/ComicManagment";
 import AdminGames from "../pages/admin/Games";
 import UploadAssets from "../pages/admin/UploadAssets";
+import OrdersPage from "../pages/admin/OrdersPage";
 import AdminMobileBlock from "../components/AdminMobileBlock";
 import ShopList from "../pages/Merch/shoplist";
 import UserLayout from "../layouts/UserLayout";
+import CheckoutPage from "../pages/Checkout/CheckoutPage";
+import SuccessPage from "../pages/Success/SuccessPage";
 
 
 const Router = () => {
@@ -44,6 +47,8 @@ const Router = () => {
         <Route path="/shop-list" element={<ShopList />} />
         <Route path="/merch" element={<Merch />} />
         <Route path="/buyshirt" element={<BuyShirt />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/success" element={<SuccessPage />} />
       </Route>
 
       {/* Admin Routes */}
@@ -91,6 +96,19 @@ const Router = () => {
         }
       >
         <Route index element={<MerchManagement />} />
+      </Route>
+
+      <Route 
+        path="/admin/orders" 
+        element={
+          <AdminRoute>
+            <AdminMobileBlock>
+              <DashboardLayout />
+            </AdminMobileBlock>
+          </AdminRoute>
+        }
+      >
+        <Route index element={<OrdersPage />} />
       </Route>
       
       <Route 

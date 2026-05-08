@@ -304,8 +304,11 @@ const Merch = () => {
                 }}
                 className="vision-font hover:scale-[1.02] transition-transform"
                 onClick={() => {
-                  /* Optional: add checkout logic */
-                  setIsModalOpen(false);
+                  const total = cartItems.reduce((acc, item) => acc + item.price, 0);
+                  if (total > 0) {
+                    navigate("/checkout", { state: { type: 'merch', items: cartItems, amount: total } });
+                    setIsModalOpen(false);
+                  }
                 }}
               >
                 CHECKOUT

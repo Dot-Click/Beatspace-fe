@@ -3,12 +3,18 @@ import { ADMIN_CONSTANTS } from '../constants/adminConstants';
 const initialState = {
   dashboardData: null,
   merchs: [],
+  orders: [],
+  donations: [],
   isLoading: false,
   isLoadingMerchs: false,
+  isLoadingOrders: false,
+  isLoadingDonations: false,
   isCreatingMerch: false,
   isDeletingMerch: false,
   error: null,
   merchsError: null,
+  ordersError: null,
+  donationsError: null,
   createMerchError: null,
   deleteMerchError: null,
   isUpdatingMerch: false,
@@ -222,6 +228,50 @@ const adminReducer = (state = initialState, action) => {
         ...state,
         isUpdatingComic: false,
         updateComicError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.GET_ORDERS_REQUEST:
+      return {
+        ...state,
+        isLoadingOrders: true,
+        ordersError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_ORDERS_SUCCESS:
+      return {
+        ...state,
+        orders: action.payload,
+        isLoadingOrders: false,
+        ordersError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_ORDERS_FAILURE:
+      return {
+        ...state,
+        isLoadingOrders: false,
+        ordersError: action.payload,
+      };
+
+    case ADMIN_CONSTANTS.GET_DONATIONS_REQUEST:
+      return {
+        ...state,
+        isLoadingDonations: true,
+        donationsError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_DONATIONS_SUCCESS:
+      return {
+        ...state,
+        donations: action.payload,
+        isLoadingDonations: false,
+        donationsError: null,
+      };
+
+    case ADMIN_CONSTANTS.GET_DONATIONS_FAILURE:
+      return {
+        ...state,
+        isLoadingDonations: false,
+        donationsError: action.payload,
       };
 
     default:

@@ -214,3 +214,43 @@ export const updateComic = (id, formData) => async (dispatch) => {
     return error?.response?.data;
   }
 };
+
+export const getOrders = () => async (dispatch) => {
+  dispatch({ type: ADMIN_CONSTANTS.GET_ORDERS_REQUEST });
+  try {
+    const res = await custAxios.get('/admin/orders');
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.GET_ORDERS_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.GET_ORDERS_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
+export const getDonations = () => async (dispatch) => {
+  dispatch({ type: ADMIN_CONSTANTS.GET_DONATIONS_REQUEST });
+  try {
+    const res = await custAxios.get('/admin/donations');
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.GET_DONATIONS_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.GET_DONATIONS_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
