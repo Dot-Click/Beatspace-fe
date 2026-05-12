@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Text, TextInput, PasswordInput, Button, Group, Image, Alert } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import { FaLock, FaUser, FaExclamationTriangle } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaLock, FaUser, FaExclamationTriangle, FaArrowLeft } from 'react-icons/fa';
 import { loginAction } from '../../store/actions/authActions';
 import { useDispatch } from 'react-redux';
 
@@ -234,18 +234,38 @@ const AdminLogin = () => {
         </Box>
 
         {/* Footer */}
-        <Group justify="center" style={{ marginTop: '2rem' }}>
+        <Box style={{ marginTop: '2rem', textAlign: 'center' }}>
+          <Link 
+            to="/" 
+            className="alexandria-font"
+            style={{ 
+              color: '#F6F4D3', 
+              textDecoration: 'none',
+              fontSize: '0.8rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '1rem',
+              opacity: 0.8,
+              transition: 'opacity 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
+          >
+            <FaArrowLeft size={12} />
+            BACK TO WEBSITE
+          </Link>
+
           <Text
-              className="alexandria-font"
-              style={{
-                color: '#6B7280',
-                fontSize: '0.7rem',
-                textAlign: 'center'
-              }}
-            >
-             © 2025 GLOBAL VISION - ADMIN PANEL
-           </Text>
-        </Group>
+            className="alexandria-font"
+            style={{
+              color: '#6B7280',
+              fontSize: '0.7rem',
+            }}
+          >
+            © 2025 GLOBAL VISION - ADMIN PANEL
+          </Text>
+        </Box>
       </Box>
     </Box>
   );
