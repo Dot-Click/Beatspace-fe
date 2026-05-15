@@ -628,7 +628,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         }}
         title={
           <Text size="xl" weight={800} className="tracking-widest uppercase">
-            {editingComic ? t('comics.edit_comic') : t('comics.create_comic')}
+            {editingComic ? t('comics.modals.edit_title') : t('comics.modals.add_title')}
           </Text>
         }
         styles={{

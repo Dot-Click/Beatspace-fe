@@ -1,4 +1,7 @@
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { HiChevronDown } from 'react-icons/hi';
+import './LanguageSwitcher.css';
 
 const LANGUAGES = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
@@ -7,30 +10,54 @@ const LANGUAGES = [
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
-  const current = i18n.language?.split('-')[0] ?? 'en';
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  
+  const currentLanguageCode = i18n.language?.split('-')[0] ?? 'en';
+  const currentLanguage = LANGUAGES.find(l => l.code === currentLanguageCode) || LANGUAGES[0];
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLanguageChange = (code) => {
+    i18n.changeLanguage(code);
+    setIsOpen(false);
+  };
 
   return (
-    <div style={{ display: 'flex', gap: '8px', padding: '8px' }}>
-      {LANGUAGES.map(({ code, label, flag }) => (
-        <button
-          key={code}
-          onClick={() => i18n.changeLanguage(code)}
-          aria-pressed={current === code}
-          title={label}
-          style={{
-            padding: '4px 10px',
-            borderRadius: '6px',
-            border: current === code ? '1.5px solid currentColor' : '1px solid #ccc',
-            background: current === code ? '#f0f0f0' : 'transparent',
-            color: current === code ? '#111' : '#ccc',
-            cursor: 'pointer',
-            fontWeight: current === code ? 600 : 400,
-            fontSize: '14px',
-          }}
-        >
-          {flag} {label}
-        </button>
-      ))}
+    <div className="language-switcher-container" ref={dropdownRef}>
+      <button 
+        className="language-switcher-toggle"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+      >
+        <span className="lang-flag">{currentLanguage.flag}</span>
+        <span className="lang-label">{currentLanguage.label}</span>
+        <HiChevronDown className={`chevron-icon ${isOpen ? 'open' : ''}`} />
+      </button>
+
+      {isOpen && (
+        <div className="language-switcher-dropdown">
+          {LANGUAGES.map((lang) => (
+            <button
+              key={lang.code}
+              className={`language-option ${currentLanguageCode === lang.code ? 'active' : ''}`}
+              onClick={() => handleLanguageChange(lang.code)}
+            >
+              <span className="lang-flag">{lang.flag}</span>
+              <span className="lang-label">{lang.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

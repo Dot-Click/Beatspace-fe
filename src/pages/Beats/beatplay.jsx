@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Box, Text, Image, Loader, Center } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { playBeatAction } from "../../store/actions/beatActions";
+import { useTranslation } from "react-i18next";
 import { playIcon, pauseIcon, downloadIcon } from "../../customIcons";
 import SupportArtistModal from "../../components/modalContents/SupportArtistModal";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -11,6 +12,7 @@ import { useBeatController } from "../../hooks/useBeatController";
 import { toast } from "sonner";
 
 const BeatPlay = () => {
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBeat, setSelectedBeat] = useState(null);
@@ -169,7 +171,7 @@ const BeatPlay = () => {
 
   return (
     <>
-      <UserHeader title="BE★TS" />
+      <UserHeader title={t('beats_page.title')} />
 
       <Box
         className="custom-scrollbar !top-[30%] !h-[55%] min-lg:!top-[26%] min-lg:!h-[60%]"
@@ -355,7 +357,7 @@ const BeatPlay = () => {
                 }}
                 className="!vision-font"
               >
-                NO TRACKS FOUND
+                {t('beats_page.no_tracks')}
               </Text>
             </Center>
           )}

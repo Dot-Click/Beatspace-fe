@@ -10,7 +10,10 @@ import {
   DeleteIcon,
 } from "../../../customIcons";
 
+import { useTranslation } from "react-i18next";
+
 const RecentActivityTable = ({ activity = [] }) => {
+  const { t } = useTranslation();
   // Transform activity data from API to table format
   const data = useMemo(() => {
     if (!activity || activity.length === 0) return [];
@@ -53,7 +56,7 @@ const RecentActivityTable = ({ activity = [] }) => {
     () => [
       {
         accessorKey: "type",
-        header: "TYPE",
+        header: t('dashboard.activity.table.type'),
         size: 60,
         Cell: ({ row }) => {
           const type = row.original.type;
@@ -81,7 +84,7 @@ const RecentActivityTable = ({ activity = [] }) => {
       },
       {
         accessorKey: "itemName",
-        header: "ITEM NAME",
+        header: t('dashboard.activity.table.item_name'),
         size: 200,
         Cell: ({ cell }) => (
           <Text
@@ -94,7 +97,7 @@ const RecentActivityTable = ({ activity = [] }) => {
       },
       {
         accessorKey: "category",
-        header: "CATEGORY",
+        header: t('dashboard.activity.table.category'),
         size: 120,
         Cell: ({ cell }) => (
           <Text
@@ -107,25 +110,29 @@ const RecentActivityTable = ({ activity = [] }) => {
       },
       {
         accessorKey: "action",
-        header: "ACTION",
+        header: t('dashboard.activity.table.action'),
         size: 140,
         Cell: ({ cell }) => {
           const action = cell.getValue();
           let color = "";
           let ActionIcon = null;
+          let actionLabel = action;
 
           switch (action) {
             case "UPLOADED":
               color = "#12E008";
               ActionIcon = UploadIcon;
+              actionLabel = t('dashboard.activity.table.actions.uploaded');
               break;
             case "EDITED":
               color = "#51F6D2";
               ActionIcon = EditIcon;
+              actionLabel = t('dashboard.activity.table.actions.edited');
               break;
             case "DELETED":
               color = "#FF2222";
               ActionIcon = DeleteIcon;
+              actionLabel = t('dashboard.activity.table.actions.deleted');
               break;
             default:
               color = "#";
@@ -143,7 +150,7 @@ const RecentActivityTable = ({ activity = [] }) => {
                   textTransform: "uppercase",
                 }}
               >
-                {action}
+                {actionLabel}
               </Text>
             </Box>
           );
@@ -151,7 +158,7 @@ const RecentActivityTable = ({ activity = [] }) => {
       },
       {
         accessorKey: "timestamp",
-        header: "TIMESTAMP",
+        header: t('dashboard.activity.table.timestamp'),
         size: 150,
         Cell: ({ cell }) => (
           <Text
@@ -163,7 +170,7 @@ const RecentActivityTable = ({ activity = [] }) => {
         ),
       },
     ],
-    [],
+    [t],
   );
 
   const table = useMantineReactTable({

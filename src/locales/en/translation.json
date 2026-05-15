@@ -4,6 +4,16 @@
     "subtitle": "SYSTEM CONTROL INTERFACE",
     "logout": "Logout"
   },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "beatmaker": "Beatmaker",
+    "merch_management": "Merch Management",
+    "orders_donations": "Orders & Donations",
+    "comics_management": "Comics Management",
+    "games": "Games",
+    "asset_management": "Asset Management",
+    "settings": "Settings"
+  },
   "dashboard": {
     "stats": {
       "tracks": "TRACKS",
@@ -24,7 +34,19 @@
       "genres_categories": "GENRES & CATEGORIES"
     },
     "activity": {
-      "title": "RECENT ACTIVITY LOG"
+      "title": "RECENT ACTIVITY LOG",
+      "table": {
+        "type": "TYPE",
+        "item_name": "ITEM NAME",
+        "category": "CATEGORY",
+        "action": "ACTION",
+        "timestamp": "TIMESTAMP",
+        "actions": {
+          "uploaded": "UPLOADED",
+          "edited": "EDITED",
+          "deleted": "DELETED"
+        }
+      }
     }
   },
   "admin": {
@@ -75,7 +97,13 @@
       "retro_mode": "RETRO NEON MODE",
       "retro_mode_desc": "Enhanced CRT effects",
       "save": "SAVE SETTINGS",
-      "saving": "SAVING..."
+      "saving": "SAVING...",
+      "languages": {
+        "english": "English",
+        "french": "French",
+        "spanish": "Spanish",
+        "german": "German"
+      }
     },
     "categories": {
       "title": "CATEGORY & GENRE MANAGEMENT",
@@ -89,8 +117,15 @@
       "actions": "ACTIONS",
       "loading": "Loading {{type}}s...",
       "none_found": "No {{type}}s found",
-      "delete_modal_title": "DELETE CATEGORY",
-      "delete_modal_message": "Are you sure you want to delete this category? This might affect items using it."
+      "delete_modal_message": "Are you sure you want to delete this category? This might affect items using it.",
+      "types": {
+        "genre": "Genre",
+        "category": "Category"
+      },
+      "placeholders": {
+        "genre": "e.g. Trap, Drill",
+        "category": "e.g. Saphire, Phoenix"
+      }
     },
     "audio": {
       "title": "AUDIO & PLAYER SETTINGS",
@@ -109,6 +144,19 @@
     },
     "visual": {
       "title": "VISUAL CUSTOMIZATION"
+    },
+    "messages": {
+      "save_success": "General settings saved successfully",
+      "save_failed": "Failed to save settings",
+      "delete_success": "Category deleted successfully",
+      "delete_failed": "Failed to delete category",
+      "name_required": "Name is required",
+      "genre_added": "Genre added successfully",
+      "genre_updated": "Genre updated successfully",
+      "category_added": "Category added successfully",
+      "category_updated": "Category updated successfully",
+      "add_failed": "Failed to add category",
+      "update_failed": "Failed to update category"
     },
     "security": {
       "title": "SECURITY & BACKUP",
@@ -147,24 +195,29 @@
         "total_donations": "Total Donations"
       },
       "filters": {
-        "title": "SEARCH & FILTER",
-        "search_placeholder": "Search beats...",
-        "all_genres": "All Genres"
+        "search_placeholder": "SEARCH BY NAME, ARTIST OR GENRE...",
+        "all_genres": "ALL GENRES"
       },
       "table": {
-        "name": "NAME",
+        "name": "NAME / ARTIST",
         "genre_category": "GENRE / CATEGORY",
         "plays": "PLAYS",
         "downloads": "DOWNLOADS",
         "donations": "DONATIONS",
         "actions": "ACTIONS",
-        "category_prefix": "Category: "
+        "no_tracks": "NO TRACKS FOUND IN THIS GENRE",
+        "showing": "SHOWING {{start}}-{{end}} OF {{total}} TRACKS"
       }
     },
-    "modals": {
-      "edit_title": "EDIT BEAT",
-      "delete_title": "DELETE BEAT",
-      "delete_message": "Are you sure you want to delete this beat?"
+    "edit_modal": {
+      "title": "EDIT BEAT DATA",
+      "cancel": "Cancel",
+      "updating": "UPDATING DB...",
+      "save": "OVERWRITE DB"
+    },
+    "delete_modal": {
+      "title": "DELETE BEAT",
+      "message": "Are you sure you want to permanently delete this beat?"
     },
     "messages": {
       "upload_success": "Beat uploaded successfully!",
@@ -469,5 +522,258 @@
     "subscription_hint": "Stay informed about upcoming renewals and cancellations.",
     "spending_insights": "Spending Insights",
     "spending_hint": "Receive alerts based on deadline goals"
+  },
+  "menu": {
+    "title": "MENU",
+    "comics": "COMICS",
+    "beats": "BEATS",
+    "shop": "SHOP",
+    "games": "GAMES"
+  },
+  "beats_page": {
+    "title": "BE★TS",
+    "saphire": "SAPHIRE",
+    "phonix": "PHONiX",
+    "horus": "HORUS",
+    "spale_ralooon": "SPALE RALOOON",
+    "no_tracks": "NO TRACKS FOUND"
+  },
+  "shop_page": {
+    "title": "SHOP",
+    "shirts": "SHIRTS"
+  },
+  "games_page": {
+    "title": "GAMES",
+    "eternal_run": "ETERNAL RUN",
+    "start_game": "START GAME"
+  },
+  "games": {
+    "add_new": "DEPLOY NEW BUILD"
+  },
+  "assets": {
+    "title": "ASSET MANAGEMENT SYSTEM",
+    "add_merch": "ADD NEW ASSET",
+    "drop_here": "DROP ASSETS HERE",
+    "supports": "PNG, JPEG, MP3, WAV (MAX 50MB)",
+    "select_files": "BROWSE LOCAL FILES",
+    "search_placeholder": "Search by filename, category or user...",
+    "types": {
+      "all": "ALL TYPES",
+      "audio": "AUDIO",
+      "image": "IMAGE",
+      "other": "OTHER"
+    },
+    "categories": {
+      "all": "ALL CATEGORIES",
+      "games": "GAMES",
+      "merch": "MERCH",
+      "beats": "BEATS"
+    },
+    "table": {
+      "preview": "PREVIEW",
+      "file_name": "FILE NAME",
+      "category": "CATEGORY",
+      "size": "SIZE",
+      "uploaded_by": "UPLOADED BY",
+      "date_added": "DATE ADDED",
+      "actions": "ACTIONS"
+    },
+    "actions": {
+      "download": "Download",
+      "edit": "Edit",
+      "remove": "Delete"
+    },
+    "no_assets": "No assets found in the system",
+    "upload_started": "Start uploading files to see them here",
+    "current_user": "Current User"
+  },
+  "comics": {
+    "title": "COMICS MANAGEMENT",
+    "title_page": "COMICS MANAGEMENT",
+    "subtitle": "MANAGE CHAPTERS & RELEASES",
+    "add_comic": "ADD NEW COMIC",
+    "edit": "EDIT",
+    "delete": "DELETE",
+    "cover": "COVER",
+    "drag_reorder": "DRAG TO REORDER",
+    "set_cover": "SET AS COVER",
+    "current_thumbnail": "Current Thumbnail",
+    "set_thumbnail": "Set as Thumbnail",
+    "delete_page": "Delete Page",
+    "page_info": "Page {{current}} of {{total}}",
+    "navigation_hint": "Use arrow keys or click arrows to navigate",
+    "preview": "PREVIEW",
+    "remove": "REMOVE",
+    "chapters": "CHAPTERS",
+    "table": {
+      "cover": "COVER",
+      "title": "TITLE / AUTHOR",
+      "chapters": "CHAPTERS",
+      "status": "STATUS",
+      "actions": "ACTIONS"
+    },
+    "modals": {
+      "add_title": "UPLOAD NEW COMIC",
+      "edit_title": "EDIT COMIC DATA",
+      "details_tab": "GENERAL INFO",
+      "pages_tab": "CHAPTER PAGES",
+      "save_button": "LAUNCH COMIC",
+      "updating": "UPDATING...",
+      "cancel": "CANCEL",
+      "delete_title": "DELETE COMIC",
+      "delete_message": "Are you sure you want to permanently delete this comic?"
+    },
+    "tabs": {
+      "details": "GENERAL INFO",
+      "media": "CHAPTER PAGES"
+    },
+    "form": {
+      "title": "COMIC TITLE",
+      "title_label": "COMIC TITLE",
+      "title_placeholder": "e.g. The Neon Saga",
+      "artist": "AUTHOR NAME",
+      "artist_placeholder": "e.g. Space Ghost",
+      "author_label": "AUTHOR NAME",
+      "chapter_title": "CHAPTER TITLE",
+      "chapter_label": "CHAPTER TITLE",
+      "chapter_placeholder": "e.g. Chapter 1: The Beginning",
+      "description": "DESCRIPTION",
+      "desc_label": "DESCRIPTION",
+      "description_placeholder": "Tell the story behind this comic...",
+      "status": "VISIBILITY STATUS",
+      "status_label": "VISIBILITY STATUS",
+      "active": "Active",
+      "inactive": "Inactive",
+      "cover_label": "COMIC COVER IMAGE",
+      "change_cover": "Change Cover",
+      "upload_cover": "Upload Cover",
+      "upload_pages": "UPLOAD PAGES",
+      "upload_help": "DRAG & DROP PAGES OR CLICK TO UPLOAD"
+    },
+    "actions": {
+      "cancel": "CANCEL",
+      "save": "SAVE CHANGES",
+      "create": "LAUNCH COMIC"
+    },
+    "messages": {
+      "upload_required": "Please upload at least one page",
+      "save_success": "Comic saved successfully",
+      "save_failed": "Failed to save comic",
+      "delete_success": "Comic deleted successfully",
+      "no_comics": "No comic records found in the database",
+      "delete_confirm": "Are you sure you want to delete {{title}}?"
+    }
+  },
+  "merch": {
+    "title": "MERCH MANAGEMENT",
+    "subtitle": "CLOTHING & ACCESSORIES",
+    "upload": {
+      "title": "UPLOAD NEW ASSET",
+      "name_label": "PRODUCT NAME",
+      "name_placeholder": "e.g. Vintage Space Tee",
+      "price_label": "PRICE (€)",
+      "description_label": "DESCRIPTION",
+      "description_placeholder": "Tell the story behind this item...",
+      "sizes_label": "SIZES",
+      "button": "LAUNCH ASSET",
+      "uploading": "LAUNCHING...",
+      "merch_images_label": "Merch Images",
+      "files_selected": "{{count}} files selected",
+      "drag_drop": "DRAG AND DROP OR CLICK TO UPLOAD"
+    },
+    "inventory": {
+      "title": "ACTIVE INVENTORY",
+      "stats": {
+        "total_items": "{{count}} ITEMS",
+        "in_stock": "{{count}} IN STOCK"
+      },
+      "table": {
+        "preview": "PREVIEW",
+        "product_name": "PRODUCT NAME",
+        "price": "PRICE",
+        "sizes": "SIZES",
+        "stock": "STOCK",
+        "actions": "ACTIONS"
+      }
+    },
+    "modals": {
+      "view_title": "PRODUCT DETAILS",
+      "edit_title": "MODIFY ASSET",
+      "updating": "UPDATING...",
+      "save_changes": "SAVE CHANGES",
+      "delete_title": "DELETE ASSET",
+      "delete_message": "Are you sure you want to permanently delete this item?"
+    },
+    "messages": {
+      "missing_fields": "Please fill in all required fields",
+      "missing_image": "Please select at least one image",
+      "upload_success": "Merch created successfully",
+      "upload_failed": "Failed to create merch",
+      "delete_success": "Merch deleted successfully",
+      "delete_failed": "Failed to delete merch"
+    }
+  },
+  "support_modal": {
+    "title": "SUPPORT ARTIST",
+    "beat_label": "BEAT:",
+    "comic_label": "COMIC:",
+    "by_label": "BY:",
+    "beat_desc_1": "This beat is free to download.",
+    "beat_desc_2": "Support the artist if you can.",
+    "comic_desc_1": "Next chapter soon! Stay tuned!",
+    "comic_desc_2": "You can support {{artist}} and their project by giving any amount you want",
+    "donation_label": "DONATION AMOUNT €",
+    "checkout": "CHECKOUT",
+    "download_beat": "DOWNLOAD THE BEAT"
+  },
+  "orders": {
+    "title": "ORDERS & DONATIONS",
+    "tabs": {
+      "merch": "MERCH ORDERS",
+      "donations": "DONATIONS"
+    },
+    "merch_table": {
+      "order_id": "ORDER ID",
+      "customer": "CUSTOMER",
+      "date": "DATE",
+      "amount": "AMOUNT",
+      "payment": "PAYMENT",
+      "fulfillment": "FULFILLMENT",
+      "actions": "ACTIONS"
+    },
+    "donations_table": {
+      "transaction_id": "TRANSACTION ID",
+      "donor": "DONOR",
+      "date": "DATE",
+      "amount": "AMOUNT",
+      "status": "STATUS"
+    },
+    "details": {
+      "title": "Order Details",
+      "customer_info": "Customer Information",
+      "shipping_address": "Shipping Address",
+      "items": "Items",
+      "summary": "Summary",
+      "total": "Total",
+      "status": "Status"
+    },
+    "status": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "pending": "Pending",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "messages": {
+      "update_success": "Status updated successfully",
+      "update_failed": "Failed to update status",
+      "loading_orders": "Loading orders...",
+      "no_orders": "No orders found",
+      "no_donations": "No donations found"
+    },
+    "customer": {
+      "guest": "Guest"
+    }
   }
 }

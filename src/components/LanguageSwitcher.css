@@ -1,0 +1,100 @@
+.language-switcher-container {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+  font-family: "Alexandria", sans-serif;
+}
+
+.language-switcher-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(15, 15, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(246, 244, 211, 0.2);
+  border-radius: 6px;
+  color: #F6F4D3;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.language-switcher-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(246, 244, 211, 0.5);
+}
+
+.lang-flag {
+  font-size: 0.8rem;
+}
+
+.lang-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.chevron-icon {
+  font-size: 12px;
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.language-switcher-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 100%;
+  background: rgba(15, 15, 20, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(246, 244, 211, 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  color: #F6F4D3;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  font-size: 10px;
+}
+
+.language-option:hover {
+  background: rgba(246, 244, 211, 0.1);
+}
+
+.language-option.active {
+  background: rgba(246, 244, 211, 0.15);
+  font-weight: 600;
+}
+
+.language-option.active::after {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: #F6F4D3;
+  border-radius: 50%;
+  margin-left: auto;
+}

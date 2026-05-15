@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Box, Text, Group, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
+import { useTranslation } from "react-i18next";
 
 const Games = () => {
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ const Games = () => {
 
   return (
     <>
-      <UserHeader title="GAMES" />
+      <UserHeader title={t('games_page.title')} />
 
       <Box
         style={{
@@ -58,7 +60,7 @@ const Games = () => {
               margin: 0,
             }}
           >
-            ETERNAL RUN
+            {t('games_page.eternal_run')}
           </Text>
 
           <Image
@@ -145,7 +147,7 @@ const Games = () => {
                   margin: 0,
                 }}
               >
-                {">"} START GAME
+                {"> "} {t('games_page.start_game')}
               </Text>
             </div>
           </Group>

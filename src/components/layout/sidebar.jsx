@@ -13,68 +13,61 @@ import {
   SettingsIcon,
 } from "../../customIcons";
 
+import { useTranslation } from "react-i18next";
+
 const adminMenu = [
   {
     id: 1,
-    label: "Dashboard",
+    labelKey: "sidebar.dashboard",
     link: "/admin/dashboard",
     type: "route",
     icon: DashboardIcon,
   },
   {
     id: 2,
-    label: "Beatmaker",
+    labelKey: "sidebar.beatmaker",
     link: "/admin/beatmaker",
     type: "route",
     icon: BeatmakerIcon,
   },
-  // {
-  //   id: 3,
-  //   label: "Beat",
-  //   link: "/admin/beat",
-  //   type: "route",
-  //   icon: BeatIcon,
-  // },
   {
     id: 4,
-    label: "Merch Management",
+    labelKey: "sidebar.merch_management",
     link: "/admin/merch-management",
     type: "route",
     icon: MerchIcon,
   },
   {
     id: 7,
-    label: "Orders & Donations",
+    labelKey: "sidebar.orders_donations",
     link: "/admin/orders",
     type: "route",
     icon: DonationsIcon,
   },
   {
     id: 5,
-    label: "Comics Management",
-    // Fix route to match router path
+    labelKey: "sidebar.comics_management",
     link: "/admin/comic-management",
     type: "route",
     icon: ComicsIcon,
   },
   {
     id: 6,
-    label: "Games",
+    labelKey: "sidebar.games",
     link: "/admin/games",
     type: "route",
     icon: GamesIcon,
   },
-
   {
     id: 8,
-    label: "Asset Management",
+    labelKey: "sidebar.asset_management",
     link: "/admin/asset-management",
     type: "route",
     icon: AssessmentIcon,
   },
   {
     id: 9,
-    label: "Settings",
+    labelKey: "sidebar.settings",
     link: "/admin/settings",
     type: "route",
     icon: SettingsIcon,
@@ -82,6 +75,7 @@ const adminMenu = [
 ];
 
 const Sidebar = ({ opened, toggle }) => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { settings } = useSettings();
@@ -123,7 +117,7 @@ const Sidebar = ({ opened, toggle }) => {
                     color={isActive(item.link) ? "#C1BE91" : "#25262F"}
                   />
                 </div>
-                <span className="md:inline hidden">{item.label}</span>
+                <span className="md:inline hidden">{t(item.labelKey)}</span>
               </button>
             );
           })}

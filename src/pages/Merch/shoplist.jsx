@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { Box, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
+import { useTranslation } from "react-i18next";
 
 const ShopList = () => {
-  const [selectedItem, setSelectedItem] = useState("SHIRTS");
+  const { t } = useTranslation();
+  const [selectedItem, setSelectedItem] = useState("shirts");
   const navigate = useNavigate();
 
-  const menuItems = ["SHIRTS"];
+  const menuItems = ["shirts"];
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
-    if (item === "SHIRTS") {
+    if (item === "shirts") {
       navigate("/merch");
     }
   };
@@ -26,7 +28,7 @@ const ShopList = () => {
 
   return (
     <>
-      <UserHeader title="SHOP" />
+      <UserHeader title={t('shop_page.title')} />
 
       <Box
         style={{
@@ -94,7 +96,7 @@ const ShopList = () => {
                 }}
                 className="vision-font max-sm:!text-[1rem] min-md:!text-[1.5rem] min-lg:!text-[2rem] min-xl:!text-[2.5rem]"
               >
-                {item}
+                {t(`shop_page.${item}`)}
               </Text>
 
               {selectedItem === item && (

@@ -35,6 +35,7 @@ const BeatRow = ({
   handleOpenEditModal,
   handleDeleteBeat,
 }) => {
+  const { t } = useTranslation();
   const tags = Array.isArray(beat.genre_tags)
     ? beat.genre_tags
     : beat.genre_tags
@@ -1143,14 +1144,14 @@ const Beat = () => {
                 onClick={() => setIsEditModalOpen(false)}
                 className="px-6 py-2 bg-transparent border-2 border-[#D4D4B0] text-[#D4D4B0] font-bold uppercase tracking-widest hover:bg-[#4A4A3C] transition-colors text-xs"
               >
-                Cancel
+                {t('beatmaker.edit_modal.cancel')}
               </button>
               <button
                 onClick={handleEditBeat}
                 disabled={isCreating}
                 className="px-6 py-2 bg-[#FFD700] text-black font-black uppercase tracking-widest hover:bg-[#E4DA33] transition-colors border-2 border-[#FFD700] disabled:opacity-50 flex items-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)] text-xs"
               >
-                {isCreating ? "UPDATING DB..." : "OVERWRITE DB"}
+                {isCreating ? t('beatmaker.edit_modal.updating') : t('beatmaker.edit_modal.save')}
               </button>
             </div>
           </div>
@@ -1159,8 +1160,8 @@ const Beat = () => {
 
       <ConfirmModal 
         isOpen={deleteConfirm.isOpen}
-        title="DELETE BEAT"
-        message="Are you sure you want to permanently delete this beat?"
+        title={t('beatmaker.delete_modal.title')}
+        message={t('beatmaker.delete_modal.message')}
         onConfirm={confirmDeleteBeat}
         onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
       />

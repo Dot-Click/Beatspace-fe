@@ -1042,6 +1042,7 @@ import { useDispatch } from "react-redux";
 import { playBeatAction } from "../../store/actions/beatActions";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const SupportArtistModal = ({
   isOpen,
@@ -1053,6 +1054,7 @@ const SupportArtistModal = ({
   imageSrc = "/assets/artist.png",
   type = "beat", // New prop to handle different content types
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [donationAmount, setDonationAmount] = useState("");
@@ -1167,15 +1169,15 @@ const SupportArtistModal = ({
             letterSpacing: 2,
           }}
         >
-          SUPPORT ARTIST
+          {t('support_modal.title')}
         </Text>
 
         {/* Info */}
         <Text align="center" mt={8} size="sm" opacity={0.85}>
-          {type === "comic" ? "Comic" : "Beat"}: {beatName}
+          {type === "comic" ? t('support_modal.comic_label') : t('support_modal.beat_label')} {beatName}
         </Text>
-        <Text align="center" size="sm" opacity={0.85}>
-          By: {artistName}
+        <Text align="center" style={{ fontSize: 13, letterSpacing: 1 }}>
+          {t('support_modal.by_label')} {artistName}
         </Text>
 
         {/* Heart */}
@@ -1194,15 +1196,15 @@ const SupportArtistModal = ({
         >
           {type === "comic" ? (
             <>
-              Next chapter soon! Stay tuned!
+              {t('support_modal.comic_desc_1')}
               <br />
-              You can support {artistName} and their project by giving any amount you want
+              {t('support_modal.comic_desc_2', { artist: artistName })}
             </>
           ) : (
             <>
-              This beat is free to download.
+              {t('support_modal.beat_desc_1')}
               <br />
-              Support the artist if you can.
+              {t('support_modal.beat_desc_2')}
             </>
           )}
         </Text>
@@ -1214,7 +1216,7 @@ const SupportArtistModal = ({
           align="center"
           style={{ fontSize: 16, letterSpacing: 1 }}
         >
-          DONATION AMOUNT €
+          {t('support_modal.donation_label')}
         </Text>
 
         <TextInput
@@ -1244,7 +1246,7 @@ const SupportArtistModal = ({
             letterSpacing: 1,
           }}
         >
-          CHECKOUT
+          {t('support_modal.checkout')}
         </Button>
 
         {type !== "comic" && (
@@ -1262,7 +1264,7 @@ const SupportArtistModal = ({
               background: "transparent",
             }}
           >
-            DOWNLOAD THE BEAT
+            {t('support_modal.download_beat')}
           </Button>
         )}
       </Box>

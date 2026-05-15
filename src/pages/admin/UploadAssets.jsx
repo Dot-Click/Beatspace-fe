@@ -81,7 +81,7 @@ const AssetUpload = memo(({ onFileUpload }) => {
       </div>
       
       <div 
-        className={`bg-[rgba(82,81,50,1)] flex flex-col items-center font-normal mt-6 sm:mt-7 lg:mt-[31px] py-12 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-20 border-[rgba(203,200,149,1)] border-dashed border-2 sm:border-[3px] transition-colors ${
+        className={`bg-[rgba(82,81,50,1)] flex flex-col items-center font-normal mt-6 sm:mt-7 lg:mt-[31px] py-8 sm:py-12 lg:py-16 px-4 sm:px-8 lg:px-20 border-[rgba(203,200,149,1)] border-dashed border-2 sm:border-[3px] transition-colors ${
           isDragOver ? 'bg-[rgba(102,101,70,1)]' : ''
         }`}
         onDragOver={handleDragOver}
@@ -223,7 +223,7 @@ const AssetRow = memo(({ asset, onAction }) => {
 
   return (
     <div 
-      className="bg-[rgba(197,194,116,0.16)] border grid grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 w-full items-center text-sm sm:text-base lg:text-xl text-white font-normal leading-tight px-3 sm:px-6 lg:px-[30px] py-4 sm:py-6 lg:py-10 border-[rgba(203,200,149,1)] border-solid"
+      className="bg-[rgba(197,194,116,0.16)] border grid grid-cols-[50px_1fr_50px] sm:grid-cols-[60px_1fr_120px_80px] lg:grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 w-full items-center text-sm sm:text-base lg:text-lg text-white font-normal leading-tight px-3 sm:px-6 lg:px-[30px] py-3 sm:py-4 lg:py-5 border-[rgba(203,200,149,1)] border-solid"
       role="row"
     >
       <div className="flex items-center justify-start" role="cell">
@@ -296,7 +296,7 @@ const AssetTable = memo(({ assets, onAssetAction }) => {
   const { t } = useTranslation();
   return (
     <div className="mt-4 sm:mt-[17px]" role="region" aria-label={t('assets.title')}>
-      <div className="bg-[rgba(19,19,25,1)] grid grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 text-sm sm:text-base lg:text-xl text-[rgba(203,200,149,1)] font-normal leading-tight px-3 sm:px-6 lg:px-[26px] py-3 sm:py-4 lg:py-[22px]">
+      <div className="bg-[rgba(19,19,25,1)] grid grid-cols-[50px_1fr_50px] sm:grid-cols-[60px_1fr_120px_80px] lg:grid-cols-[60px_1fr_120px_100px_120px_120px_80px] gap-4 text-sm sm:text-base lg:text-lg text-[rgba(203,200,149,1)] font-normal leading-tight px-3 sm:px-6 lg:px-[26px] py-2 sm:py-3 lg:py-4">
         <div className="text-left">{t('assets.table.preview')}</div>
         <div className="text-left">{t('assets.table.file_name')}</div>
         <div className="hidden sm:block text-left">{t('assets.table.category')}</div>
@@ -470,7 +470,7 @@ const Assets = () => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gray-900 p-2 sm:p-4 alexandria-font overflow-x-hidden">
+    <main className="w-full bg-[#1A1A23] p-2 sm:p-4 alexandria-font overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="space-y-4 sm:space-y-6">
           <AssetUpload onFileUpload={handleFileUpload} />

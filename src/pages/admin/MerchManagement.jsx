@@ -367,15 +367,7 @@ export default function MerchManagement() {
               onChange={handleFileSelect}
               hidden
             />
-
-            <button className="btn" onClick={() => document.getElementById("file-input")?.click()}>{t('merch.upload.select_files')}</button>
-            {selectedFiles.length > 0 && (
-              <div className="stats" style={{ fontSize: 14 }}>
-                {t('merch.upload.files_selected', { count: selectedFiles.length })}
-              </div>
-            )}     
-                                                                                                                                                                                                       
-            {/* Inline form fields */}
+            
             <div style={{ width: "100%", maxWidth: 720, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
                 <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.name_label')}</span>
@@ -431,6 +423,17 @@ export default function MerchManagement() {
                     </button>
                   ))}
                 </div>
+                {selectedFiles.length > 0 && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "var(--green2)",
+                      fontSize: 12,
+                    }}
+                  >
+                    {t('merch.upload.files_selected', { count: selectedFiles.length }).toUpperCase()}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -503,7 +506,7 @@ export default function MerchManagement() {
                   className={`stock ${item.stock === "in stock" || item.stock === "In Stock" ? "in" : "out"}`}
                   style={{ fontSize: 20, textTransform: "capitalize" }}
                 >
-                  {item.stock}
+                  {item.stock === "in stock" || item.stock === "In Stock" ? t('merch.inventory.stats.in_stock', { count: "" }).replace("  ", " ").trim() : item.stock}
                 </div>
                 <div className="actions">
                   <button className="a-btn a-green" aria-label="View" onClick={() => handleView(item)}>

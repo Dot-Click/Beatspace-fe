@@ -2,25 +2,27 @@ import React, { useState } from "react";
 import { Box, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
+import { useTranslation } from "react-i18next";
 
 const Beats = () => {
-  const [selectedItem, setSelectedItem] = useState("PHONiX");
+  const { t } = useTranslation();
+  const [selectedItem, setSelectedItem] = useState("phonix");
   const navigate = useNavigate();
 
   const menuItems = [
-    { label: "SAPHIRE", value: "saphire" },
-    { label: "PHONiX", value: "phonix" },
-    { label: "HORUS", value: "horus" },
-    { label: "SPALE RALOOON", value: "spale_ralooon" }
+    { key: "saphire", value: "saphire" },
+    { key: "phonix", value: "phonix" },
+    { key: "horus", value: "horus" },
+    { key: "spale_ralooon", value: "spale_ralooon" }
   ];
 
   const handleItemClick = (item) => {
-    setSelectedItem(item.label);
+    setSelectedItem(item.key);
     navigate(`/beatplay?category=${item.value}`);
   };
 
   const handleItemHover = (item) => {
-    setSelectedItem(item.label);
+    setSelectedItem(item.key);
   };
 
   const handleItemLeave = () => {
@@ -29,7 +31,7 @@ const Beats = () => {
 
   return (
     <>
-      <UserHeader title="BE★TS" />
+      <UserHeader title={t('beats_page.title')} />
 
       <Box
         style={{
@@ -68,7 +70,7 @@ const Beats = () => {
               onMouseEnter={() => handleItemHover(item)}
               onMouseLeave={handleItemLeave}
             >
-              {selectedItem === item.label && (
+              {selectedItem === item.key && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{
@@ -90,16 +92,16 @@ const Beats = () => {
 
               <Text
                 style={{
-                  color: selectedItem === item.label ? "#F6F4D3" : "#9ca3af",
-                  textShadow: selectedItem === item.label ? "0 0 10px #F6F4D3" : "none",
+                  color: selectedItem === item.key ? "#F6F4D3" : "#9ca3af",
+                  textShadow: selectedItem === item.key ? "0 0 10px #F6F4D3" : "none",
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
                 className="!text-lg vision-font min-md:!text-xl min-lg:!text-3xl"
               >
-                {item.label}
+                {t(`beats_page.${item.key}`)}
               </Text>
-              {selectedItem === item.label && (
+              {selectedItem === item.key && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{

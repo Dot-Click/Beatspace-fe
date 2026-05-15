@@ -4,6 +4,16 @@
     "subtitle": "INTERFACE DE CONTRÔLE DU SYSTÈME",
     "logout": "Se déconnecter"
   },
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "beatmaker": "Beatmaker",
+    "merch_management": "Gestion Merch",
+    "orders_donations": "Commandes & Dons",
+    "comics_management": "Gestion BD",
+    "games": "Jeux",
+    "asset_management": "Gestion des actifs",
+    "settings": "Paramètres"
+  },
   "dashboard": {
     "stats": {
       "tracks": "PISTES",
@@ -24,7 +34,19 @@
       "genres_categories": "GENRES & CATÉGORIES"
     },
     "activity": {
-      "title": "JOURNAL D'ACTIVITÉ RÉCENTE"
+      "title": "JOURNAL D'ACTIVITÉ RÉCENTE",
+      "table": {
+        "type": "TYPE",
+        "item_name": "NOM DE L'ARTICLE",
+        "category": "CATÉGORIE",
+        "action": "ACTION",
+        "timestamp": "HORODATAGE",
+        "actions": {
+          "uploaded": "TÉLÉCHARGÉ",
+          "edited": "MODIFIÉ",
+          "deleted": "SUPPRIMÉ"
+        }
+      }
     }
   },
   "admin": {
@@ -75,7 +97,13 @@
       "retro_mode": "MODE RÉTRO NÉON",
       "retro_mode_desc": "Effets CRT améliorés",
       "save": "ENREGISTRER LES PARAMÈTRES",
-      "saving": "ENREGISTREMENT..."
+      "saving": "ENREGISTREMENT...",
+      "languages": {
+        "english": "Anglais",
+        "french": "Français",
+        "spanish": "Espagnol",
+        "german": "Allemand"
+      }
     },
     "categories": {
       "title": "GESTION DES CATÉGORIES & GENRES",
@@ -89,8 +117,15 @@
       "actions": "ACTIONS",
       "loading": "Chargement des {{type}}s...",
       "none_found": "Aucun {{type}} trouvé",
-      "delete_modal_title": "SUPPRIMER LA CATÉGORIE",
-      "delete_modal_message": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela pourrait affecter les éléments l'utilisant."
+      "delete_modal_message": "Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela pourrait affecter les éléments l'utilisant.",
+      "types": {
+        "genre": "Genre",
+        "category": "Catégorie"
+      },
+      "placeholders": {
+        "genre": "ex: Trap, Drill",
+        "category": "ex: Saphire, Phoenix"
+      }
     },
     "audio": {
       "title": "PARAMÈTRES AUDIO & LECTEUR",
@@ -109,6 +144,19 @@
     },
     "visual": {
       "title": "PERSONNALISATION VISUELLE"
+    },
+    "messages": {
+      "save_success": "Paramètres généraux enregistrés avec succès",
+      "save_failed": "Échec de l'enregistrement des paramètres",
+      "delete_success": "Catégorie supprimée avec succès",
+      "delete_failed": "Échec de la suppression de la catégorie",
+      "name_required": "Le nom est requis",
+      "genre_added": "Genre ajouté avec succès",
+      "genre_updated": "Genre mis à jour avec succès",
+      "category_added": "Catégorie ajoutée avec succès",
+      "category_updated": "Catégorie mise à jour avec succès",
+      "add_failed": "Échec de l'ajout de la catégorie",
+      "update_failed": "Échec de la mise à jour de la catégorie"
     },
     "security": {
       "title": "SÉCURITÉ & SAUVEGARDE",
@@ -147,24 +195,29 @@
         "total_donations": "Total des Dons"
       },
       "filters": {
-        "title": "RECHERCHE & FILTRE",
-        "search_placeholder": "Rechercher des beats...",
-        "all_genres": "Tous les Genres"
+        "search_placeholder": "RECHERCHER PAR NOM, ARTISTE OU GENRE...",
+        "all_genres": "TOUS LES GENRES"
       },
       "table": {
-        "name": "NOM",
+        "name": "NOM / ARTISTE",
         "genre_category": "GENRE / CATÉGORIE",
-        "plays": "LECTURES",
+        "plays": "ÉCOUTES",
         "downloads": "TÉLÉCHARGEMENTS",
         "donations": "DONS",
         "actions": "ACTIONS",
-        "category_prefix": "Catégorie : "
+        "no_tracks": "AUCUNE PISTE TROUVÉE DANS CE GENRE",
+        "showing": "AFFICHAGE DE {{start}}-{{end}} SUR {{total}} PISTES"
       }
     },
-    "modals": {
-      "edit_title": "MODIFIER LE BEAT",
-      "delete_title": "SUPPRIMER LE BEAT",
-      "delete_message": "Êtes-vous sûr de vouloir supprimer ce beat ?"
+    "edit_modal": {
+      "title": "MODIFIER LES DONNÉES DU BEAT",
+      "cancel": "Annuler",
+      "updating": "MISE À JOUR DE LA BDD...",
+      "save": "ÉCRASER LA BDD"
+    },
+    "delete_modal": {
+      "title": "SUPPRIMER LE BEAT",
+      "message": "Êtes-vous sûr de vouloir supprimer définitivement ce beat ?"
     },
     "messages": {
       "upload_success": "Beat téléchargé avec succès !",
@@ -469,5 +522,258 @@
     "subscription_hint": "Restez informé des renouvellements et annulations à venir.",
     "spending_insights": "Aperçu des dépenses",
     "spending_hint": "Recevez des alertes basées sur les objectifs de délai"
+  },
+  "menu": {
+    "title": "MENU",
+    "comics": "BD",
+    "beats": "BEATS",
+    "shop": "BOUTIQUE",
+    "games": "JEUX"
+  },
+  "beats_page": {
+    "title": "BE★TS",
+    "saphire": "SAPHIRE",
+    "phonix": "PHONiX",
+    "horus": "HORUS",
+    "spale_ralooon": "SPALE RALOOON",
+    "no_tracks": "AUCUNE PISTE TROUVÉE"
+  },
+  "shop_page": {
+    "title": "BOUTIQUE",
+    "shirts": "T-SHIRTS"
+  },
+  "games_page": {
+    "title": "JEUX",
+    "eternal_run": "ETERNAL RUN",
+    "start_game": "LANCER LE JEU"
+  },
+  "games": {
+    "add_new": "DÉPLOYER UN NOUVEAU BUILD"
+  },
+  "assets": {
+    "title": "SYSTÈME DE GESTION DES ACTIFS",
+    "add_merch": "AJOUTER UN NOUVEL ACTIF",
+    "drop_here": "DÉPOSER LES ACTIFS ICI",
+    "supports": "PNG, JPEG, MP3, WAV (MAX 50MB)",
+    "select_files": "PARCOURIR LES FICHIERS LOCAUX",
+    "search_placeholder": "Rechercher par nom de fichier, catégorie ou utilisateur...",
+    "types": {
+      "all": "TOUS LES TYPES",
+      "audio": "AUDIO",
+      "image": "IMAGE",
+      "other": "AUTRE"
+    },
+    "categories": {
+      "all": "TOUTES LES CATÉGORIES",
+      "games": "JEUX",
+      "merch": "MERCH",
+      "beats": "BEATS"
+    },
+    "table": {
+      "preview": "APERÇU",
+      "file_name": "NOM DU FICHIER",
+      "category": "CATÉGORIE",
+      "size": "TAILLE",
+      "uploaded_by": "TÉLÉCHARGÉ PAR",
+      "date_added": "DATE D'AJOUT",
+      "actions": "ACTIONS"
+    },
+    "actions": {
+      "download": "Télécharger",
+      "edit": "Modifier",
+      "remove": "Supprimer"
+    },
+    "no_assets": "Aucun actif trouvé dans le système",
+    "upload_started": "Commencez à télécharger des fichiers pour les voir ici",
+    "current_user": "Utilisateur Actuel"
+  },
+  "comics": {
+    "title": "GESTION DES BD",
+    "title_page": "GESTION DES BD",
+    "subtitle": "GÉRER LES CHAPITRES & SORTIES",
+    "add_comic": "AJOUTER UNE NOUVELLE BD",
+    "edit": "MODIFIER",
+    "delete": "SUPPRIMER",
+    "cover": "COUVERTURE",
+    "drag_reorder": "GLISSER POUR RÉORDONNER",
+    "set_cover": "DÉFINIR COMME COUVERTURE",
+    "current_thumbnail": "Miniature Actuelle",
+    "set_thumbnail": "Définir comme Miniature",
+    "delete_page": "Supprimer la Page",
+    "page_info": "Page {{current}} sur {{total}}",
+    "navigation_hint": "Utilisez les flèches ou cliquez sur les flèches pour naviguer",
+    "preview": "APERÇU",
+    "remove": "SUPPRIMER",
+    "chapters": "CHAPITRES",
+    "table": {
+      "cover": "COUVERTURE",
+      "title": "TITRE / AUTEUR",
+      "chapters": "CHAPITRES",
+      "status": "STATUT",
+      "actions": "ACTIONS"
+    },
+    "modals": {
+      "add_title": "TÉLÉCHARGER UNE NOUVELLE BD",
+      "edit_title": "MODIFIER LES DONNÉES DE LA BD",
+      "details_tab": "INFOS GÉNÉRALES",
+      "pages_tab": "PAGES DU CHAPITRE",
+      "save_button": "LANCER LA BD",
+      "updating": "MISE À JOUR...",
+      "cancel": "ANNULER",
+      "delete_title": "SUPPRIMER LA BD",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer définitivement cette BD ?"
+    },
+    "tabs": {
+      "details": "INFOS GÉNÉRALES",
+      "media": "PAGES DU CHAPITRE"
+    },
+    "form": {
+      "title": "TITRE DE LA BD",
+      "title_label": "TITRE DE LA BD",
+      "title_placeholder": "ex: La Saga Néon",
+      "artist": "NOM DE L'AUTEUR",
+      "artist_placeholder": "ex: Fantôme de l'Espace",
+      "author_label": "NOM DE L'AUTEUR",
+      "chapter_title": "TITRE DU CHAPITRE",
+      "chapter_label": "TITRE DU CHAPITRE",
+      "chapter_placeholder": "ex: Chapitre 1: Le Commencement",
+      "description": "DESCRIPTION",
+      "desc_label": "DESCRIPTION",
+      "description_placeholder": "Racontez l'histoire de cette BD...",
+      "status": "STATUT DE VISIBILITÉ",
+      "status_label": "STATUT DE VISIBILITÉ",
+      "active": "Active",
+      "inactive": "Inactive",
+      "cover_label": "IMAGE DE COUVERTURE",
+      "change_cover": "Changer la Couverture",
+      "upload_cover": "Télécharger la Couverture",
+      "upload_pages": "TÉLÉCHARGER DES PAGES",
+      "upload_help": "GLISSER-DÉPOSER DES PAGES OU CLIQUER POUR TÉLÉCHARGER"
+    },
+    "actions": {
+      "cancel": "ANNULER",
+      "save": "ENREGISTRER LES MODIFICATIONS",
+      "create": "LANCER LA BD"
+    },
+    "messages": {
+      "upload_required": "Veuillez télécharger au moins une page",
+      "save_success": "BD enregistrée avec succès",
+      "save_failed": "Échec de l'enregistrement de la BD",
+      "delete_success": "BD supprimée avec succès",
+      "no_comics": "Aucun enregistrement de BD trouvé dans la base de données",
+      "delete_confirm": "Êtes-vous sûr de vouloir supprimer {{title}} ?"
+    }
+  },
+  "merch": {
+    "title": "GESTION DU MERCH",
+    "subtitle": "VÊTEMENTS & ACCESSOIRES",
+    "upload": {
+      "title": "TÉLÉCHARGER UN NOUVEL ACTIF",
+      "name_label": "NOM DU PRODUIT",
+      "name_placeholder": "ex: T-shirt Vintage Space",
+      "price_label": "PRIX (€)",
+      "description_label": "DESCRIPTION",
+      "description_placeholder": "Racontez l'histoire de cet article...",
+      "sizes_label": "TAILLES",
+      "button": "LANCER L'ACTIF",
+      "uploading": "LANCEMENT...",
+      "merch_images_label": "Images du Merch",
+      "files_selected": "{{count}} fichiers sélectionnés",
+      "drag_drop": "GLISSER-DÉPOSER OU CLIQUER POUR TÉLÉCHARGER"
+    },
+    "inventory": {
+      "title": "INVENTAIRE ACTIF",
+      "stats": {
+        "total_items": "{{count}} ARTICLES",
+        "in_stock": "{{count}} EN STOCK"
+      },
+      "table": {
+        "preview": "APERÇU",
+        "product_name": "NOM DU PRODUIT",
+        "price": "PRIX",
+        "sizes": "TAILLES",
+        "stock": "STOCK",
+        "actions": "ACTIONS"
+      }
+    },
+    "modals": {
+      "view_title": "DÉTAILS DU PRODUIT",
+      "edit_title": "MODIFIER L'ACTIF",
+      "updating": "MISE À JOUR...",
+      "save_changes": "ENREGISTRER LES MODIFICATIONS",
+      "delete_title": "SUPPRIMER L'ACTIF",
+      "delete_message": "Êtes-vous sûr de vouloir supprimer définitivement cet article ?"
+    },
+    "messages": {
+      "missing_fields": "Veuillez remplir tous les champs requis",
+      "missing_image": "Veuillez sélectionner au moins une image",
+      "upload_success": "Merch créé avec succès",
+      "upload_failed": "Échec de la création du merch",
+      "delete_success": "Merch supprimé avec succès",
+      "delete_failed": "Échec de la suppression du merch"
+    }
+  },
+  "support_modal": {
+    "title": "SOUTENIR L'ARTISTE",
+    "beat_label": "BEAT :",
+    "comic_label": "BD :",
+    "by_label": "PAR :",
+    "beat_desc_1": "Ce beat est gratuit à télécharger.",
+    "beat_desc_2": "Soutenez l'artiste si vous le pouvez.",
+    "comic_desc_1": "Prochain chapitre bientôt ! Restez à l'écoute !",
+    "comic_desc_2": "Vous pouvez soutenir {{artist}} et son projet en donnant le montant que vous souhaitez",
+    "donation_label": "MONTANT DU DON €",
+    "checkout": "PAYER",
+    "download_beat": "TÉLÉCHARGER LE BEAT"
+  },
+  "orders": {
+    "title": "COMMANDES & DONS",
+    "tabs": {
+      "merch": "COMMANDES MERCH",
+      "donations": "DONS"
+    },
+    "merch_table": {
+      "order_id": "ID COMMANDE",
+      "customer": "CLIENT",
+      "date": "DATE",
+      "amount": "MONTANT",
+      "payment": "PAIEMENT",
+      "fulfillment": "LIVRAISON",
+      "actions": "ACTIONS"
+    },
+    "donations_table": {
+      "transaction_id": "ID TRANSACTION",
+      "donor": "DONATEUR",
+      "date": "DATE",
+      "amount": "MONTANT",
+      "status": "STATUT"
+    },
+    "details": {
+      "title": "Détails de la commande",
+      "customer_info": "Informations client",
+      "shipping_address": "Adresse de livraison",
+      "items": "Articles",
+      "summary": "Résumé",
+      "total": "Total",
+      "status": "Statut"
+    },
+    "status": {
+      "paid": "Payé",
+      "unpaid": "Impayé",
+      "pending": "En attente",
+      "shipped": "Expédié",
+      "delivered": "Livré",
+      "cancelled": "Annulé"
+    },
+    "messages": {
+      "update_success": "Statut mis à jour avec succès",
+      "update_failed": "Échec de la mise à jour du statut",
+      "loading_orders": "Chargement des commandes...",
+      "no_orders": "Aucune commande trouvée",
+      "no_donations": "Aucun don trouvé"
+    },
+    "customer": {
+      "guest": "Invité"
+    }
   }
 }

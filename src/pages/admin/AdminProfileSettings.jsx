@@ -200,6 +200,7 @@ const FileUpload = ({
   maxSize = 2 * 1024 * 1024,
   className = "",
 }) => {
+  const { t } = useTranslation();
   const [isDragOver, setIsDragOver] = useState(false);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
@@ -232,7 +233,7 @@ const FileUpload = ({
 
       if (file) {
         if (file.size > maxSize) {
-          setError(`File size must be less than ${maxSize / (1024 * 1024)}MB`);
+          setError(t('settings.general.logo_help') || `File size must be less than ${maxSize / (1024 * 1024)}MB`);
           return;
         }
         onFileSelect?.(file);
@@ -246,7 +247,7 @@ const FileUpload = ({
       const file = e.target.files?.[0];
       if (file) {
         if (file.size > maxSize) {
-          setError(`File size must be less than ${maxSize / (1024 * 1024)}MB`);
+          setError(t('settings.general.logo_help') || `File size must be less than ${maxSize / (1024 * 1024)}MB`);
           return;
         }
         setError(null);
@@ -593,7 +594,7 @@ const Settings = () => {
       setCategories(combinedCategories);
     } catch (error) {
       console.error("Error fetching categories:", error);
-      toast.error("Failed to load categories");
+      toast.error(t('settings.categories.loading_failed') || "Failed to load categories");
     } finally {
       setIsLoadingCategories(false);
     }
@@ -665,12 +666,12 @@ const Settings = () => {
 
       await SettingsAPI.update(settingsId || "undefined", formData);
       setUploadedFile(null); // Clear the uploaded file after success
-      toast.success("General settings saved successfully");
+      toast.success(t('settings.messages.save_success'));
       fetchSettings();
       refreshGlobalSettings();
     } catch (error) {
       console.error("Save error:", error);
-      toast.error("Failed to save settings");
+      toast.error(t('settings.messages.save_failed'));
     } finally {
       setIsSavingGeneral(false);
     }
@@ -690,10 +691,10 @@ const Settings = () => {
     if (!categoryDeleteConfirm.id) return;
     try {
       await CategoryAPI.delete(categoryDeleteConfirm.id);
-      toast.success("Category deleted successfully");
+      toast.success(t('settings.messages.delete_success'));
       fetchCategories();
     } catch (error) {
-      toast.error("Failed to delete category");
+      toast.error(t('settings.messages.delete_failed'));
     } finally {
       setCategoryDeleteConfirm({ isOpen: false, id: null });
     }
@@ -702,7 +703,7 @@ const Settings = () => {
   const handleSaveCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.name) {
-      toast.error("Name is required");
+      toast.error(t('settings.messages.name_required'));
       return;
     }
     try {
@@ -712,12 +713,16 @@ const Settings = () => {
           type: activeType,
         });
         toast.success(
-          `${activeType === "genre" ? "Genre" : "Category"} updated successfully`,
+          activeType === "genre" 
+            ? t('settings.messages.genre_updated') 
+            : t('settings.messages.category_updated')
         );
       } else {
         await CategoryAPI.create({ ...newCategory, type: activeType });
         toast.success(
-          `${activeType === "genre" ? "Genre" : "Category"} added successfully`,
+          activeType === "genre" 
+            ? t('settings.messages.genre_added') 
+            : t('settings.messages.category_added')
         );
       }
       setNewCategory({ name: "", type: activeType });
@@ -727,8 +732,8 @@ const Settings = () => {
     } catch (error) {
       toast.error(
         editingCategory
-          ? "Failed to update category"
-          : "Failed to add category",
+          ? t('settings.messages.update_failed')
+          : t('settings.messages.add_failed')
       );
     }
   };
@@ -954,10 +959,10 @@ const Settings = () => {
               className="w-full h-12 sm:h-14 lg:h-[60px] bg-[#191A22] border border-[#CBC895] px-4 sm:px-5 py-3 sm:py-3.5 text-[#9C963A] text-base sm:text-lg font-medium leading-6 sm:leading-7 appearance-none focus:outline-none focus:ring-2 focus:ring-[#CBC895] cursor-pointer transition-all"
               aria-describedby="language-help"
             >
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
-              <option value="French">French</option>
-              <option value="German">German</option>
+              <option value="English">{t('settings.general.languages.english')}</option>
+              <option value="French">{t('settings.general.languages.french')}</option>
+              <option value="Spanish">{t('settings.general.languages.spanish')}</option>
+              <option value="German">{t('settings.general.languages.german')}</option>
             </select>
             <div className="absolute right-4 sm:right-5 top-1/2 transform -translate-y-1/2 pointer-events-none">
               <svg
@@ -1050,8 +1055,8 @@ const Settings = () => {
                     className="w-full bg-[#131319] border border-[#CBC895] px-3 py-2 text-white"
                     placeholder={
                       activeType === "genre"
-                        ? "e.g. Trap, Drill"
-                        : "e.g. Saphire, Phoenix"
+                        ? t('settings.categories.placeholders.genre')
+                        : t('settings.categories.placeholders.category')
                     }
                   />
                 </div>

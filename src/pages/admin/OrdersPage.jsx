@@ -27,10 +27,10 @@ import { useTranslation } from "react-i18next";
 
 // Fulfillment status options — payment status is separate (set by Stripe)
 const FULFILLMENT_OPTIONS = [
-  { value: "pending", label: "Pending" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "cancelled", label: "Cancelled" },
+  { value: "pending", labelKey: "orders.status.pending" },
+  { value: "shipped", labelKey: "orders.status.shipped" },
+  { value: "delivered", labelKey: "orders.status.delivered" },
+  { value: "cancelled", labelKey: "orders.status.cancelled" },
 ];
 
 const PAYMENT_STATUS_COLORS = {
@@ -148,7 +148,7 @@ const OrdersPage = () => {
           size="xs"
           className="alexandria-font"
         >
-          {order?.stripePaymentStatus || "paid"}
+          {order?.stripePaymentStatus ? t(`orders.status.${order.stripePaymentStatus.toLowerCase()}`) : t('orders.status.paid')}
         </Badge>
       </Table.Td>
       <Table.Td className="alexandria-font">
@@ -158,7 +158,7 @@ const OrdersPage = () => {
           value={
             order?.status === "paid" ? "pending" : order?.status || "pending"
           }
-          data={FULFILLMENT_OPTIONS}
+          data={FULFILLMENT_OPTIONS.map(opt => ({ ...opt, label: t(opt.labelKey) }))}
           disabled={updatingId === order?._id}
           className="alexandria-font"
           onChange={(val) => handleStatusChange(order._id, val)}
@@ -221,7 +221,7 @@ const OrdersPage = () => {
       <Table.Td>
         <Stack gap={0}>
           <Text size="sm" color="white" className="alexandria-font">
-            {donation?.customerName || "Guest"}
+            {donation?.customerName || t('orders.customer.guest')}
           </Text>
           <Text size="xs" color="dimmed" className="alexandria-font">
             {donation?.customerEmail || "N/A"}
@@ -306,15 +306,15 @@ const OrdersPage = () => {
                 <Table className="alexandria-font" style={{ color: "white" }}>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.date')}</Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.customer')}</Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.items')}</Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.total')}</Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.payment')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.date')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.customer')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.items')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.amount')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.payment')}</Table.Th>
                       <Table.Th style={{ color: "#F6F4D3" }}>
-                        {t('orders.table.fulfillment')}
+                        {t('orders.merch_table.fulfillment')}
                       </Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.view')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.merch_table.actions')}</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>{merchRows}</Table.Tbody>
@@ -327,7 +327,7 @@ const OrdersPage = () => {
                     className="pixel-font"
                     style={{ fontSize: 10 }}
                   >
-                    {t('orders.table.no_orders')}
+                    {t('orders.messages.no_orders')}
                   </Text>
                 )}
               </ScrollArea>
@@ -345,12 +345,12 @@ const OrdersPage = () => {
                 <Table className="alexandria-font" style={{ color: "white" }}>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.date')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.donations_table.date')}</Table.Th>
                       <Table.Th style={{ color: "#F6F4D3" }}>
-                        {t('orders.table.artist_supporter')}
+                        {t('orders.donations_table.donor')}
                       </Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.amount')}</Table.Th>
-                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.table.status')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.donations_table.amount')}</Table.Th>
+                      <Table.Th style={{ color: "#F6F4D3" }}>{t('orders.donations_table.status')}</Table.Th>
                     </Table.Tr>
                   </Table.Thead>
                   <Table.Tbody>{donationRows}</Table.Tbody>
@@ -363,7 +363,7 @@ const OrdersPage = () => {
                     className="pixel-font"
                     style={{ fontSize: 10 }}
                   >
-                    {t('orders.table.no_donations')}
+                    {t('orders.messages.no_donations')}
                   </Text>
                 )}
               </ScrollArea>

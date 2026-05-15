@@ -10,6 +10,7 @@ import custAxios from '../../configs/axios.config';
 const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { amount, type = 'donation', items = [] } = location.state || {};
 

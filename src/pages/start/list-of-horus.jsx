@@ -2,28 +2,27 @@ import React, { useState } from "react";
 import { Box, Text, Image } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
+import { useTranslation } from "react-i18next";
 
 const ListOfHorus = () => {
-  const [selectedItem, setSelectedItem] = useState("BEATS");
+  const { t } = useTranslation();
+  const [selectedItem, setSelectedItem] = useState("beats");
   const navigate = useNavigate();
 
-  const menuItems = ["COMICS", "BEATS", "SHOP", "GAMES"];
+  const menuItems = [
+    { key: "comics", path: "/comics" },
+    { key: "beats", path: "/beats" },
+    { key: "shop", path: "/shop-list" },
+    { key: "games", path: "/games" }
+  ];
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
-    if (item === "COMICS") {
-      navigate("/comics");
-    } else if (item === "BEATS") {
-      navigate("/beats");
-    } else if (item === "SHOP") {
-      navigate("/shop-list");
-    } else if (item === "GAMES") {
-      navigate("/games");
-    }
+    setSelectedItem(item.key);
+    navigate(item.path);
   };
 
   const handleItemHover = (item) => {
-    setSelectedItem(item);
+    setSelectedItem(item.key);
   };
 
   const handleItemLeave = () => {
@@ -32,7 +31,7 @@ const ListOfHorus = () => {
 
   return (
     <>
-      <UserHeader title="MENU" />
+      <UserHeader title={t('menu.title')} />
 
       <Box
         style={{
@@ -58,7 +57,7 @@ const ListOfHorus = () => {
           {menuItems.map((item) => (
             <div
               className="max-sm:px-0 max-sm:py-0"
-              key={item}
+              key={item.key}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -71,7 +70,7 @@ const ListOfHorus = () => {
               onMouseEnter={() => handleItemHover(item)}
               onMouseLeave={handleItemLeave}
             >
-              {selectedItem === item && (
+              {selectedItem === item.key && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{
@@ -94,17 +93,17 @@ const ListOfHorus = () => {
               <Text
                 style={{
                   fontSize: "1.4rem",
-                  color: selectedItem === item ? "#F6F4D3" : "#9ca3af",
-                  textShadow: selectedItem === item ? "0 0 10px #F6F4D3" : "none",
+                  color: selectedItem === item.key ? "#F6F4D3" : "#9ca3af",
+                  textShadow: selectedItem === item.key ? "0 0 10px #F6F4D3" : "none",
                   letterSpacing: "2px",
                   transition: "all 0.3s ease",
                 }}
                 className="!text-[1.3rem] vision-font min-md:!text-[1.5rem] min-lg:!text-[2rem] min-xl:!text-[2.5rem]"
               >
-                {item}
+                {t(`menu.${item.key}`)}
               </Text>
 
-              {selectedItem === item && (
+              {selectedItem === item.key && (
                 <svg
                   viewBox="0 0 16 16"
                   style={{
