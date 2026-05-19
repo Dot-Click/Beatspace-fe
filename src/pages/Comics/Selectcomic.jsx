@@ -32,7 +32,10 @@ const Selectcomic = () => {
 
   return (
     <>
-      <UserHeader title={t('comics_user.title')} subtitle={selectedAuthor.toUpperCase()} />
+      <UserHeader
+        title={t("comics_user.title")}
+        subtitle={selectedAuthor.toUpperCase()}
+      />
 
       {/* Main Content Scrollable Area */}
       <Box
@@ -53,7 +56,7 @@ const Selectcomic = () => {
       >
         {isLoadingComics ? (
           <Text className="vision-font" style={{ color: "#F6F4D3" }}>
-            {t('comics_user.loading')}
+            {t("comics_user.loading")}
           </Text>
         ) : filteredComics.length > 0 ? (
           filteredComics.map((comic) => (
@@ -64,8 +67,8 @@ const Selectcomic = () => {
               onMouseEnter={() => setIsHovered(comic._id)}
               onMouseLeave={() => setIsHovered(null)}
               style={{
-                width: "300px",
-                height: "420px",
+                width: "220px",
+                height: "360px",
                 backgroundColor: "#000",
                 border: "2px solid #d1c676",
                 padding: "8px",
@@ -74,14 +77,14 @@ const Selectcomic = () => {
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 boxShadow:
-                  isHovered === comic._id ? "0 0 20px #d1c676" : "none",
+                  isHovered === comic._id ? "0 0 15px #d1c676" : "none",
               }}
             >
               {/* Image Section with Frame */}
               <Box
                 style={{
                   width: "100%",
-                  height: "220px",
+                  height: "160px",
                   border: "2px solid #d1c676",
                   overflow: "hidden",
                   backgroundColor: "#000",
@@ -94,10 +97,10 @@ const Selectcomic = () => {
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "fill",
+                    objectFit: "contain",
                     transition: "transform 0.5s ease",
                     transform:
-                      isHovered === comic._id ? "scale(1.1)" : "scale(1)",
+                      isHovered === comic._id ? "scale(1.05)" : "scale(1)",
                   }}
                 />
               </Box>
@@ -111,21 +114,17 @@ const Selectcomic = () => {
                   width: "100%",
                   flex: 1,
                   border: "2px solid #d1c676",
-                  padding: "10px",
+                  padding: "8px",
                   display: "flex",
                   flexDirection: "column",
                   backgroundColor: "#0b0b0b",
                 }}
               >
                 <Text
-                  className="vision-font"
+                  className="vision-font line-clamp-2 comic-card-title"
                   style={{
                     color: "#F6F4D3",
-                    fontSize: "15px",
-                    fontWeight: "bold",
                     textTransform: "uppercase",
-                    lineHeight: 1.1,
-                    marginBottom: "4px",
                     wordBreak: "break-word",
                   }}
                 >
@@ -133,14 +132,13 @@ const Selectcomic = () => {
                 </Text>
 
                 <Text
-                  className="vision-font"
+                  title={t("comics_user.chapter")}
+                  className="vision-font comic-card-chapter"
                   style={{
                     color: "#d1c676",
-                    fontSize: "12px",
-                    fontWeight: "bold",
                   }}
                 >
-                  {t('comics_user.chapter')} {comic.chapter_info?.length || 0}
+                  {t("comics_user.chapter")} {comic.chapter_info?.length || 0}
                 </Text>
 
                 {/* Decorative line near bottom of text box */}
@@ -158,39 +156,10 @@ const Selectcomic = () => {
           ))
         ) : (
           <Text className="vision-font" style={{ color: "#9ca3af" }}>
-            {t('comics_user.no_comics_artist')}
+            {t("comics_user.no_comics_artist")}
           </Text>
         )}
       </Box>
-
-      {/* Global Instruction Fixed at the bottom */}
-      {!isLoadingComics && filteredComics.length > 0 && (
-        <Box
-          style={{
-            position: "fixed",
-            bottom: "2rem",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "100%",
-            textAlign: "center",
-            zIndex: 10,
-            pointerEvents: "none",
-          }}
-        >
-          <Text
-            className="vision-font"
-            style={{
-              fontSize: "1.2rem",
-              color: "#d1c676",
-              fontWeight: "bold",
-              letterSpacing: "1px",
-              textShadow: "0 0 10px rgba(0,0,0,0.8)",
-            }}
-          >
-            {t('comics_user.click_view_chapters')}
-          </Text>
-        </Box>
-      )}
     </>
   );
 };

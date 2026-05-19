@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+  import React, { createContext, useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import custAxios, { baseURL } from "../configs/axios.config";
+import { useAuthContext } from "./AuthContext";
 
 const NotificationContext = createContext();
 
@@ -11,6 +12,7 @@ const SOCKET_URL = baseURL.replace(/\/api$/, "");
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const { isAuthenticated } = useAuthContext();
 
   const fetchNotifications = async () => {
     try {
@@ -25,6 +27,12 @@ export const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
+
     fetchNotifications();
 
     console.log("Connecting to Socket.io at:", SOCKET_URL);
@@ -51,7 +59,7 @@ export const NotificationProvider = ({ children }) => {
         console.log("Disconnecting from Socket.io");
         socket.disconnect();
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const markAsRead = async (id) => {
     try {

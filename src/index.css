@@ -420,3 +420,16 @@ textarea,
   .mantine-Table-td {
   background-color: #312f14 !important;
 }
+
+/* Comic card typography overrides to bypass global App.css */
+.comic-card-title {
+  font-size: 14px !important;
+  font-weight: bold !important;
+  line-height: 1.2 !important;
+}
+
+.comic-card-chapter {
+  font-size: 11px !important;
+  font-weight: bold !important;
+  line-height: 1.2 !important;
+}

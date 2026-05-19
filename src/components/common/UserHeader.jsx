@@ -28,6 +28,13 @@ const UserHeader = ({ title, subtitle, showBack = true, prefix, suffix }) => {
       return;
     }
 
+    if (pathname === "/comics/select-chapter") {
+      navigate("/comics/select", {
+        state: { author: location.state?.comic?.author_name },
+      });
+      return;
+    }
+
     if (pathname === "/comics/read") {
       navigate(-1); // Go back to comicview with state preserved by history
       return;
