@@ -25,6 +25,101 @@ const AudioVisualizer = ({ isDark }) => (
   </div>
 );
 
+const getBeatGenres = (beat) => {
+  const rawGenres = Array.isArray(beat.genre)
+    ? beat.genre
+    : beat.genre
+      ? beat.genre.split(",")
+      : [];
+
+  return rawGenres.map((genre) => genre.trim()).filter(Boolean);
+};
+
+const GenreMultiSelect = ({
+  genres,
+  value,
+  onChange,
+  labelClassName = "text-[10px] font-bold uppercase text-[#191A22]",
+  label,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleGenre = (genreName) => {
+    const nextGenres = value.includes(genreName)
+      ? value.filter((genre) => genre !== genreName)
+      : [...value, genreName];
+
+    onChange(nextGenres);
+  };
+
+  return (
+    <div className="space-y-1 relative">
+      <label className={labelClassName}>{label}</label>
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="w-full min-h-12 bg-[#333] border border-[#D4D4B0] px-4 py-2 text-white focus:outline-none focus:border-[#FFD700] cursor-pointer flex items-center justify-between gap-3"
+        style={{ fontFamily: "monospace" }}
+      >
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          {value.length > 0 ? (
+            value.map((genre) => (
+              <span
+                key={genre}
+                className="px-2 py-1 text-[10px] font-bold uppercase bg-[#191A22] text-[#FFD700] border border-[#FFD700]"
+              >
+                {genre}
+              </span>
+            ))
+          ) : (
+            <span className="text-sm font-bold text-[#D4D4B0] uppercase">
+              Select genres
+            </span>
+          )}
+        </div>
+        <svg
+          width="12"
+          height="8"
+          className={`shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+        >
+          <path d="M1 1L6 6L11 1" stroke="#FFD700" strokeWidth="2" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute left-0 right-0 top-full mt-1 z-50 bg-[#191A22] border-2 border-[#FFD700] shadow-2xl max-h-56 overflow-y-auto">
+          {genres.map((genre) => {
+            const isSelected = value.includes(genre.name);
+            return (
+              <button
+                key={genre._id}
+                type="button"
+                onClick={() => toggleGenre(genre.name)}
+                className={`w-full px-4 py-3 text-left font-bold uppercase flex items-center justify-between gap-3 border-b border-[#4A4A3C] hover:bg-[#4A4A3C] ${isSelected ? "text-[#FFD700]" : "text-[#D4D4B0]"}`}
+                style={{ fontFamily: "monospace" }}
+              >
+                <span>{genre.name}</span>
+                <span className={`w-5 h-5 border flex items-center justify-center ${isSelected ? "bg-[#FFD700] border-[#FFD700]" : "border-[#D4D4B0]"}`}>
+                  {isSelected && (
+                    <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
+                      <path
+                        d="M1 4.5L4.5 8L11 1"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="square"
+                      />
+                    </svg>
+                  )}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const BeatRow = ({
   beat,
   isPlaying,
@@ -35,12 +130,7 @@ const BeatRow = ({
   handleOpenEditModal,
   handleDeleteBeat,
 }) => {
-  const { t } = useTranslation();
-  const tags = Array.isArray(beat.genre_tags)
-    ? beat.genre_tags
-    : beat.genre_tags
-      ? beat.genre_tags.split(",").map((t) => t.trim())
-      : [];
+  const genres = getBeatGenres(beat);
   const date = beat.createdAt
     ? new Date(beat.createdAt).toLocaleDateString()
     : "N/A";
@@ -99,23 +189,23 @@ const BeatRow = ({
             className={`text-sm lg:text-lg font-bold ${isPlaying ? "text-black" : "text-[#D4D4B0]"}`}
             style={{ fontFamily: "monospace" }}
           >
-            {beat.genre || "HIP-HOP"}
+            {genres.length > 0 ? genres[0] : "HIP-HOP"}
           </div>
           <div
             className={`text-[10px] lg:text-xs font-bold ${isPlaying ? "text-black opacity-80" : "text-[#D4D4B0] opacity-80"}`}
             style={{ fontFamily: "monospace" }}
           >
-            {t('beatmaker.repository.table.category_prefix')}
+            Category:{" "}
             {beat.category?.toUpperCase().replace("_", " ") || "SAPHIRE"}
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            {tags.map((tag, i) => (
+            {genres.map((genre, i) => (
               <span
                 key={i}
                 className={`text-[10px] lg:text-xs px-2 py-0.5 rounded border ${isPlaying ? "border-black text-black" : "border-[#D4D4B0] text-[#D4D4B0]"}`}
                 style={{ fontFamily: "monospace" }}
               >
-                {tag}
+                {genre}
               </span>
             ))}
           </div>
@@ -214,8 +304,7 @@ const Beat = () => {
 
   const [newBeatForm, setNewBeatForm] = useState({
     name: "",
-    genre: "HIP-HOP",
-    genre_tags: "",
+    genre: [],
     category: "saphire",
     beat: null,
   });
@@ -226,8 +315,7 @@ const Beat = () => {
   const [currentEditId, setCurrentEditId] = useState(null);
   const [editBeatForm, setEditBeatForm] = useState({
     name: "",
-    genre: "HIP-HOP",
-    genre_tags: "",
+    genre: [],
     category: "saphire",
   });
 
@@ -263,7 +351,7 @@ const Beat = () => {
         setAvailableCategories(categoriesRes.data.data);
         
         if (genresRes.data.data.length > 0) {
-          setNewBeatForm(prev => ({ ...prev, genre: genresRes.data.data[0].name }));
+          setNewBeatForm(prev => ({ ...prev, genre: [genresRes.data.data[0].name] }));
         }
         if (categoriesRes.data.data.length > 0) {
           setNewBeatForm(prev => ({ ...prev, category: categoriesRes.data.data[0].name }));
@@ -471,13 +559,18 @@ const Beat = () => {
   const onButtonClick = () => fileInputRef.current.click();
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewBeatForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, selectedOptions, multiple } = e.target;
+    setNewBeatForm((prev) => ({
+      ...prev,
+      [name]: multiple
+        ? Array.from(selectedOptions, (option) => option.value)
+        : value,
+    }));
   };
 
   const handleAddBeat = async (e) => {
     e.preventDefault();
-    if (!newBeatForm.name || !newBeatForm.beat) {
+    if (!newBeatForm.name || !newBeatForm.beat || newBeatForm.genre.length === 0) {
       toast.error(t('beatmaker.messages.missing_fields'));
       return;
     }
@@ -485,28 +578,19 @@ const Beat = () => {
     const formData = new FormData();
     formData.append("name", newBeatForm.name);
     formData.append("beat", newBeatForm.beat);
-    formData.append("genre", newBeatForm.genre);
+    newBeatForm.genre.forEach((genre) => {
+      formData.append("genre", genre);
+    });
     formData.append("category", newBeatForm.category);
-
-    if (newBeatForm.genre_tags) {
-      const tags = newBeatForm.genre_tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter((t) => t !== "");
-      tags.forEach((tag) => {
-        formData.append("genre_tags", tag);
-      });
-    }
 
     const res = await addBeat(formData);
     if (res?.success) {
       toast.success(t('beatmaker.messages.upload_success'));
       setNewBeatForm({
         name: "",
-        genre: "HIP-HOP",
-        genre_tags: "",
+        genre: availableGenres[0]?.name ? [availableGenres[0].name] : [],
         beat: null,
-        category: "saphire",
+        category: availableCategories[0]?.name || "saphire",
       });
       fetchBeats();
     } else {
@@ -546,18 +630,20 @@ const Beat = () => {
     setCurrentEditId(beat._id || beat.id);
     setEditBeatForm({
       name: beat.name || "",
-      genre: beat.genre || "HIP-HOP",
+      genre: getBeatGenres(beat),
       category: beat.category || "saphire",
-      genre_tags: Array.isArray(beat.genre_tags)
-        ? beat.genre_tags.join(", ")
-        : beat.genre_tags || "",
     });
     setIsEditModalOpen(true);
   };
 
   const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditBeatForm((prev) => ({ ...prev, [name]: value }));
+    const { name, value, selectedOptions, multiple } = e.target;
+    setEditBeatForm((prev) => ({
+      ...prev,
+      [name]: multiple
+        ? Array.from(selectedOptions, (option) => option.value)
+        : value,
+    }));
   };
 
   const handleEditBeat = async (e) => {
@@ -566,21 +652,17 @@ const Beat = () => {
       toast.error(t('beatmaker.messages.name_required') || "Name is required");
       return;
     }
+    if (editBeatForm.genre.length === 0) {
+      toast.error(t('beatmaker.messages.missing_fields'));
+      return;
+    }
 
     const formData = new FormData();
     formData.append("name", editBeatForm.name);
-    formData.append("genre", editBeatForm.genre);
+    editBeatForm.genre.forEach((genre) => {
+      formData.append("genre", genre);
+    });
     formData.append("category", editBeatForm.category);
-
-    if (editBeatForm.genre_tags) {
-      const tags = editBeatForm.genre_tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter((t) => t !== "");
-      tags.forEach((tag) => {
-        formData.append("genre_tags", tag);
-      });
-    }
 
     const res = await editBeat(currentEditId, formData);
     if (res?.success) {
@@ -640,7 +722,9 @@ const Beat = () => {
       .includes(searchTerm.toLowerCase());
     const matchesGenre =
       selectedGenre === "All Genres" ||
-      (beat.genre || "HIP-HOP").toUpperCase() === selectedGenre.toUpperCase();
+      getBeatGenres(beat).some(
+        (genre) => genre.toUpperCase() === selectedGenre.toUpperCase(),
+      );
     return matchesSearch && matchesGenre;
   });
 
@@ -737,7 +821,7 @@ const Beat = () => {
           </p>
         </div>
 
-        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1">
             <label className="text-[10px] font-bold uppercase text-[#191A22]">
               {t('beatmaker.upload.name_label')}
@@ -752,39 +836,13 @@ const Beat = () => {
               style={{ fontFamily: "monospace" }}
             />
           </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase text-[#191A22]">
-              {t('beatmaker.upload.genre_label')}
-            </label>
-            <select
-              name="genre"
-              value={newBeatForm.genre}
-              onChange={handleInputChange}
-              className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
-              style={{ fontFamily: "monospace" }}
-            >
-              {availableGenres.map((g) => (
-                <option key={g._id} value={g.name}>
-                  {g.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase text-[#191A22]">
-              {t('beatmaker.upload.tags_label')}
-            </label>
-            <input
-              type="text"
-              name="genre_tags"
-              value={newBeatForm.genre_tags}
-              onChange={handleInputChange}
-              placeholder={t('beatmaker.upload.tags_placeholder')}
-              className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700]"
-              style={{ fontFamily: "monospace" }}
-            />
-          </div>
-          <div className="md:col-span-3 space-y-1">
+          <GenreMultiSelect
+            genres={availableGenres}
+            value={newBeatForm.genre}
+            onChange={(genre) => setNewBeatForm((prev) => ({ ...prev, genre }))}
+            label={t('beatmaker.upload.genre_label')}
+          />
+          <div className="md:col-span-2 space-y-1">
             <label className="text-[10px] font-bold uppercase text-[#191A22]">
               {t('beatmaker.upload.category_label')}
             </label>
@@ -845,13 +903,7 @@ const Beat = () => {
             <div className="absolute top-18 left-0 w-full bg-[#D4D4B0] border-2 border-black z-50 shadow-2xl">
               {[
                 t('beatmaker.repository.filters.all_genres'),
-                "HIP-HOP",
-                "TRAP",
-                "R&B",
-                "POP",
-                "ELECTRONICS",
-                "LO-FI",
-                "BOOM BAP",
+                ...availableGenres.map((genre) => genre.name),
               ].map((g) => (
                 <div
                   key={g}
@@ -1061,54 +1113,15 @@ const Beat = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
-                  {t('beatmaker.upload.genre_label')}
-                </label>
-                <div className="relative">
-                  <select
-                    name="genre"
-                    value={editBeatForm.genre}
-                    onChange={handleEditInputChange}
-                    className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
-                    style={{ fontFamily: "monospace" }}
-                  >
-                    {availableGenres.map((g) => (
-                      <option key={g._id} value={g.name}>
-                        {g.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg width="12" height="8">
-                      <path
-                        d="M1 1L6 6L11 1"
-                        stroke="#FFD700"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+              <GenreMultiSelect
+                genres={availableGenres}
+                value={editBeatForm.genre}
+                onChange={(genre) => setEditBeatForm((prev) => ({ ...prev, genre }))}
+                label={t('beatmaker.upload.genre_label')}
+                labelClassName="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest"
+              />
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
-                  {t('beatmaker.upload.tags_label')}
-                </label>
-                <input
-                  type="text"
-                  name="genre_tags"
-                  value={editBeatForm.genre_tags}
-                  onChange={handleEditInputChange}
-                  placeholder={t('beatmaker.upload.tags_placeholder')}
-                  className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-[#FFD700] focus:outline-none focus:border-[#FFD700] text-sm"
-                />
-                <p className="text-[10px] text-[#D4D4B0] opacity-50 mt-1 uppercase">
-                  {t('beatmaker.upload.tags_hint')}
-                </p>
-              </div>
-
-              <div className="md:col-span-2 space-y-2">
                 <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
                   {t('beatmaker.upload.category_label')}
                 </label>
