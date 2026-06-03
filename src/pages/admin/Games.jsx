@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
   ActionIcon,
+  Alert,
   Badge,
   Button,
   FileInput,
@@ -8,7 +9,6 @@ import {
   Image,
   Loader,
   Modal,
-  Select,
   Stack,
   Switch,
   Table,
@@ -18,17 +18,10 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IconEdit, IconFolder, IconPhoto, IconPlus, IconRefresh, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconPhoto, IconPlus, IconRefresh, IconTrash, IconUpload } from "@tabler/icons-react";
 import custAxios from "../../configs/axios.config";
 
 /* ─── constants ─────────────────────────────────────────────── */
-
-// Add new game folders here when you drop them in public/games/
-const AVAILABLE_GAMES = [
-  { value: "/games/EternalRun_Web/index.html", label: "EternalRun_Web" },
-  { value: "/games/new_game/index.html", label: "new_game" },
-];
-
 const EMPTY_FORM = {
   name: "",
   slug: "",
@@ -66,7 +59,6 @@ const getGamesFromResponse = (response) => {
   return [];
 };
 
-
 /* ─── component ──────────────────────────────────────────────── */
 export default function Games() {
   const queryClient = useQueryClient();
@@ -77,7 +69,7 @@ export default function Games() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [imageFile, setImageFile] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
-
+  const [gameZipFile, setGameZipFile] = useState(null);
 
   /* ── games list ── */
   const {
@@ -97,8 +89,11 @@ export default function Games() {
   );
 
   /* ── mutations ── */
-  const createMutation = useMutation({
-    mutationFn: (payload) => custAxios.post("/admin/addGame", payload),
+  const uploadGameMutation = useMutation({
+    mutationFn: (formData) =>
+      custAxios.post("/admin/uploadGame", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
     onSuccess: () => {
       notifications.show({ title: "Game added", message: "Created successfully.", color: "green" });
       queryClient.invalidateQueries({ queryKey: ["admin-games"] });
@@ -147,6 +142,7 @@ export default function Games() {
     setEditingGame(null);
     setForm(EMPTY_FORM);
     setImageFile(null);
+    setGameZipFile(null);
     setModalOpen(true);
   };
 
@@ -161,6 +157,7 @@ export default function Games() {
       status: normalizeStatus(game.status),
     });
     setImageFile(null);
+    setGameZipFile(null);
     setModalOpen(true);
   };
 
@@ -169,6 +166,7 @@ export default function Games() {
     setEditingGame(null);
     setForm(EMPTY_FORM);
     setImageFile(null);
+    setGameZipFile(null);
   };
 
   /* ── image upload ── */
@@ -198,21 +196,43 @@ export default function Games() {
   /* ── submit ── */
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!form.name.trim() || !form.slug.trim() || !form.launch_url.trim()) {
-      notifications.show({ title: "Missing fields", message: "Name, slug, and launch URL are required.", color: "red" });
+
+    if (!form.name.trim() || !form.slug.trim()) {
+      notifications.show({ title: "Missing fields", message: "Name and slug are required.", color: "red" });
       return;
     }
-    const payload = {
-      name: form.name.trim(),
-      slug: form.slug.trim(),
-      description: form.description.trim(),
-      image: form.image.trim(),
-      launch_url: form.launch_url.trim(),
-      status: statusPayload(form.status),
-    };
+
     const id = getGameId(editingGame);
-    if (id) { updateMutation.mutate({ id, payload }); return; }
-    createMutation.mutate(payload);
+
+    /* ── EDIT: JSON patch, unchanged ── */
+    if (id) {
+      const payload = {
+        name: form.name.trim(),
+        slug: form.slug.trim(),
+        description: form.description.trim(),
+        image: form.image.trim(),
+        launch_url: form.launch_url.trim(),
+        status: statusPayload(form.status),
+      };
+      updateMutation.mutate({ id, payload });
+      return;
+    }
+
+    /* ── CREATE: multipart FormData ── */
+    if (!gameZipFile) {
+      notifications.show({ title: "Missing zip", message: "Please upload the game zip file.", color: "red" });
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("name", form.name.trim());
+    fd.append("slug", form.slug.trim());
+    fd.append("description", form.description.trim());
+    fd.append("status", statusPayload(form.status));
+    fd.append("image", form.image.trim());
+    fd.append("gameZip", gameZipFile);
+
+    uploadGameMutation.mutate(fd);
   };
 
   const requestDelete = (game) => { setDeletingGame(game); setDeleteOpen(true); };
@@ -359,7 +379,47 @@ export default function Games() {
       >
         <form onSubmit={handleSubmit} className="alexandria-font">
           <Stack gap="md">
-            {/* row 1 — name + slug */}
+
+            {/* ── ZIP upload (create mode only) ── */}
+            {!editingGame && (
+              <>
+                <FileInput
+                  label="Game Zip File"
+                  placeholder="Upload .zip file"
+                  accept=".zip"
+                  value={gameZipFile}
+                  onChange={setGameZipFile}
+                  leftSection={<IconUpload size={16} />}
+                  styles={INPUT_STYLES}
+                  required
+                />
+                <Alert color="yellow" variant="light" p="xs" styles={{ message: { fontSize: "12px" } }}>
+                  ⚠️ Make sure your zip contains <strong>index.html</strong> at the root level
+                </Alert>
+              </>
+            )}
+
+            {/* ── launch URL read-only (edit mode only) ── */}
+            {editingGame && form.launch_url && (
+              <div>
+                <Text size="sm" style={{ color: "#CBC895", marginBottom: "4px" }}>Launch URL</Text>
+                <Text
+                  size="sm"
+                  style={{
+                    background: "#2a2e1e",
+                    border: "1px solid #6b6b3a",
+                    color: "#94a3b8",
+                    borderRadius: "4px",
+                    padding: "8px 12px",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {form.launch_url}
+                </Text>
+              </div>
+            )}
+
+            {/* ── name + slug ── */}
             <div className="form-grid">
               <TextInput
                 label="Name"
@@ -379,26 +439,7 @@ export default function Games() {
               />
             </div>
 
-            {/* launch URL — smart folder picker */}
-            <Select
-              label="Select Game Folder"
-              placeholder="Pick a folder…"
-              data={AVAILABLE_GAMES}
-              value={form.launch_url || null}
-              onChange={(v) => setForm((c) => ({ ...c, launch_url: v || "" }))}
-              leftSection={<IconFolder size={16} />}
-              searchable
-              clearable
-              nothingFoundMessage="No folders found"
-              styles={{
-                input: { background: "#2a2e1e", border: "1px solid #6b6b3a", color: "#fff" },
-                label: { color: "#CBC895", marginBottom: "4px" },
-                dropdown: { background: "#1e2012", border: "1px solid #6b6b3a" },
-                option: { color: "#fff", "&[dataSelected]": { background: "#3a3e1e" }, "&[dataHovered]": { background: "#2e3218" } },
-              }}
-            />
-
-            {/* thumbnail uploader */}
+            {/* ── thumbnail uploader ── */}
             <div>
               <FileInput
                 label="Thumbnail"
@@ -428,7 +469,7 @@ export default function Games() {
               )}
             </div>
 
-            {/* description */}
+            {/* ── description ── */}
             <Textarea
               label="Description"
               placeholder="Short game description"
@@ -438,7 +479,7 @@ export default function Games() {
               styles={INPUT_STYLES}
             />
 
-            {/* active toggle */}
+            {/* ── active toggle ── */}
             <Switch
               label={form.status ? "Active" : "Inactive"}
               checked={form.status}
@@ -454,7 +495,7 @@ export default function Games() {
               type="submit"
               variant="filled"
               style={{ background: "#DDD1B1", color: "#191A22", fontWeight: 700 }}
-              loading={createMutation.isPending || updateMutation.isPending}
+              loading={uploadGameMutation.isPending || updateMutation.isPending}
             >
               {editingGame ? "Save Changes" : "Add Game"}
             </Button>

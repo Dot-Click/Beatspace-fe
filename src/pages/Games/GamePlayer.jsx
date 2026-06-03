@@ -1,9 +1,20 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+const BACKEND_ORIGIN = "http://localhost:8000";
+
+const resolveGameUrl = (url) => {
+  if (!url) return null;
+  // Already absolute — use as-is
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  // Relative path — served from backend static files
+  return `${BACKEND_ORIGIN}${url}`;
+};
+
 const GamePlayer = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const url = searchParams.get("url");
+  const rawUrl = searchParams.get("url");
+  const url = resolveGameUrl(rawUrl);
 
   return (
     <div
