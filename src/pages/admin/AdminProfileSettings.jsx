@@ -554,6 +554,7 @@ const Settings = () => {
   // General Settings State
   const [siteTitle, setSiteTitle] = useState("Beatspace");
   const [language, setLanguage] = useState("English");
+  const [fontFamily, setFontFamily] = useState("Vision Font");
 
   // Logo Upload State
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -614,6 +615,7 @@ const Settings = () => {
         setDefaultVolume(settings.default_volume ?? 70);
         setPauseRadioOnBeat(settings.pause_radio_when_beat_plays ?? false);
         setAudioQuality(settings.audio_quality || "high");
+        setFontFamily(settings.font_family || "Vision Font");
         setSettingsId(settings._id);
       }
     } catch (error) {
@@ -650,7 +652,7 @@ const Settings = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleSaveGeneralSettings = async () => {
+  const handleSaveSettings = async () => {
     setIsSavingGeneral(true);
     try {
       const formData = new FormData();
@@ -658,14 +660,18 @@ const Settings = () => {
       formData.append("language", language);
       formData.append("dark_mode", darkMode);
       formData.append("retro_mode", retroNeonMode);
+      formData.append("font_family", fontFamily);
+      formData.append("enable_radio", enableRadio);
+      formData.append("default_volume", defaultVolume);
+      formData.append("pause_radio_when_beat_plays", pauseRadioOnBeat);
+      formData.append("audio_quality", audioQuality);
 
       if (uploadedFile) {
-        console.log("Appending logo to FormData:", uploadedFile.name);
         formData.append("logo", uploadedFile);
       }
 
       await SettingsAPI.update(settingsId || "undefined", formData);
-      setUploadedFile(null); // Clear the uploaded file after success
+      setUploadedFile(null);
       toast.success(t('settings.messages.save_success'));
       fetchSettings();
       refreshGlobalSettings();
@@ -980,8 +986,47 @@ const Settings = () => {
             </div>
           </div>
         </div>
+        <div className="w-full mt-6">
+          <label
+            htmlFor="font-family"
+            className="block text-white pixel-font !text-sm uppercase mb-4"
+          >
+            Site Font
+          </label>
+          <div className="relative alexandria-font">
+            <select
+              id="font-family"
+              value={fontFamily}
+              onChange={(e) => setFontFamily(e.target.value)}
+              className="w-full h-12 sm:h-14 lg:h-[60px] bg-[#191A22] border border-[#CBC895] px-4 sm:px-5 py-3 sm:py-3.5 text-[#9C963A] text-base sm:text-lg font-medium leading-6 sm:leading-7 appearance-none focus:outline-none focus:ring-2 focus:ring-[#CBC895] cursor-pointer transition-all"
+            >
+              <option value="Vision Font">Vision Font</option>
+              <option value="Alexandria">Alexandria</option>
+              <option value="Press Start 2P">Press Start 2P (Retro)</option>
+              <option value="System Font">System Font</option>
+            </select>
+            <div className="absolute right-4 sm:right-5 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <svg
+                className="w-5 h-3 sm:w-[22px] sm:h-[13px]"
+                viewBox="0 0 23 13"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  d="M19.3334 0.348354L22.4727 0.348354L22.4727 3.48758L19.3334 3.48758L19.3334 6.62681L16.1942 6.62681L16.1942 9.76604L13.055 9.76604L13.055 12.9053L9.91574 12.9053L9.91574 9.76604L6.77651 9.76604L6.77651 6.62681L3.63728 6.62681L3.63728 3.48758L0.498047 3.48758L0.498047 0.348352L3.63728 0.348353L3.63728 3.48758L6.77651 3.48758L6.77651 6.62681L9.91574 6.62681L9.91574 9.76604L13.055 9.76604L13.055 6.62681L16.1942 6.62681L16.1942 3.48758L19.3334 3.48758L19.3334 0.348354Z"
+                  fill="#FFEF2E"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p className="text-[#FFF999] text-xs alexandria-font mt-6">
+          💡 To change the background music or font, go to <strong>Asset Management</strong>.
+        </p>
+
         <button
-          onClick={handleSaveGeneralSettings}
+          onClick={handleSaveSettings}
           disabled={isSavingGeneral}
           className="mt-6 bg-[#DFD74F] alexandria-font text-[#191A22] px-8 py-3 rounded text-sm font-bold hover:bg-[#FFF999] transition-colors disabled:opacity-50"
         >
@@ -1160,16 +1205,22 @@ const Settings = () => {
             >
               <div className="mt-1">{AudioVisualizerIcon}</div>
             </SettingsRow>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSaveSettings();
+              }}
+              disabled={isSavingGeneral}
+              className="mt-8 bg-[#DFD74F] alexandria-font text-[#191A22] px-8 py-3 rounded text-sm font-bold hover:bg-[#FFF999] transition-colors disabled:opacity-50"
+            >
+              {isSavingGeneral ? t('settings.general.saving') : t('settings.general.save')}
+            </button>
           </fieldset>
         </section>
       </div>
 
-      {/* Visual Customization Section */}
-      <div className="relative py-8 px-6 mb-3 border-1 h-[400px] border-[#CBC895] bg-[#2F2E24] ">
-        <h1 className="text-[#DFD74F] mb-10 text-lg sm:text-xl pixel-font">
-          {t('settings.visual.title')}
-        </h1>
-      </div>
+
 
       {/* Security & Backup Section */}
       <div className="relative pt-8 sm:pt-12 lg:pt-[50px] py-8 px-6 mb-3 border-1 border-[#CBC895] bg-[#2F2E24] ">

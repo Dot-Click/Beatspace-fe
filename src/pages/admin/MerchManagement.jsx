@@ -10,15 +10,16 @@ export default function MerchManagement() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [replaceIndex, setReplaceIndex] = useState(null);
-  const [newMerch, setNewMerch] = useState({ name: "", description: "", price: 0, sizes: [] });
+  const [coverIndex, setCoverIndex] = useState(0);
+  const [newMerch, setNewMerch] = useState({ name: "", description: "", price: 0, sizes: [], stock: "in stock" });
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [viewItem, setViewItem] = useState(null);
 
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editMerch, setEditMerch] = useState({ id: null, name: "", description: "", price: 0, sizes: [] });
+  const [editMerch, setEditMerch] = useState({ id: null, name: "", description: "", price: 0, sizes: [], stock: "in stock" });
   const [editSelectedFiles, setEditSelectedFiles] = useState([]);
+  const [editCoverIndex, setEditCoverIndex] = useState(0);
 
   const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
 
@@ -40,28 +41,47 @@ export default function MerchManagement() {
   const handleFileSelect = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length > 0) {
-      if (replaceIndex !== null) {
-        setSelectedFiles((prev) => {
-          const newFiles = [...prev];
-          newFiles.splice(replaceIndex, files.length, ...files);
-          return newFiles.slice(0, 3);
-        });
-        setReplaceIndex(null);
-      } else {
-        setSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
-      }
+      setSelectedFiles((prev) => [...prev, ...files]);
     }
     e.target.value = null;
   };
+
   const handleDrop = (e) => {
     e.preventDefault();
     const files = e.dataTransfer.files ? Array.from(e.dataTransfer.files) : [];
     if (files.length > 0) {
-      setSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
+      setSelectedFiles((prev) => [...prev, ...files]);
     }
-    setReplaceIndex(null);
   };
+
   const handleDragOver = (e) => e.preventDefault();
+
+  const moveImage = (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= selectedFiles.length) return;
+    setSelectedFiles((prev) => {
+      const newList = [...prev];
+      const temp = newList[index];
+      newList[index] = newList[targetIndex];
+      newList[targetIndex] = temp;
+      return newList;
+    });
+    if (coverIndex === index) {
+      setCoverIndex(targetIndex);
+    } else if (coverIndex === targetIndex) {
+      setCoverIndex(index);
+    }
+  };
+
+  const removeImage = (index) => {
+    setSelectedFiles((prev) => prev.filter((_, idx) => idx !== index));
+    if (coverIndex === index) {
+      setCoverIndex(0);
+    } else if (coverIndex > index) {
+      setCoverIndex((prev) => prev - 1);
+    }
+  };
+
   const handleUpload = async () => {
     if (!newMerch.name || !newMerch.price || newMerch.sizes.length === 0) {
       toast.error(t('merch.messages.missing_fields'));
@@ -77,8 +97,9 @@ export default function MerchManagement() {
     formData.append("description", newMerch.description);
     formData.append("price", newMerch.price);
     formData.append("sizes", newMerch.sizes.join(","));
+    formData.append("stock", newMerch.stock || "in stock");
 
-    formData.append("cover_img", selectedFiles[0]);
+    formData.append("cover_img", selectedFiles[coverIndex]);
     selectedFiles.forEach((file) => {
       formData.append("image", file);
     });
@@ -87,8 +108,9 @@ export default function MerchManagement() {
 
     if (res?.success) {
       toast.success(t('merch.messages.upload_success'));
-      setNewMerch({ name: "", description: "", price: 0, sizes: [] });
+      setNewMerch({ name: "", description: "", price: 0, sizes: [], stock: "in stock" });
       setSelectedFiles([]);
+      setCoverIndex(0);
       dispatch(getMerchs()); // Refresh list
     } else {
       toast.error(res?.message || t('merch.messages.upload_failed'));
@@ -98,18 +120,35 @@ export default function MerchManagement() {
   const handleEditFileSelect = (e) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (files.length > 0) {
-      if (replaceIndex !== null) {
-        setEditSelectedFiles((prev) => {
-          const newFiles = [...prev];
-          newFiles.splice(replaceIndex, files.length, ...files);
-          return newFiles.slice(0, 3);
-        });
-        setReplaceIndex(null);
-      } else {
-        setEditSelectedFiles((prev) => [...prev, ...files].slice(0, 3));
-      }
+      setEditSelectedFiles((prev) => [...prev, ...files]);
     }
     e.target.value = null;
+  };
+
+  const moveEditImage = (index, direction) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= editSelectedFiles.length) return;
+    setEditSelectedFiles((prev) => {
+      const newList = [...prev];
+      const temp = newList[index];
+      newList[index] = newList[targetIndex];
+      newList[targetIndex] = temp;
+      return newList;
+    });
+    if (editCoverIndex === index) {
+      setEditCoverIndex(targetIndex);
+    } else if (editCoverIndex === targetIndex) {
+      setEditCoverIndex(index);
+    }
+  };
+
+  const removeEditImage = (index) => {
+    setEditSelectedFiles((prev) => prev.filter((_, idx) => idx !== index));
+    if (editCoverIndex === index) {
+      setEditCoverIndex(0);
+    } else if (editCoverIndex > index) {
+      setEditCoverIndex((prev) => prev - 1);
+    }
   };
 
   const handleEditUpload = async () => {
@@ -123,12 +162,14 @@ export default function MerchManagement() {
     formData.append("description", editMerch.description);
     formData.append("price", editMerch.price);
     formData.append("sizes", editMerch.sizes.join(","));
+    formData.append("stock", editMerch.stock || "in stock");
 
     if (editSelectedFiles.length > 0) {
-      if (editSelectedFiles[0] instanceof File) {
-        formData.append("cover_img", editSelectedFiles[0]);
+      const coverItem = editSelectedFiles[editCoverIndex];
+      if (coverItem instanceof File) {
+        formData.append("cover_img", coverItem);
       } else {
-        formData.append("existing_cover", editSelectedFiles[0]);
+        formData.append("existing_cover", coverItem);
       }
 
       editSelectedFiles.forEach((file) => {
@@ -145,8 +186,9 @@ export default function MerchManagement() {
 
     if (res?.success) {
       toast.success(t('merch.messages.update_success'));
-      setEditMerch({ id: null, name: "", description: "", price: 0, sizes: [] });
+      setEditMerch({ id: null, name: "", description: "", price: 0, sizes: [], stock: "in stock" });
       setEditSelectedFiles([]);
+      setEditCoverIndex(0);
       setEditModalOpen(false);
       dispatch(getMerchs());
     } else {
@@ -161,8 +203,12 @@ export default function MerchManagement() {
       description: item.description || "",
       price: item.price,
       sizes: item.sizes || [],
+      stock: item.stock || "in stock",
     });
-    setEditSelectedFiles(item.images ? [...item.images] : (item.prod_image ? [item.prod_image] : []));
+    const images = item.images ? [...item.images] : (item.prod_image ? [item.prod_image] : []);
+    setEditSelectedFiles(images);
+    const coverIdx = images.findIndex(img => img === item.prod_image);
+    setEditCoverIndex(coverIdx >= 0 ? coverIdx : 0);
     setEditModalOpen(true);
   };
 
@@ -274,6 +320,8 @@ export default function MerchManagement() {
         .a-yellow{color:#FFEF2E}
         .a-red{color:var(--red); background:rgba(235,24,27,0.13)}
         .preview{width:57px;height:57px;object-fit:cover}
+        .hover-overlay { opacity: 0; }
+        div:hover > .hover-overlay { opacity: 1 !important; }
 
         /* Modal specific styles */
         .modal-overlay {
@@ -328,35 +376,102 @@ export default function MerchManagement() {
               {t('merch.upload.drag_drop')}
             </h1>
 
-            <div
-              className="icons"
-              onClick={() => {
-                setReplaceIndex(null);
-                document.getElementById("file-input")?.click();
-              }}
-            >
-              {[0, 1, 2].map((i) => (
-                <div 
-                  className="icon-box" 
-                  key={i} 
-                  aria-hidden
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setReplaceIndex(i);
-                    document.getElementById("file-input")?.click();
-                  }}
-                >
-                  {selectedFiles[i] ? (
-                    <img 
-                      src={URL.createObjectURL(selectedFiles[i])} 
-                      alt={`preview-${i}`} 
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                    />
-                  ) : (
-                    <TeeIcon />
-                  )}
-                </div>
-              ))}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center", width: "100%", maxWidth: "720px", marginBottom: "1.5rem" }}>
+              {selectedFiles.map((file, idx) => {
+                const isMain = coverIndex === idx;
+                const previewUrl = URL.createObjectURL(file);
+                return (
+                  <div 
+                    key={idx}
+                    style={{ 
+                      width: "120px", 
+                      height: "120px", 
+                      border: isMain ? "3px solid var(--yellow)" : "2px solid var(--tan)", 
+                      position: "relative",
+                      background: "rgba(0,0,0,0.3)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                      borderRadius: "6px"
+                    }}
+                  >
+                    <img src={previewUrl} alt={`preview-${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    
+                    {/* Top Main Badge */}
+                    {isMain && (
+                      <span style={{ position: "absolute", top: "4px", left: "4px", background: "var(--yellow)", color: "var(--ink)", padding: "2px 6px", fontSize: "9px", fontFamily: '"Press Start 2P"', fontWeight: "bold", borderRadius: "3px" }}>
+                        MAIN
+                      </span>
+                    )}
+
+                    {/* Hover controls overlay */}
+                    <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "4px", opacity: 0, transition: "opacity 0.2s" }} className="hover-overlay">
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {!isMain && (
+                          <button 
+                            type="button"
+                            onClick={() => setCoverIndex(idx)}
+                            style={{ background: "var(--yellow)", border: "none", color: "var(--ink)", fontSize: "9px", padding: "2px 4px", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Set Main
+                          </button>
+                        )}
+                        <button 
+                          type="button"
+                          onClick={() => removeImage(idx)}
+                          style={{ background: "var(--red)", border: "none", color: "white", fontSize: "10px", padding: "2px 6px", cursor: "pointer", fontWeight: "bold", marginLeft: "auto" }}
+                        >
+                          X
+                        </button>
+                      </div>
+                      
+                      {/* Left/Right movement buttons */}
+                      <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
+                        <button 
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => moveImage(idx, -1)}
+                          style={{ background: idx === 0 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "24px", height: "24px", cursor: idx === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
+                        >
+                          &lt;
+                        </button>
+                        <button 
+                          type="button"
+                          disabled={idx === selectedFiles.length - 1}
+                          onClick={() => moveImage(idx, 1)}
+                          style={{ background: idx === selectedFiles.length - 1 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "24px", height: "24px", cursor: idx === selectedFiles.length - 1 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
+                        >
+                          &gt;
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+              
+              {/* "+ Add Image" button */}
+              <div 
+                onClick={() => document.getElementById("file-input")?.click()}
+                style={{ 
+                  width: "120px", 
+                  height: "120px", 
+                  border: "2px dashed var(--tan)", 
+                  display: "flex", 
+                  flexDirection: "column",
+                  alignItems: "center", 
+                  justifyContent: "center", 
+                  cursor: "pointer", 
+                  borderRadius: "6px",
+                  background: "rgba(197,194,116,0.1)",
+                  transition: "background 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.2)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.1)"}
+              >
+                <span style={{ fontSize: "28px", color: "var(--tan)", lineHeight: 1 }}>+</span>
+                <span style={{ fontSize: "9px", fontFamily: '"Press Start 2P"', color: "var(--tan)", marginTop: "4px" }}>ADD IMAGE</span>
+              </div>
             </div>
 
             <input
@@ -399,7 +514,7 @@ export default function MerchManagement() {
                   style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", resize: "vertical" }}
                 />
               </label>
-              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)", gridColumn: "1 / -1" }}>
+              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
                 <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.sizes_label')}</span>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
                   {["S", "M", "L", "XL"].map((s) => (
@@ -423,21 +538,21 @@ export default function MerchManagement() {
                     </button>
                   ))}
                 </div>
-                {selectedFiles.length > 0 && (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      color: "var(--green2)",
-                      fontSize: 12,
-                    }}
-                  >
-                    {t('merch.upload.files_selected', { count: selectedFiles.length }).toUpperCase()}
-                  </div>
-                )}
               </div>
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Stock Status</span>
+                <select
+                  value={newMerch.stock || "in stock"}
+                  onChange={(e) => setNewMerch((m) => ({ ...m, stock: e.target.value }))}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", cursor: "pointer" }}
+                >
+                  <option value="in stock">In Stock</option>
+                  <option value="out of stock">Out of Stock</option>
+                </select>
+              </label>
             </div>
 
-            <div style={{ display: "flex", gap: "1rem", marginTop: "0.5rem" }}>
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
               <button 
                 className="btn" 
                 onClick={handleUpload} 
@@ -610,38 +725,116 @@ export default function MerchManagement() {
                 </div>
               </div>
 
+              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Stock Status</span>
+                <select
+                  value={editMerch.stock || "in stock"}
+                  onChange={(e) => setEditMerch((m) => ({ ...m, stock: e.target.value }))}
+                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", cursor: "pointer" }}
+                >
+                  <option value="in stock">In Stock</option>
+                  <option value="out of stock">Out of Stock</option>
+                </select>
+              </label>
+
               <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
                 <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.merch_images_label') || "Merch Images"}</span>
-                <div
-                  className="icons"
-                  style={{ justifyContent: "center" }}
-                  onClick={() => {
-                    setReplaceIndex(null);
-                    document.getElementById("edit-file-input")?.click();
-                  }}
-                >
-                  {[0, 1, 2].map((i) => (
-                    <div 
-                      className="icon-box" 
-                      key={i} 
-                      aria-hidden
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setReplaceIndex(i);
-                        document.getElementById("edit-file-input")?.click();
-                      }}
-                    >
-                      {editSelectedFiles[i] ? (
-                        <img 
-                          src={typeof editSelectedFiles[i] === 'string' ? editSelectedFiles[i] : URL.createObjectURL(editSelectedFiles[i])} 
-                          alt={`preview-${i}`} 
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
-                        />
-                      ) : (
-                        <TeeIcon />
-                      )}
-                    </div>
-                  ))}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center", width: "100%", margin: "0.5rem 0" }}>
+                  {editSelectedFiles.map((file, idx) => {
+                    const isMain = editCoverIndex === idx;
+                    const previewUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
+                    return (
+                      <div 
+                        key={idx}
+                        style={{ 
+                          width: "100px", 
+                          height: "100px", 
+                          border: isMain ? "3px solid var(--yellow)" : "2px solid var(--tan)", 
+                          position: "relative",
+                          background: "rgba(0,0,0,0.3)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden",
+                          borderRadius: "6px"
+                        }}
+                      >
+                        <img src={previewUrl} alt={`preview-${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        
+                        {/* Top Main Badge */}
+                        {isMain && (
+                          <span style={{ position: "absolute", top: "4px", left: "4px", background: "var(--yellow)", color: "var(--ink)", padding: "1px 4px", fontSize: "8px", fontFamily: '"Press Start 2P"', fontWeight: "bold", borderRadius: "3px" }}>
+                            MAIN
+                          </span>
+                        )}
+
+                        {/* Hover controls overlay */}
+                        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "4px", opacity: 0, transition: "opacity 0.2s" }} className="hover-overlay">
+                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            {!isMain && (
+                              <button 
+                                type="button"
+                                onClick={() => setEditCoverIndex(idx)}
+                                style={{ background: "var(--yellow)", border: "none", color: "var(--ink)", fontSize: "9px", padding: "2px 4px", cursor: "pointer", fontWeight: "bold" }}
+                              >
+                                Set Main
+                              </button>
+                            )}
+                            <button 
+                              type="button"
+                              onClick={() => removeEditImage(idx)}
+                              style={{ background: "var(--red)", border: "none", color: "white", fontSize: "10px", padding: "2px 6px", cursor: "pointer", fontWeight: "bold", marginLeft: "auto" }}
+                            >
+                              X
+                            </button>
+                          </div>
+                          
+                          {/* Left/Right movement buttons */}
+                          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
+                            <button 
+                              type="button"
+                              disabled={idx === 0}
+                              onClick={() => moveEditImage(idx, -1)}
+                              style={{ background: idx === 0 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "20px", height: "20px", cursor: idx === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
+                            >
+                              &lt;
+                            </button>
+                            <button 
+                              type="button"
+                              disabled={idx === editSelectedFiles.length - 1}
+                              onClick={() => moveEditImage(idx, 1)}
+                              style={{ background: idx === editSelectedFiles.length - 1 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "20px", height: "20px", cursor: idx === editSelectedFiles.length - 1 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
+                            >
+                              &gt;
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* "+ Add Image" button */}
+                  <div 
+                    onClick={() => document.getElementById("edit-file-input")?.click()}
+                    style={{ 
+                      width: "100px", 
+                      height: "100px", 
+                      border: "2px dashed var(--tan)", 
+                      display: "flex", 
+                      flexDirection: "column",
+                      alignItems: "center", 
+                      justifyContent: "center", 
+                      cursor: "pointer", 
+                      borderRadius: "6px",
+                      background: "rgba(197,194,116,0.1)",
+                      transition: "background 0.2s"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.2)"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.1)"}
+                  >
+                    <span style={{ fontSize: "24px", color: "var(--tan)", lineHeight: 1 }}>+</span>
+                    <span style={{ fontSize: "8px", fontFamily: '"Press Start 2P"', color: "var(--tan)", marginTop: "4px" }}>ADD IMAGE</span>
+                  </div>
                 </div>
                 <input
                   id="edit-file-input"
@@ -649,9 +842,11 @@ export default function MerchManagement() {
                   onChange={handleEditFileSelect}
                   hidden
                 />
-                <div style={{ textAlign: "center", color: "var(--green2)", fontSize: 12 }}>
-                  {t('merch.upload.files_selected', { count: editSelectedFiles.length })}
-                </div>
+                {editSelectedFiles.length > 0 && (
+                  <div style={{ textAlign: "center", color: "var(--green2)", fontSize: 12 }}>
+                    {t('merch.upload.files_selected', { count: editSelectedFiles.length }).toUpperCase()}
+                  </div>
+                )}
               </div>
 
               <button 

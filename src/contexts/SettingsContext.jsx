@@ -12,6 +12,7 @@ export const SettingsProvider = ({ children }) => {
     language: 'English'
   });
   const [loading, setLoading] = useState(true);
+  const initialLoadDone = React.useRef(false);
 
   const fetchSettings = useCallback(async () => {
     try {
@@ -22,12 +23,23 @@ export const SettingsProvider = ({ children }) => {
     } catch (error) {
       console.error('Error fetching settings:', error);
     } finally {
-      setLoading(false);
+      // Only flip the loading flag on the very first fetch.
+      // Subsequent re-fetches (e.g. on section change) are silent background
+      // refreshes — setting loading=false on an already-false value still triggers
+      // a re-render in every consumer, which is the root cause of navigation lag.
+      if (!initialLoadDone.current) {
+        initialLoadDone.current = true;
+        setLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
     fetchSettings();
+    // Re-fetch whenever asset management page fires settings-changed event
+    const handler = () => fetchSettings();
+    window.addEventListener("settings-changed", handler);
+    return () => window.removeEventListener("settings-changed", handler);
   }, [fetchSettings]);
 
   useEffect(() => {
@@ -35,6 +47,20 @@ export const SettingsProvider = ({ children }) => {
       document.title = settings.site_title;
     }
   }, [settings.site_title]);
+
+  useEffect(() => {
+    if (settings.font_family) {
+      let fontVal = '"Vision Font", sans-serif';
+      if (settings.font_family === 'Alexandria') {
+        fontVal = '"Alexandria", sans-serif';
+      } else if (settings.font_family === 'Press Start 2P') {
+        fontVal = '"Press Start 2P", cursive';
+      } else if (settings.font_family === 'System Font') {
+        fontVal = 'system-ui, sans-serif';
+      }
+      document.documentElement.style.setProperty('--global-font-family', fontVal);
+    }
+  }, [settings.font_family]);
 
 
   return (

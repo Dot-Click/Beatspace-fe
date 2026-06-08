@@ -109,12 +109,13 @@ const BeatPlay = () => {
           setCurrentlyPlaying(null);
           setAudioProgress((prev) => ({ ...prev, [beat.id]: 0 }));
           setAudioCurrentTime((prev) => ({ ...prev, [beat.id]: 0 }));
+          window.dispatchEvent(new CustomEvent("beat-play-stop"));
         });
-
+ 
         audioRefs.current[beat.id] = audio;
       }
     });
-
+ 
     return () => {
       Object.values(audioRefs.current).forEach((audio) => {
         if (audio) {
@@ -123,22 +124,24 @@ const BeatPlay = () => {
           audio.load();
         }
       });
+      window.dispatchEvent(new CustomEvent("beat-play-stop"));
     };
   }, [beatItems]);
-
+ 
   const handlePlay = async (beat) => {
     const beatId = beat.id;
     if (!beat.audioUrl || beat.audioUrl.trim() === "") {
       toast.error(`No audio URL provided for ${beat.name}.`);
       return;
     }
-
+ 
     const audio = audioRefs.current[beatId];
     if (!audio) return;
-
+ 
     if (currentlyPlaying === beatId && !audio.paused) {
       audio.pause();
       setCurrentlyPlaying(null);
+      window.dispatchEvent(new CustomEvent("beat-play-stop"));
     } else {
       Object.keys(audioRefs.current).forEach((id) => {
         if (id !== beatId.toString() && audioRefs.current[id]) {
@@ -146,11 +149,12 @@ const BeatPlay = () => {
           audioRefs.current[id].currentTime = 0;
         }
       });
-
+ 
       try {
         await audio.play();
         setCurrentlyPlaying(beatId);
         dispatch(playBeatAction(beatId, false));
+        window.dispatchEvent(new CustomEvent("beat-play-start"));
       } catch (error) {
         console.error("Error playing audio:", error);
         toast.error(`Error playing ${beat.name}: ${error.message}`);
