@@ -141,6 +141,28 @@ export const getComics = () => async (dispatch) => {
   }
 };
 
+export const getAdminComics = () => async (dispatch) => {
+  dispatch({
+    type: ADMIN_CONSTANTS.GET_COMICS_REQUEST,
+  });
+  try {
+    const res = await custAxios.get('/admin/getComics');
+    if (res?.data?.success) {
+      dispatch({
+        type: ADMIN_CONSTANTS.GET_COMICS_SUCCESS,
+        payload: res?.data?.data,
+      });
+    }
+    return res?.data;
+  } catch (error) {
+    dispatch({
+      type: ADMIN_CONSTANTS.GET_COMICS_FAILURE,
+      payload: error?.response?.data?.message || 'Server Error',
+    });
+    return error?.response?.data;
+  }
+};
+
 export const createComic = (formData) => async (dispatch) => {
   dispatch({
     type: ADMIN_CONSTANTS.CREATE_COMIC_REQUEST,

@@ -5,6 +5,7 @@ import {
   createComic,
   updateComic,
   deleteComic,
+  getAdminComics,
 } from "../../store/actions/adminActions";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,7 @@ import {
   ActionIcon,
   Badge,
   Tooltip,
+  TextInput,
 } from "@mantine/core";
 import {
   DndContext,
@@ -46,6 +48,7 @@ import {
   IconStar,
   IconStarFilled,
   IconDragDrop,
+  IconX,
 } from "@tabler/icons-react";
 
 // Constants for consistent styling
@@ -367,26 +370,116 @@ const DeleteButton = ({ onClick }) => {
   );
 };
 
+const ChapterTabs = ({
+  chapters,
+  activeChapterIndex,
+  onTabClick,
+  onAddChapter,
+  onDeleteChapter,
+  onChapterTitleChange,
+  disabled,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Box className="flex items-center border-b border-[#cbc89533] mb-4">
+      {/* Scrollable container for tabs */}
+      <div className="flex-grow flex items-center overflow-x-auto">
+        {chapters.map((chapter, index) => (
+          <div
+            key={chapter.id || `chapter-${index}`}
+            className={`flex items-center justify-center h-12 px-4 cursor-pointer relative group transition-all duration-200
+              ${
+                activeChapterIndex === index
+                  ? "bg-[#CBC895] text-[#191A22]"
+                  : "bg-transparent text-[#F6F4D3] hover:bg-[#191a22]"
+              }`}
+            onClick={() => onTabClick(index)}
+          >
+            <TextInput
+              value={chapter.chapter_title}
+              onChange={(event) =>
+                onChapterTitleChange(index, event.currentTarget.value)
+              }
+              disabled={disabled}
+              variant="unstyled"
+              className="w-24"
+              styles={{
+                input: {
+                  color: activeChapterIndex === index ? "#191A22" : "#F6F4D3",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  cursor: disabled ? "not-allowed" : "text",
+                },
+              }}
+            />
+            {chapters.length > 1 && (
+              <Tooltip label={t("comics.delete_chapter")} withArrow>
+                <ActionIcon
+                  size="xs"
+                  variant="transparent"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteChapter(index);
+                  }}
+                  disabled={disabled}
+                  className="ml-2"
+                >
+                  <IconX
+                    size={14}
+                    color={
+                      activeChapterIndex === index ? "#191A22" : "#F6F4D3"
+                    }
+                  />
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Add Chapter Button */}
+      <Tooltip label={t("comics.add_chapter")} withArrow>
+        <ActionIcon
+          onClick={onAddChapter}
+          size="lg"
+          variant="transparent"
+          disabled={disabled}
+          className="mx-2"
+        >
+          <IconPlus size={20} color="#CBC895" />
+        </ActionIcon>
+      </Tooltip>
+    </Box>
+  );
+};
+
 // --- Main Modal Component (FIXED - Pages now load correctly when editing) ---
 const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState("details");
   const [formData, setFormData] = useState({
     author_name: "",
     title: "",
-    chapter_title: "",
     description: "",
-    status: "active",
+    status: "draft",
   });
 
-  // pages structure: { id, url, file, isThumbnail, order, isNew }
-  const [pages, setPages] = useState([]);
   const [coverFile, setCoverFile] = useState(null);
   const [coverUrl, setCoverUrl] = useState("");
 
+  // Chapters state: Array of { id, chapter_title, pages: [{ id, url, file, isThumbnail, order, isNew }] }
+  const [chapters, setChapters] = useState([
+    {
+      id: `chap-${Date.now()}-0`,
+      chapter_title: "Chapter 1",
+      pages: []
+    }
+  ]);
+  const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(null); // 'draft' | 'published' | 'save' | null
 
   const fileInputRef = useRef(null);
   const coverInputRef = useRef(null);
@@ -398,68 +491,63 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
     }),
   );
 
-  // FIXED: Properly load pages when editing comic
+  // Load editing comic or initialize
   useEffect(() => {
     if (isOpen && editingComic) {
       setFormData({
         author_name: editingComic.author_name || "",
         title: editingComic.title || "",
-        chapter_title: editingComic.chapter_info?.[0]?.chapter_title || "",
         description: editingComic.description || "",
-        status: editingComic.status || "active",
+        status: editingComic.status || "draft",
       });
-
-      // FIXED: Properly map existing pages from chapter_info with legacy fallback
-      const chapter = editingComic.chapter_info?.[0];
-      const existingPages = chapter?.pages || [];
-
-      let mappedPages = [];
-      if (existingPages.length > 0) {
-        mappedPages = existingPages.map((p, idx) => ({
-          id: p._id || `existing-${idx}-${Date.now()}`,
-          url: p.url,
-          isThumbnail: p.isThumbnail || false,
-          order: p.order || idx + 1,
-          isNew: false,
-        }));
-      } else if (chapter?.images?.length > 0) {
-        // Support for comics created with the old string array structure
-        mappedPages = chapter.images.map((url, idx) => ({
-          id: `legacy-${idx}-${Date.now()}`,
-          url: url,
-          isThumbnail: idx === 0,
-          order: idx + 1,
-          isNew: false,
-        }));
-      }
-
-      setPages(mappedPages);
 
       // Set cover image from comic data
       const coverImage = editingComic.thumbnailUrl || editingComic.image || "";
       setCoverUrl(coverImage);
       setCoverFile(null);
-    } else if (isOpen && !editingComic) {
-      // Reset form for new comic
-      setFormData({
-        author_name: "",
-        title: "",
-        chapter_title: "",
-        description: "",
-        status: "active",
-      });
-      setPages([]);
-      setCoverFile(null);
-      setCoverUrl("");
-    }
-  }, [editingComic, isOpen]);
 
-  // FIXED: Reset active tab when modal opens/closes
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab("details");
+      // Load chapters
+      const existingChapters = editingComic.chapter_info || [];
+      const mappedChapters = existingChapters.map((chap, chapIdx) => {
+        const existingPages = chap.pages || [];
+        let mappedPages = [];
+        if (existingPages.length > 0) {
+          mappedPages = existingPages.map((p, idx) => ({
+            id: p._id || `existing-${chapIdx}-${idx}-${Date.now()}`,
+            url: p.url,
+            isThumbnail: p.isThumbnail || false,
+            order: p.order || idx + 1,
+            isNew: false,
+          }));
+        } else if (chap.images?.length > 0) {
+          mappedPages = chap.images.map((url, idx) => ({
+            id: `legacy-${chapIdx}-${idx}-${Date.now()}`,
+            url: url,
+            isThumbnail: idx === 0,
+            order: idx + 1,
+            isNew: false,
+          }));
+        }
+        return {
+          id: chap._id || `chap-existing-${chapIdx}-${Date.now()}`,
+          chapter_title: chap.chapter_title || `Chapter ${chapIdx + 1}`,
+          pages: mappedPages
+        };
+      });
+
+      if (mappedChapters.length === 0) {
+        mappedChapters.push({
+          id: `chap-new-${Date.now()}`,
+          chapter_title: "Chapter 1",
+          pages: []
+        });
+      }
+      setChapters(mappedChapters);
+      setActiveChapterIndex(0);
     }
-  }, [isOpen]);
+    // We deliberately do NOT reset the state when !editingComic and reopening,
+    // to preserve unsaved changes if they close the modal.
+  }, [editingComic, isOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -468,22 +556,33 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files || []);
-    const newPages = files.map((file, index) => ({
-      id: `new-${Date.now()}-${index}-${Math.random()}`,
-      url: URL.createObjectURL(file),
-      file: file,
-      isThumbnail: false,
-      order: pages.length + index + 1,
-      isNew: true,
-    }));
-    setPages((prev) => [...prev, ...newPages]);
+    if (files.length === 0) return;
+
+    setChapters((prevChapters) =>
+      prevChapters.map((chap, idx) => {
+        if (idx !== activeChapterIndex) return chap;
+
+        const newPages = files.map((file, index) => ({
+          id: `new-${Date.now()}-${index}-${Math.random()}`,
+          url: URL.createObjectURL(file),
+          file: file,
+          isThumbnail: false,
+          order: chap.pages.length + index + 1,
+          isNew: true,
+        }));
+
+        return {
+          ...chap,
+          pages: [...chap.pages, ...newPages]
+        };
+      })
+    );
     e.target.value = "";
   };
 
   const handleCoverUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Cleanup old object URL
       if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
         URL.revokeObjectURL(coverUrl);
       }
@@ -493,124 +592,224 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
   };
 
   const handleRemovePage = (id) => {
-    setPages((prev) => {
-      const pageToRemove = prev.find((p) => p.id === id);
-      // Cleanup object URL for new pages
-      if (
-        pageToRemove?.isNew &&
-        typeof pageToRemove.url === "string" &&
-        pageToRemove.url.startsWith("blob:")
-      ) {
-        URL.revokeObjectURL(pageToRemove.url);
-      }
-      return prev.filter((p) => p.id !== id);
-    });
+    setChapters((prevChapters) =>
+      prevChapters.map((chap, idx) => {
+        if (idx !== activeChapterIndex) return chap;
+
+        const pageToRemove = chap.pages.find((p) => p.id === id);
+        if (
+          pageToRemove?.isNew &&
+          typeof pageToRemove.url === "string" &&
+          pageToRemove.url.startsWith("blob:")
+        ) {
+          URL.revokeObjectURL(pageToRemove.url);
+        }
+
+        const filteredPages = chap.pages.filter((p) => p.id !== id);
+        return {
+          ...chap,
+          pages: filteredPages.map((p, index) => ({ ...p, order: index + 1 }))
+        };
+      })
+    );
   };
 
   const handleSetThumbnail = (id) => {
-    setPages((prev) =>
-      prev.map((p) => ({
-        ...p,
-        isThumbnail: p.id === id,
-      })),
+    setChapters((prevChapters) =>
+      prevChapters.map((chap, idx) => {
+        if (idx !== activeChapterIndex) return chap;
+
+        return {
+          ...chap,
+          pages: chap.pages.map((p) => ({
+            ...p,
+            isThumbnail: p.id === id,
+          }))
+        };
+      })
     );
   };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
-      setPages((items) => {
-        const oldIndex = items.findIndex((i) => i.id === active.id);
-        const newIndex = items.findIndex((i) => i.id === over.id);
-        const reordered = arrayMove(items, oldIndex, newIndex);
-        return reordered.map((p, idx) => ({ ...p, order: idx + 1 }));
-      });
+      setChapters((prevChapters) =>
+        prevChapters.map((chap, idx) => {
+          if (idx !== activeChapterIndex) return chap;
+
+          const oldIndex = chap.pages.findIndex((i) => i.id === active.id);
+          const newIndex = chap.pages.findIndex((i) => i.id === over.id);
+          const reordered = arrayMove(chap.pages, oldIndex, newIndex);
+          return {
+            ...chap,
+            pages: reordered.map((p, index) => ({ ...p, order: index + 1 }))
+          };
+        })
+      );
     }
   };
 
-  // Cleanup object URLs on modal close
-  const handleModalClose = () => {
-    // Cleanup all blob URLs for new pages
-    pages.forEach((page) => {
-      if (
-        page.isNew &&
-        typeof page.url === "string" &&
-        page.url.startsWith("blob:")
-      ) {
-        URL.revokeObjectURL(page.url);
+  const handleAddChapter = () => {
+    const nextNum = chapters.length + 1;
+    const newChapter = {
+      id: `chap-${Date.now()}-${chapters.length}-${Math.random()}`,
+      chapter_title: `Chapter ${nextNum}`,
+      pages: []
+    };
+    setChapters([...chapters, newChapter]);
+    setActiveChapterIndex(chapters.length);
+  };
+
+  const handleDeleteChapter = (indexToDelete) => {
+    if (chapters.length === 1) return;
+    if (window.confirm("Are you sure you want to delete this chapter? All pages and data in this chapter will be lost.")) {
+      const targetChapter = chapters[indexToDelete];
+      targetChapter?.pages?.forEach(p => {
+        if (p.isNew && typeof p.url === "string" && p.url.startsWith("blob:")) {
+          URL.revokeObjectURL(p.url);
+        }
+      });
+      const updated = chapters.filter((_, idx) => idx !== indexToDelete);
+      setChapters(updated);
+      if (activeChapterIndex >= updated.length) {
+        setActiveChapterIndex(updated.length - 1);
       }
-    });
-    if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(coverUrl);
     }
+  };
+
+  const handleResetForm = () => {
+    if (window.confirm("Are you sure you want to clear all entered form data? This will reset all fields and uploaded pages.")) {
+      // Cleanup blob URLs
+      chapters.forEach(chap => {
+        chap.pages.forEach(p => {
+          if (p.isNew && typeof p.url === "string" && p.url.startsWith("blob:")) {
+            URL.revokeObjectURL(p.url);
+          }
+        });
+      });
+      if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(coverUrl);
+      }
+
+      setFormData({
+        author_name: "",
+        title: "",
+        description: "",
+        status: "draft",
+      });
+      setChapters([
+        {
+          id: `chap-${Date.now()}-0`,
+          chapter_title: "Chapter 1",
+          pages: []
+        }
+      ]);
+      setActiveChapterIndex(0);
+      setCoverFile(null);
+      setCoverUrl("");
+    }
+  };
+
+  const handleCleanupAfterSave = () => {
+    setFormData({
+      author_name: "",
+      title: "",
+      description: "",
+      status: "draft",
+    });
+    setChapters([
+      {
+        id: `chap-${Date.now()}-0`,
+        chapter_title: "Chapter 1",
+        pages: []
+      }
+    ]);
+    setActiveChapterIndex(0);
+    setCoverFile(null);
+    setCoverUrl("");
+  };
+
+  const handleModalClose = () => {
+    // Keep form states intact on close to allow resuming later
     onClose();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (pages.length === 0) {
-      toast.error(t('comics.messages.upload_required'));
+  const handleSubmit = async (submitStatus) => {
+    if (!formData.title.trim()) {
+      toast.error("Comic Title is required");
       return;
     }
 
-    setIsSubmitting(true);
+    if (submitStatus === "published" || submitStatus === "active") {
+      if (!formData.author_name.trim()) {
+        toast.error("Author Name is required for publishing");
+        return;
+      }
+      if (chapters.length === 0) {
+        toast.error("At least one chapter is required to publish");
+        return;
+      }
+      const emptyChapter = chapters.find(c => c.pages.length === 0);
+      if (emptyChapter) {
+        toast.error(`Chapter "${emptyChapter.chapter_title}" has no pages. Please upload at least one page or delete the empty chapter.`);
+        return;
+      }
+    }
+
+    const isAlreadyPublished = editingComic && (editingComic.status === "published" || editingComic.status === "active");
+    const submitType = isAlreadyPublished ? "save" : (submitStatus === "published" ? "published" : "draft");
+    setIsSubmitting(submitType);
     try {
       const data = new FormData();
       data.append("author_name", formData.author_name);
       data.append("title", formData.title);
       data.append("description", formData.description);
-      data.append("status", formData.status);
+      data.append("status", submitStatus);
 
-      // Prepare chapter info with proper page data
-      const chapterPages = pages.map((p, idx) => ({
-        order: p.order || idx + 1,
-        isThumbnail: p.isThumbnail || false,
-        ...(p.isNew ? {} : { url: p.url }), // Only include url for existing pages
-      }));
+      // Prepare chapters payload
+      const chaptersPayload = chapters.map((chap, chapIdx) => {
+        const chapterPages = chap.pages.map((p, idx) => ({
+          order: p.order || idx + 1,
+          isThumbnail: p.isThumbnail || false,
+          ...(p.isNew ? {} : { url: p.url }),
+        }));
 
-      const chapter = {
-        chapter_title: formData.chapter_title,
-        pages: chapterPages,
-        // Backend Zod schema requires images array
-        images: pages.filter((p) => !p.isNew).map((p) => p.url),
-      };
-
-      data.append("chapter_info", JSON.stringify([chapter]));
-
-      // Append new image files
-      pages.forEach((p) => {
-        if (p.isNew && p.file) {
-          data.append("gallery", p.file);
-        }
+        return {
+          chapter_title: chap.chapter_title,
+          chapter_number: chapIdx + 1,
+          pages: chapterPages,
+          images: chap.pages.filter((p) => !p.isNew).map((p) => p.url),
+        };
       });
 
-      // Handle Cover image
+      data.append("chapter_info", JSON.stringify(chaptersPayload));
+
+      // Append new image files sequentially across all chapters
+      chapters.forEach((chap) => {
+        chap.pages.forEach((p) => {
+          if (p.isNew && p.file) {
+            data.append("gallery", p.file);
+          }
+        });
+      });
+
       if (coverFile) {
         data.append("image", coverFile);
       }
 
-      await onSave(data);
-
-      // Cleanup URLs after successful save
-      pages.forEach((page) => {
-        if (
-          page.isNew &&
-          typeof page.url === "string" &&
-          page.url.startsWith("blob:")
-        ) {
-          URL.revokeObjectURL(page.url);
-        }
-      });
-      if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(coverUrl);
+      const success = await onSave(data);
+      if (success) {
+        handleCleanupAfterSave();
       }
     } catch (error) {
       console.error(error);
       toast.error(t('comics.messages.save_failed'));
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(null);
     }
   };
+
+  const activeChapter = chapters[activeChapterIndex] || { id: "temp", chapter_title: "", pages: [] };
 
   if (!isOpen) return null;
 
@@ -619,10 +818,10 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
       <Modal
         opened={isOpen}
         onClose={handleModalClose}
-        size="70%"
+        size="90%"
         padding="xl"
         centered
-        className="alexandria-font "
+        className="alexandria-font"
         classNames={{
           content: "custom-scrollbar",
         }}
@@ -642,7 +841,7 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
             backgroundColor: "#242730",
             border: "2px solid #C1BE91",
             borderRadius: "12px",
-            maxHeight: "90vh",
+            maxHeight: "92vh",
             overflowY: "auto",
           },
           close: { color: "#F6F4D3" },
@@ -652,152 +851,103 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         }}
         overlayProps={{ color: "#000", opacity: 0.85, blur: 3 }}
       >
-        <Tabs
-          defaultValue="details"
-          value={activeTab}
-          onChange={setActiveTab}
-          color="yellow"
-          variant="outline"
-          className="alexandria-font "
-        >
-          <Tabs.List className="mb-6">
-            <Tabs.Tab
-              value="details"
-              leftSection={<IconSettings size={18} />}
-              className="font-bold !text-[#F6F4D3]"
+        {/* Chapter Tabs Section */}
+        <Box className="flex items-center flex-wrap gap-2 mb-6 pb-4 border-b border-white/10 select-none">
+          {chapters.map((chap, idx) => (
+            <div
+              key={chap.id}
+              onClick={() => setActiveChapterIndex(idx)}
+              className={`alexandria-font uppercase flex items-center gap-3 px-4 h-10 cursor-pointer border transition-all duration-200 hover:scale-[1.02] shadow-sm ${
+                activeChapterIndex === idx
+                  ? "bg-[#CBC895] text-[#191A22] border-[#CBC895]"
+                  : "bg-transparent text-[#F6F4D3] border-[#CBC895]/40 hover:border-[#CBC895]"
+              }`}
+              style={{
+                fontWeight: 700,
+              }}
             >
-              {t('comics.tabs.details')}
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="media"
-              leftSection={<IconPhoto size={18} />}
-              className="font-bold !text-[#F6F4D3]"
-            >
-              {t('comics.tabs.media')}
-            </Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="details" className="alexandria-font">
-            <Box className="space-y-4">
-              <Group grow>
-                <Box>
-                  <Text color="#F6F4D3" size="sm" mb={5} weight={700}>
-                    {t('comics.form.title')}
-                  </Text>
-                  <input
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    placeholder={t('comics.form.title_placeholder')}
-                    className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10"
-                  />
-                </Box>
-                <Box>
-                  <Text color="#F6F4D3" size="sm" mb={5} weight={700}>
-                    {t('comics.form.artist')}
-                  </Text>
-                  <input
-                    name="author_name"
-                    value={formData.author_name}
-                    onChange={handleInputChange}
-                    placeholder={t('comics.form.artist_placeholder')}
-                    className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10"
-                  />
-                </Box>
-              </Group>
-
-              <Box>
-                <Text
-                  color="#F6F4D3"
-                  size="sm"
-                  mb={5}
-                  weight={700}
-                  className="uppercase"
+              <span>{chap.chapter_title || `Chapter ${idx + 1}`}</span>
+              {chapters.length > 1 && (
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteChapter(idx);
+                  }}
+                  className="hover:bg-black/10 text-[#EB181B] hover:text-[#D41519] rounded-full w-4 h-4 flex items-center justify-center text-[10px] ml-1 transition-colors p-0.5"
+                  title="Delete chapter"
                 >
-                  {t('comics.form.chapter_title')}
-                </Text>
-                <input
-                  name="chapter_title"
-                  value={formData.chapter_title}
-                  onChange={handleInputChange}
-                  placeholder={t('comics.form.chapter_placeholder')}
-                  className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 font-bold"
-                />
-              </Box>
+                  ✕
+                </span>
+              )}
+            </div>
+          ))}
+          <Button
+            onClick={handleAddChapter}
+            variant="subtle"
+            color="yellow"
+            leftSection={<IconPlus size={16} />}
+            className="alexandria-font font-bold uppercase h-10"
+            styles={{ root: { color: "#CBC895" } }}
+          >
+            Add New Chapter
+          </Button>
+        </Box>
 
-              <Box>
-                <Text
-                  color="#F6F4D3"
-                  size="sm"
-                  mb={5}
-                  weight={700}
-                  className="uppercase"
-                >
-                  {t('comics.form.description')}
-                </Text>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={4}
-                  placeholder={t('comics.form.description_placeholder')}
-                  className="w-full rounded-none bg-[#191A22] text-[#F6F4D3] p-4 outline-none border border-white/10 resize-none font-bold"
-                />
-              </Box>
-
-              <Box>
-                <Text
-                  color="#F6F4D3"
-                  size="sm"
-                  mb={5}
-                  weight={700}
-                  className="uppercase"
-                >
-                  {t('comics.form.status')}
-                </Text>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleInputChange}
-                  className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 font-bold"
-                >
-                  <option value="active">{t('comics.form.active')}</option>
-                  <option value="inactive">{t('comics.form.inactive')}</option>
-                </select>
-              </Box>
-            </Box>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="media">
-            <Box className="space-y-6">
-              {/* Cover Upload */}
-              <Box className="p-4 bg-[#191A22] rounded-none border border-dashed border-[#C1BE91]">
-                <Text
-                  color="#F6F4D3"
-                  size="sm"
-                  mb={10}
-                  weight={700}
-                  className="uppercase"
-                >
-                  {t('comics.form.cover_label')}
-                </Text>
-                <Group>
-                  {coverUrl && (
+        {/* 2-Column Responsive Workspace */}
+        <Box className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* LEFT COLUMN: Cover Upload, Chapter Pages Upload & Grid */}
+          <Box className="lg:col-span-5 space-y-6">
+            
+            {/* Comic Cover Upload (Comic level metadata) */}
+            <Box className="p-4 bg-[#191A22] border border-dashed border-[#C1BE91]/40 rounded-sm space-y-3">
+              <Text color="#F6F4D3" size="sm" className="font-bold uppercase tracking-wider">
+                {t('comics.form.cover_label')}
+              </Text>
+              <Group align="flex-start" className="flex-nowrap">
+                {coverUrl ? (
+                  <Box className="relative group w-[100px] h-[140px] flex-shrink-0">
                     <Image
                       src={coverUrl}
                       w={100}
                       h={140}
                       fit="cover"
-                      radius="sm"
-                      className="border border-[#C1BE91]"
+                      radius="none"
+                      className="border border-[#C1BE91]/30"
                     />
-                  )}
+                    <Box className="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ActionIcon
+                        color="red"
+                        onClick={() => {
+                          setCoverFile(null);
+                          setCoverUrl("");
+                        }}
+                      >
+                        <IconTrash size={16} />
+                      </ActionIcon>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box
+                    onClick={() => coverInputRef.current?.click()}
+                    className="w-[100px] h-[140px] border border-dashed border-white/20 hover:border-[#CBC895] transition-colors flex flex-col items-center justify-center cursor-pointer bg-[#040404] flex-shrink-0"
+                  >
+                    <IconPlus size={24} color="#CBC895" />
+                    <Text size="xs" color="dimmed" mt={5}>Cover</Text>
+                  </Box>
+                )}
+                <Box className="flex-1 space-y-2">
+                  <Text size="xs" color="dimmed">
+                    Upload a cover image representing this comic. JPG, PNG, GIF.
+                  </Text>
                   <Button
                     variant="light"
                     color="yellow"
+                    size="xs"
                     onClick={() => coverInputRef.current?.click()}
-                    leftSection={<IconPlus size={18} />}
+                    leftSection={<IconPlus size={14} />}
                     className="font-bold uppercase"
+                    styles={{ root: { backgroundColor: "rgba(203, 200, 149, 0.1)", color: "#CBC895" } }}
                   >
                     {coverUrl ? t('comics.form.change_cover') : t('comics.form.upload_cover')}
                   </Button>
@@ -808,51 +958,55 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
                     accept="image/*"
                     onChange={handleCoverUpload}
                   />
-                </Group>
-              </Box>
+                </Box>
+              </Group>
+            </Box>
 
-              {/* Pages Grid with DND */}
-              <Box>
-                <Group justify="space-between" mb={10}>
-                  <Text
-                    color="#F6F4D3"
-                    size="sm"
-                    weight={700}
-                    className="uppercase"
-                  >
-                    {t('comics.form.upload_pages')} ({pages.length})
-                  </Text>
-                  <Button
-                    size="xs"
-                    color="yellow"
-                    onClick={() => fileInputRef.current?.click()}
-                    leftSection={<IconPlus size={16} />}
-                    className="font-bold uppercase"
-                  >
+            {/* Chapter Pages Upload & Reordering (Chapter level data) */}
+            <Box className="space-y-4">
+              <Group justify="space-between" className="border-b border-white/10 pb-2">
+                <Box>
+                  <Text color="#F6F4D3" size="sm" className="font-bold uppercase tracking-wider">
                     {t('comics.form.upload_pages')}
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    hidden
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                  />
-                </Group>
+                  </Text>
+                  <Text size="xs" color="dimmed">
+                    Current pages: {activeChapter.pages?.length || 0}
+                  </Text>
+                </Box>
+                <Button
+                  size="xs"
+                  color="yellow"
+                  onClick={() => fileInputRef.current?.click()}
+                  leftSection={<IconPlus size={16} />}
+                  className="font-bold uppercase"
+                  styles={{ root: { backgroundColor: "#CBC895", color: "#191A22" } }}
+                >
+                  {t('comics.form.upload_pages')}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  hidden
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                />
+              </Group>
 
-                <Box className="bg-[#191A22] p-4 rounded-none min-h-[300px]">
+              {/* Pages Grid with Drag & Drop */}
+              <Box className="bg-[#191A22] p-4 rounded-none min-h-[300px] max-h-[500px] overflow-y-auto custom-scrollbar border border-white/5">
+                {activeChapter.pages && activeChapter.pages.length > 0 ? (
                   <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
                   >
                     <SortableContext
-                      items={pages.map((p) => p.id)}
+                      items={activeChapter.pages.map((p) => p.id)}
                       strategy={rectSortingStrategy}
                     >
-                      <Box className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                        {pages.map((page, index) => (
+                      <Box className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {activeChapter.pages.map((page, index) => (
                           <SortablePage
                             key={page.id}
                             page={page}
@@ -868,47 +1022,190 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
                       </Box>
                     </SortableContext>
                   </DndContext>
-
-                  {pages.length === 0 && (
-                    <Box className="flex flex-col items-center justify-center h-[200px] opacity-40 alexandria-font">
-                      <IconPhoto size={48} color="#CBC895" />
-                      <Text color="#CBC895" mt={10} weight={700}>
-                        {t('comics.messages.no_comics')}
-                      </Text>
-                    </Box>
-                  )}
-                </Box>
+                ) : (
+                  <Box className="flex flex-col items-center justify-center h-[250px] opacity-40 text-center alexandria-font">
+                    <IconPhoto size={48} color="#CBC895" />
+                    <Text color="#CBC895" mt={10} weight={700}>
+                      No pages uploaded yet for this chapter
+                    </Text>
+                    <Text size="xs" color="dimmed" mt={5}>
+                      Click Upload Pages to add comic pages
+                    </Text>
+                  </Box>
+                )}
               </Box>
             </Box>
-          </Tabs.Panel>
-        </Tabs>
+          </Box>
+
+          {/* RIGHT COLUMN: Comic Metadata & Active Chapter Title */}
+          <Box className="lg:col-span-7 space-y-6">
+            <Box className="space-y-6">
+              <Text size="md" color="#CBC895" className="font-bold uppercase tracking-widest border-b border-[#CBC895]/20 pb-2" style={{ marginBottom: "1.5rem" }}>
+                Comic Series Info
+              </Text>
+              
+              <Group grow className="gap-4" style={{ marginBottom: "1.25rem" }}>
+                <Box>
+                  <Text color="#F6F4D3" size="sm" mb={5} className="font-bold uppercase">
+                    {t('comics.form.title')}
+                  </Text>
+                  <input
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    placeholder={t('comics.form.title_placeholder')}
+                    className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 focus:border-[#CBC895] transition-colors"
+                  />
+                </Box>
+                <Box>
+                  <Text color="#F6F4D3" size="sm" mb={5} className="font-bold uppercase">
+                    {t('comics.form.artist')}
+                  </Text>
+                  <input
+                    name="author_name"
+                    value={formData.author_name}
+                    onChange={handleInputChange}
+                    placeholder={t('comics.form.artist_placeholder')}
+                    className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 focus:border-[#CBC895] transition-colors"
+                  />
+                </Box>
+              </Group>
+
+              <Box style={{ marginBottom: "1.25rem" }}>
+                <Text color="#F6F4D3" size="sm" mb={5} className="font-bold uppercase">
+                  {t('comics.form.description')}
+                </Text>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={5}
+                  placeholder={t('comics.form.description_placeholder')}
+                  className="w-full rounded-none bg-[#191A22] text-[#F6F4D3] p-4 outline-none border border-white/10 resize-none focus:border-[#CBC895] transition-colors"
+                />
+              </Box>
+
+              <Box style={{ marginBottom: "1.25rem" }}>
+                <Text color="#F6F4D3" size="sm" mb={5} className="font-bold uppercase">
+                  Comic Visibility Status
+                </Text>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 focus:border-[#CBC895] transition-colors font-bold"
+                >
+                  <option value="draft">Draft (Hidden from public)</option>
+                  <option value="published">Published (Visible to public)</option>
+                  <option value="active">Active (Legacy Published)</option>
+                  <option value="inactive">Inactive (Legacy Draft)</option>
+                </select>
+              </Box>
+            </Box>
+
+            <Box className="space-y-6 pt-6 border-t border-white/5">
+              <Text size="md" color="#CBC895" className="font-bold uppercase tracking-widest border-b border-[#CBC895]/20 pb-2" style={{ marginBottom: "1.5rem" }}>
+                Active Chapter Info
+              </Text>
+              
+              <Box>
+                <Text color="#F6F4D3" size="sm" mb={5} className="font-bold uppercase">
+                  {t('comics.form.chapter_title')}
+                </Text>
+                <input
+                  value={activeChapter.chapter_title || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setChapters((prev) =>
+                      prev.map((chap, idx) =>
+                        idx === activeChapterIndex
+                          ? { ...chap, chapter_title: val }
+                          : chap
+                      )
+                    );
+                  }}
+                  placeholder={t('comics.form.chapter_placeholder')}
+                  className="w-full h-12 rounded-none bg-[#191A22] text-[#F6F4D3] px-4 outline-none border border-white/10 focus:border-[#CBC895] transition-colors font-bold"
+                />
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
         {/* Footer Actions */}
-        <Box className="mt-10 border-t border-white/10 pt-6 flex justify-end gap-4 alexandria-font">
+        <Box className="mt-10 border-t border-white/10 pt-6 flex justify-between items-center flex-wrap gap-4 alexandria-font">
           <Button
             variant="subtle"
-            color="gray"
-            onClick={handleModalClose}
-            disabled={isSubmitting}
+            color="red"
+            onClick={handleResetForm}
+            disabled={isSubmitting !== null}
+            className="font-bold uppercase text-xs"
           >
-            {t('comics.actions.cancel')}
+            Clear Form
           </Button>
-          <Button
-            color="yellow"
-            onClick={handleSubmit}
-            loading={isSubmitting}
-            className="px-10 font-bold"
-            styles={{ root: { backgroundColor: "#CBC895", color: "#191A22" } }}
-          >
-            {editingComic ? t('comics.actions.save') : t('comics.actions.create')}
-          </Button>
+
+          <Box className="flex gap-4">
+            <Button
+              variant="subtle"
+              color="gray"
+              onClick={handleModalClose}
+              disabled={isSubmitting !== null}
+            >
+              {t('comics.actions.cancel')}
+            </Button>
+            
+            {editingComic && (editingComic.status === "published" || editingComic.status === "active") ? (
+              <Button
+                color="yellow"
+                onClick={() => handleSubmit(formData.status)}
+                loading={isSubmitting === "save"}
+                disabled={isSubmitting !== null && isSubmitting !== "save"}
+                className="px-10 font-bold uppercase h-[42px]"
+                styles={{ root: { backgroundColor: "#CBC895", color: "#191A22" } }}
+              >
+                Save Changes
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  color="yellow"
+                  onClick={() => handleSubmit("draft")}
+                  loading={isSubmitting === "draft"}
+                  disabled={isSubmitting !== null && isSubmitting !== "draft"}
+                  className="font-bold uppercase"
+                  styles={{
+                    root: {
+                      borderColor: "#CBC895",
+                      color: "#CBC895",
+                      backgroundColor: "transparent",
+                      height: "42px",
+                    }
+                  }}
+                >
+                  Save Draft
+                </Button>
+
+                <Button
+                  color="yellow"
+                  onClick={() => handleSubmit("published")}
+                  loading={isSubmitting === "published"}
+                  disabled={isSubmitting !== null && isSubmitting !== "published"}
+                  className="px-10 font-bold uppercase h-[42px]"
+                  styles={{ root: { backgroundColor: "#CBC895", color: "#191A22" } }}
+                >
+                  Publish Comic
+                </Button>
+              </>
+            )}
+          </Box>
         </Box>
       </Modal>
 
       <PagePreviewModal
         isOpen={isPreviewOpen}
         onClose={() => setIsPreviewOpen(false)}
-        pages={pages}
+        pages={activeChapter.pages || []}
         currentIndex={previewIndex}
         onNavigate={setPreviewIndex}
       />
@@ -926,7 +1223,7 @@ const Comic = () => {
   const [editingComic, setEditingComic] = useState(null);
 
   useEffect(() => {
-    dispatch(getComics());
+    dispatch(getAdminComics());
   }, [dispatch]);
 
   const handleCreateNew = () => {
@@ -942,7 +1239,10 @@ const Comic = () => {
   const handleDeleteComic = async (comic) => {
     if (window.confirm(t('comics.messages.delete_confirm', { title: comic.title }))) {
       const res = await dispatch(deleteComic(comic._id));
-      if (res?.success) toast.success(t('orders.messages.update_success'));
+      if (res?.success) {
+        toast.success(t('orders.messages.update_success'));
+        dispatch(getAdminComics());
+      }
     }
   };
 
@@ -951,12 +1251,14 @@ const Comic = () => {
       ? updateComic(editingComic._id, formData)
       : createComic(formData);
     const res = await dispatch(action);
-      if (res?.success) {
-        toast.success(t('orders.messages.update_success'));
+    if (res?.success) {
+      toast.success(t('orders.messages.update_success'));
       setIsModalOpen(false);
       setEditingComic(null);
-      dispatch(getComics()); // Refresh the list
+      dispatch(getAdminComics()); // Refresh list with draft support
+      return true;
     }
+    return false;
   };
 
   return (
