@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
   ActionIcon,
+  Alert,
   Badge,
   Button,
   FileInput,
@@ -18,16 +19,10 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IconEdit, IconFolder, IconPhoto, IconPlus, IconRefresh, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconEdit, IconPhoto, IconPlus, IconRefresh, IconTrash, IconUpload } from "@tabler/icons-react";
 import custAxios from "../../configs/axios.config";
 
 /* ─── constants ─────────────────────────────────────────────── */
-
-// Add new game folders here when you drop them in public/games/
-const AVAILABLE_GAMES = [
-  { value: "/games/EternalRun_Web/index.html", label: "EternalRun_Web" },
-  { value: "/games/new_game/index.html", label: "new_game" },
-];
 
 const EMPTY_FORM = {
   name: "",
@@ -67,7 +62,6 @@ const getGamesFromResponse = (response) => {
   return [];
 };
 
-
 /* ─── component ──────────────────────────────────────────────── */
 export default function Games() {
   const queryClient = useQueryClient();
@@ -78,7 +72,7 @@ export default function Games() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [imageFile, setImageFile] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
-
+  const [zipFile, setZipFile] = useState(null);
 
   /* ── games list ── */
   const {
@@ -98,17 +92,23 @@ export default function Games() {
   );
 
   /* ── mutations ── */
-  const createMutation = useMutation({
-    mutationFn: (payload) => custAxios.post("/admin/addGame", payload),
+
+  // Create via zip upload → R2
+  const uploadMutation = useMutation({
+    mutationFn: (fd) =>
+      custAxios.post("/admin/uploadGame", fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      }),
     onSuccess: () => {
-      notifications.show({ title: "Game added", message: "Created successfully.", color: "green" });
+      notifications.show({ title: "Game uploaded", message: "Game deployed to R2 successfully.", color: "green" });
       queryClient.invalidateQueries({ queryKey: ["admin-games"] });
       closeFormModal();
     },
     onError: (err) =>
-      notifications.show({ title: "Could not add game", message: getErrorMessage(err, "Please try again."), color: "red" }),
+      notifications.show({ title: "Upload failed", message: getErrorMessage(err, "Could not upload game."), color: "red" }),
   });
 
+  // Edit existing game → JSON PATCH
   const updateMutation = useMutation({
     mutationFn: ({ id, payload }) => custAxios.patch(`/admin/updateGame/${id}`, payload),
     onSuccess: () => {
@@ -148,6 +148,7 @@ export default function Games() {
     setEditingGame(null);
     setForm(EMPTY_FORM);
     setImageFile(null);
+    setZipFile(null);
     setModalOpen(true);
   };
 
@@ -163,6 +164,7 @@ export default function Games() {
       imageFit: game.imageFit || "contain",
     });
     setImageFile(null);
+    setZipFile(null);
     setModalOpen(true);
   };
 
@@ -171,6 +173,7 @@ export default function Games() {
     setEditingGame(null);
     setForm(EMPTY_FORM);
     setImageFile(null);
+    setZipFile(null);
   };
 
   /* ── image upload ── */
@@ -200,21 +203,42 @@ export default function Games() {
   /* ── submit ── */
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!form.name.trim() || !form.slug.trim() || !form.launch_url.trim()) {
-      notifications.show({ title: "Missing fields", message: "Name, slug, and launch URL are required.", color: "red" });
+    const id = getGameId(editingGame);
+
+    if (id) {
+      // Edit mode — JSON PATCH, no zip needed
+      if (!form.name.trim() || !form.slug.trim()) {
+        notifications.show({ title: "Missing fields", message: "Name and slug are required.", color: "red" });
+        return;
+      }
+      const payload = {
+        name: form.name.trim(),
+        slug: form.slug.trim(),
+        description: form.description.trim(),
+        image: form.image.trim(),
+        status: statusPayload(form.status),
+      };
+      updateMutation.mutate({ id, payload });
       return;
     }
-    const payload = {
-      name: form.name.trim(),
-      slug: form.slug.trim(),
-      description: form.description.trim(),
-      image: form.image.trim(),
-      launch_url: form.launch_url.trim(),
-      status: statusPayload(form.status),
-    };
-    const id = getGameId(editingGame);
-    if (id) { updateMutation.mutate({ id, payload }); return; }
-    createMutation.mutate(payload);
+
+    // Create mode — FormData with zip
+    if (!form.name.trim() || !form.slug.trim()) {
+      notifications.show({ title: "Missing fields", message: "Name and slug are required.", color: "red" });
+      return;
+    }
+    if (!zipFile) {
+      notifications.show({ title: "Missing zip file", message: "Please select a game zip file.", color: "red" });
+      return;
+    }
+    const fd = new FormData();
+    fd.append("gameZip", zipFile);
+    fd.append("name", form.name.trim());
+    fd.append("slug", form.slug.trim());
+    fd.append("description", form.description.trim());
+    fd.append("image", form.image.trim());
+    fd.append("status", statusPayload(form.status));
+    uploadMutation.mutate(fd);
   };
 
   const requestDelete = (game) => { setDeletingGame(game); setDeleteOpen(true); };
@@ -262,6 +286,8 @@ export default function Games() {
       </Table.Tr>
     );
   });
+
+  const isSaving = uploadMutation.isPending || updateMutation.isPending;
 
   /* ── render ── */
   return (
@@ -361,7 +387,7 @@ export default function Games() {
       >
         <form onSubmit={handleSubmit} className="alexandria-font">
           <Stack gap="md">
-            {/* row 1 — name + slug */}
+            {/* name + slug */}
             <div className="form-grid">
               <TextInput
                 label="Name"
@@ -377,28 +403,54 @@ export default function Games() {
                 value={form.slug}
                 onChange={(e) => { const v = e.currentTarget.value; setForm((c) => ({ ...c, slug: v })); }}
                 required
+                disabled={!!editingGame}
                 styles={INPUT_STYLES}
               />
             </div>
 
-            {/* launch URL — smart folder picker */}
-            <Select
-              label="Select Game Folder"
-              placeholder="Pick a folder…"
-              data={AVAILABLE_GAMES}
-              value={form.launch_url || null}
-              onChange={(v) => setForm((c) => ({ ...c, launch_url: v || "" }))}
-              leftSection={<IconFolder size={16} />}
-              searchable
-              clearable
-              nothingFoundMessage="No folders found"
-              styles={{
-                input: { background: "#2a2e1e", border: "1px solid #6b6b3a", color: "#fff" },
-                label: { color: "#CBC895", marginBottom: "4px" },
-                dropdown: { background: "#1e2012", border: "1px solid #6b6b3a" },
-                option: { color: "#fff", "&[dataSelected]": { background: "#3a3e1e" }, "&[dataHovered]": { background: "#2e3218" } },
-              }}
-            />
+            {/* Zip upload — create only */}
+            {!editingGame && (
+              <>
+                <FileInput
+                  label="Game Zip File"
+                  placeholder="Click to select a .zip file…"
+                  accept=".zip,application/zip,application/x-zip-compressed"
+                  value={zipFile}
+                  onChange={setZipFile}
+                  leftSection={<IconUpload size={16} />}
+                  required
+                  styles={INPUT_STYLES}
+                />
+                <Alert
+                  icon={<IconAlertTriangle size={16} />}
+                  color="yellow"
+                  variant="light"
+                  styles={{ message: { color: "#CBC895", fontSize: 13 } }}
+                >
+                  Make sure <strong>index.html</strong> is at the root level of your zip file, not inside a subfolder.
+                </Alert>
+              </>
+            )}
+
+            {/* Edit mode — show current launch URL read-only */}
+            {editingGame && form.launch_url && (
+              <div>
+                <Text size="sm" style={{ color: "#CBC895", marginBottom: 4 }}>Launch URL</Text>
+                <Text
+                  size="xs"
+                  ff="monospace"
+                  style={{
+                    color: "#9C963A",
+                    background: "#2a2e1e",
+                    border: "1px solid #6b6b3a",
+                    padding: "10px 12px",
+                    wordBreak: "break-all",
+                  }}
+                >
+                  {form.launch_url}
+                </Text>
+              </div>
+            )}
 
             {/* thumbnail uploader */}
             <div>
@@ -465,14 +517,14 @@ export default function Games() {
           </Stack>
 
           <Group justify="flex-end" mt="xl">
-            <Button variant="outline" color="gray" onClick={closeFormModal}>Cancel</Button>
+            <Button variant="outline" color="gray" onClick={closeFormModal} disabled={isSaving}>Cancel</Button>
             <Button
               type="submit"
               variant="filled"
               style={{ background: "#DDD1B1", color: "#191A22", fontWeight: 700 }}
-              loading={createMutation.isPending || updateMutation.isPending}
+              loading={isSaving}
             >
-              {editingGame ? "Save Changes" : "Add Game"}
+              {editingGame ? "Save Changes" : isSaving ? "Uploading…" : "Upload Game"}
             </Button>
           </Group>
         </form>
@@ -491,7 +543,7 @@ export default function Games() {
           <span style={{ color: "#EBE23C", fontWeight: 700 }}>
             {deletingGame?.name ? `"${deletingGame.name}"` : "this game"}
           </span>
-          ? This action cannot be undone.
+          ? This will also remove the game files from storage.
         </Text>
         <Group justify="flex-end" mt="xl">
           <Button variant="outline" color="gray" onClick={() => setDeleteOpen(false)}>Cancel</Button>
