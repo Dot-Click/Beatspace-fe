@@ -15,6 +15,7 @@ const AdminLogin = () => {
   });
   const [error, setError] = useState('');
   const [isHovered, setIsHovered] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (field, value) => {
@@ -28,6 +29,7 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await dispatch(loginAction({email: formData.username, password: formData.password}));
       if (res && res.success) {
@@ -46,6 +48,8 @@ const AdminLogin = () => {
       }
     } catch (error) {
       setError(error.message || t('admin.login.error_generic'));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -215,6 +219,8 @@ const AdminLogin = () => {
             <Button
               type="submit"
               fullWidth
+              loading={loading}
+              disabled={loading}
               style={{
                 backgroundColor: isHovered ? '#F6F4D3' : 'transparent',
                 border: '2px solid #F6F4D3',

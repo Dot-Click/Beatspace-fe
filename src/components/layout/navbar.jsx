@@ -138,7 +138,7 @@ const Navbar = ({ opened, toggle }) => {
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-full right-0 mt-2 w-56 bg-[#131319] border border-[#CBC895]/30 rounded-sm shadow-2xl overflow-hidden z-50 transition-all duration-200 ease-out">
+              <div className="absolute top-full right-0 mt-2 w-56 bg-[#131319] border border-[#CBC895]/30 rounded-sm shadow-2xl overflow-hidden z-[100] transition-all duration-200 ease-out">
                 <div className="absolute top-0 left-0 w-1.5 h-1.5 bg-[#CBC895]"></div>
                 <div className="absolute top-0 right-0 w-1.5 h-1.5 bg-[#CBC895]"></div>
                 <div className="absolute bottom-0 left-0 w-1.5 h-1.5 bg-[#CBC895]"></div>

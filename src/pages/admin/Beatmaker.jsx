@@ -215,7 +215,6 @@ const BeatRow = ({
             className={`text-[10px] lg:text-xs font-bold ${isPlaying ? "text-black opacity-80" : "text-[#D4D4B0] opacity-80"}`}
             style={{ fontFamily: "monospace" }}
           >
-            {t('beatmaker.repository.table.artist_name_label')}: {" "}
             {beat.category?.toUpperCase().replace("_", " ") || "SAPHIRE"}
           </div>
           <div className="flex items-center gap-2 flex-wrap">
