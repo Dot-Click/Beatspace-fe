@@ -73,10 +73,13 @@ const GamePlayer = () => {
         top: 0,
         left: 0,
         width: "100vw",
-        height: "100vh",
+        height: "100dvh",
         background: "#11131a",
         zIndex: 99999,
         overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <button
@@ -94,6 +97,7 @@ const GamePlayer = () => {
           cursor: "pointer",
           fontSize: "14px",
         }}
+        className="max-lg:!top-[max(8px,env(safe-area-inset-top))] max-lg:!left-[max(8px,env(safe-area-inset-left))]"
       >
         ← Back
       </button>
@@ -104,12 +108,16 @@ const GamePlayer = () => {
             ref={iframeRef}
             src={proxiedUrl}
             title="Game Player"
-            style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+            style={{ border: "none", display: "block" }}
             allow="autoplay"
+            className="w-full h-full max-lg:!h-[85dvh] max-lg:!w-[92dvw]"
           />
 
           {/* D-pad: ↑ on top, ← ↓ → on bottom row — triangle layout */}
-          <div style={{ position: "absolute", bottom: "max(calc(2rem + env(safe-area-inset-bottom, 0px)), calc(50vh - 260px))", left: "max(calc(2rem + env(safe-area-inset-left, 0px)), calc(50vw - 530px))", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", zIndex: 100000, pointerEvents: "auto", userSelect: "none" }}>
+          <div 
+            style={{ position: "absolute", bottom: "max(calc(2rem + env(safe-area-inset-bottom, 0px)), calc(50vh - 260px))", left: "max(calc(2rem + env(safe-area-inset-left, 0px)), calc(50vw - 530px))", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", zIndex: 100000, pointerEvents: "auto", userSelect: "none" }}
+            className="max-lg:!left-[max(12px,env(safe-area-inset-left))] max-lg:!bottom-[max(12px,env(safe-area-inset-bottom))]"
+          >
             {/* Up */}
             <button
               onPointerDown={e => handleControlDown(e, "ArrowUp", "ArrowUp", 38)}
@@ -153,7 +161,10 @@ const GamePlayer = () => {
           </div>
 
           {/* Action button — bottom right */}
-          <div style={{ position: "absolute", bottom: "max(calc(2rem + env(safe-area-inset-bottom, 0px)), calc(50vh - 260px))", right: "max(calc(2rem + env(safe-area-inset-right, 0px)), calc(50vw - 420px))", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100000, pointerEvents: "auto", userSelect: "none" }}>
+          <div 
+            style={{ position: "absolute", bottom: "max(calc(2rem + env(safe-area-inset-bottom, 0px)), calc(50vh - 260px))", right: "max(calc(2rem + env(safe-area-inset-right, 0px)), calc(50vw - 420px))", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100000, pointerEvents: "auto", userSelect: "none" }}
+            className="max-lg:!right-[max(12px,env(safe-area-inset-right))] max-lg:!bottom-[max(12px,env(safe-area-inset-bottom))]"
+          >
             <button
               onPointerDown={e => handleControlDown(e, " ", "Space", 32)}
               onPointerUp={e => handleControlUp(e, " ", "Space", 32)}
