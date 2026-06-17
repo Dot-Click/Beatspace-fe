@@ -1,12 +1,10 @@
-  import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import custAxios, { baseURL } from "../configs/axios.config";
 import { useAuthContext } from "./AuthContext";
 
 const NotificationContext = createContext();
 
-// baseURL is something like "http://localhost:8000/api"
-// Socket needs the base URL "http://localhost:8000"
 const SOCKET_URL = baseURL.replace(/\/api$/, "");
 
 export const NotificationProvider = ({ children }) => {
@@ -16,13 +14,12 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotifications = async () => {
     try {
-      console.log("Fetching initial notifications from:", `${baseURL}/notfs`);
       const response = await custAxios.get("/notfs", { withCredentials: true });
       const fetchedNotifications = response.data.data || [];
       setNotifications(fetchedNotifications);
       setUnreadCount(fetchedNotifications.filter(n => !n.isRead).length);
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
+    } catch {
+      // silently ignore — axios.config.js silent-401 guard prevents logout
     }
   };
 
@@ -35,29 +32,20 @@ export const NotificationProvider = ({ children }) => {
 
     fetchNotifications();
 
-    console.log("Connecting to Socket.io at:", SOCKET_URL);
     const socket = io(SOCKET_URL, {
-        withCredentials: true,
-        transports: ['websocket', 'polling'] // Ensure compatibility
-    });
-
-    socket.on("connect", () => {
-        console.log("Connected to Socket.io server with ID:", socket.id);
-    });
-
-    socket.on("connect_error", (error) => {
-        console.error("Socket.io connection error:", error);
+      withCredentials: true,
+      transports: ["websocket", "polling"],
     });
 
     socket.on("new-notification", (notification) => {
-      console.log("Received new notification via socket:", notification);
       setNotifications((prev) => [notification, ...prev]);
       setUnreadCount((prev) => prev + 1);
     });
 
+    socket.on("connect_error", () => {});
+
     return () => {
-        console.log("Disconnecting from Socket.io");
-        socket.disconnect();
+      socket.disconnect();
     };
   }, [isAuthenticated]);
 
@@ -68,8 +56,8 @@ export const NotificationProvider = ({ children }) => {
         prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error("Error marking as read:", error);
+    } catch {
+      // silently ignore
     }
   };
 
@@ -78,8 +66,8 @@ export const NotificationProvider = ({ children }) => {
       await custAxios.patch("/notfs/mark-all-read", {}, { withCredentials: true });
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       setUnreadCount(0);
-    } catch (error) {
-      console.error("Error marking all as read:", error);
+    } catch {
+      // silently ignore
     }
   };
 
