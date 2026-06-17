@@ -8,6 +8,7 @@ import {
   getAdminComics,
 } from "../../store/actions/adminActions";
 import { toast } from "sonner";
+import ConfirmModal from "../../components/ConfirmModal";
 import { useTranslation } from "react-i18next";
 import {
   Tabs,
@@ -479,6 +480,8 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
+
+  const [confirmProps, setConfirmProps] = useState({ isOpen: false, title: "", message: "", onConfirm: () => {} });
   const [isSubmitting, setIsSubmitting] = useState(null); // 'draft' | 'published' | 'save' | null
 
   const fileInputRef = useRef(null);
@@ -662,52 +665,62 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
 
   const handleDeleteChapter = (indexToDelete) => {
     if (chapters.length === 1) return;
-    if (window.confirm("Are you sure you want to delete this chapter? All pages and data in this chapter will be lost.")) {
-      const targetChapter = chapters[indexToDelete];
-      targetChapter?.pages?.forEach(p => {
-        if (p.isNew && typeof p.url === "string" && p.url.startsWith("blob:")) {
-          URL.revokeObjectURL(p.url);
-        }
-      });
-      const updated = chapters.filter((_, idx) => idx !== indexToDelete);
-      setChapters(updated);
-      if (activeChapterIndex >= updated.length) {
-        setActiveChapterIndex(updated.length - 1);
-      }
-    }
-  };
-
-  const handleResetForm = () => {
-    if (window.confirm("Are you sure you want to clear all entered form data? This will reset all fields and uploaded pages.")) {
-      // Cleanup blob URLs
-      chapters.forEach(chap => {
-        chap.pages.forEach(p => {
+    setConfirmProps({
+      isOpen: true,
+      title: "DELETE CHAPTER",
+      message: "Are you sure you want to delete this chapter? All pages and data in this chapter will be lost.",
+      onConfirm: () => {
+        const targetChapter = chapters[indexToDelete];
+        targetChapter?.pages?.forEach(p => {
           if (p.isNew && typeof p.url === "string" && p.url.startsWith("blob:")) {
             URL.revokeObjectURL(p.url);
           }
         });
-      });
-      if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(coverUrl);
-      }
-
-      setFormData({
-        author_name: "",
-        title: "",
-        description: "",
-        status: "draft",
-      });
-      setChapters([
-        {
-          id: `chap-${Date.now()}-0`,
-          chapter_title: "Chapter 1",
-          pages: []
+        const updated = chapters.filter((_, idx) => idx !== indexToDelete);
+        setChapters(updated);
+        if (activeChapterIndex >= updated.length) {
+          setActiveChapterIndex(updated.length - 1);
         }
-      ]);
-      setActiveChapterIndex(0);
-      setCoverFile(null);
-      setCoverUrl("");
-    }
+      }
+    });
+  };
+
+  const handleResetForm = () => {
+    setConfirmProps({
+      isOpen: true,
+      title: "CLEAR FORM",
+      message: "Are you sure you want to clear all entered form data? This will reset all fields and uploaded pages.",
+      onConfirm: () => {
+        // Cleanup blob URLs
+        chapters.forEach(chap => {
+          chap.pages.forEach(p => {
+            if (p.isNew && typeof p.url === "string" && p.url.startsWith("blob:")) {
+              URL.revokeObjectURL(p.url);
+            }
+          });
+        });
+        if (typeof coverUrl === "string" && coverUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(coverUrl);
+        }
+
+        setFormData({
+          author_name: "",
+          title: "",
+          description: "",
+          status: "draft",
+        });
+        setChapters([
+          {
+            id: `chap-${Date.now()}-0`,
+            chapter_title: "Chapter 1",
+            pages: []
+          }
+        ]);
+        setActiveChapterIndex(0);
+        setCoverFile(null);
+        setCoverUrl("");
+      }
+    });
   };
 
   const handleCleanupAfterSave = () => {
@@ -1209,6 +1222,13 @@ const ComicDetailsModal = ({ isOpen, onClose, editingComic, onSave }) => {
         currentIndex={previewIndex}
         onNavigate={setPreviewIndex}
       />
+      <ConfirmModal
+        isOpen={confirmProps.isOpen}
+        title={confirmProps.title}
+        message={confirmProps.message}
+        onConfirm={confirmProps.onConfirm}
+        onCancel={() => setConfirmProps({ ...confirmProps, isOpen: false })}
+      />
     </>
   );
 };
@@ -1221,6 +1241,7 @@ const Comic = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingComic, setEditingComic] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, comic: null });
 
   useEffect(() => {
     dispatch(getAdminComics());
@@ -1237,13 +1258,7 @@ const Comic = () => {
   };
 
   const handleDeleteComic = async (comic) => {
-    if (window.confirm(t('comics.messages.delete_confirm', { title: comic.title }))) {
-      const res = await dispatch(deleteComic(comic._id));
-      if (res?.success) {
-        toast.success(t('orders.messages.update_success'));
-        dispatch(getAdminComics());
-      }
-    }
+    setDeleteConfirm({ isOpen: true, comic });
   };
 
   const handleSaveComic = async (formData) => {
@@ -1327,6 +1342,21 @@ const Comic = () => {
         }}
         editingComic={editingComic}
         onSave={handleSaveComic}
+      />
+      <ConfirmModal
+        isOpen={deleteConfirm.isOpen}
+        title="DELETE COMIC"
+        message={t('comics.messages.delete_confirm', { title: deleteConfirm.comic?.title })}
+        onConfirm={async () => {
+          if (deleteConfirm.comic) {
+            const res = await dispatch(deleteComic(deleteConfirm.comic._id));
+            if (res?.success) {
+              toast.success(t('orders.messages.update_success'));
+              dispatch(getAdminComics());
+            }
+          }
+        }}
+        onCancel={() => setDeleteConfirm({ isOpen: false, comic: null })}
       />
     </main>
   );

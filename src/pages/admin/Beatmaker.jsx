@@ -1145,45 +1145,39 @@ const Beat = () => {
         padding={0}
         size="lg"
         centered
-        overlayProps={{
-          color: "black",
-          opacity: 0.8,
-          blur: 1,
-        }}
+        overlayProps={{ color: "black", opacity: 0.85, blur: 2 }}
         styles={{
-          content: {
-            backgroundColor: "transparent",
-            boxShadow: "none",
-            border: "none",
-            overflow: "visible",
-          },
+          content: { backgroundColor: "transparent", boxShadow: "none", border: "none", overflow: "visible" },
+          body: { padding: 0 },
         }}
       >
-        <div className="w-full max-w-2xl bg-[#191A22] border-2 border-[#FFD700] shadow-[0_0_30px_rgba(255,215,0,0.15)] rounded-xl overflow-hidden relative alexandria-font">
-          <div className="bg-[#FFD700] px-6 py-4 flex justify-between items-center">
-            <div className="text-black font-bold tracking-widest uppercase text-sm">
+        <div className="w-full bg-[#131319] border border-[#CBC895]/40 shadow-2xl overflow-visible relative alexandria-font">
+          {/* corner accents */}
+          <div className="absolute top-0 left-0 w-2 h-2 bg-[#CBC895]" />
+          <div className="absolute top-0 right-0 w-2 h-2 bg-[#CBC895]" />
+          <div className="absolute bottom-0 left-0 w-2 h-2 bg-[#CBC895]" />
+          <div className="absolute bottom-0 right-0 w-2 h-2 bg-[#CBC895]" />
+
+          {/* header */}
+          <div className="bg-[#CBC895] px-5 py-3 flex justify-between items-center">
+            <span className="pixel-font text-[#191A22] text-[10px] tracking-widest uppercase">
               {t('beatmaker.edit_modal.title')}
-            </div>
+            </span>
             <button
               onClick={() => setIsEditModalOpen(false)}
-              className="w-8 h-8 flex items-center justify-center bg-black hover:bg-gray-800 transition-colors rounded-sm"
+              className="w-7 h-7 flex items-center justify-center bg-[#191A22] hover:bg-[#2a2a35] transition-colors"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="#FFD700"
-                strokeWidth="2"
-              >
-                <path d="M12 4L4 12M4 4L12 12" strokeLinecap="round" />
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#CBC895" strokeWidth="2" strokeLinecap="round">
+                <path d="M10 2L2 10M2 2l8 8" />
               </svg>
             </button>
           </div>
 
-          <div className="p-8 space-y-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
+          {/* body */}
+          <div className="p-6 space-y-5">
+            {/* Beat name */}
+            <div className="space-y-1.5">
+              <label className="block text-[9px] pixel-font uppercase text-[#CBC895]/80 tracking-widest">
                 {t('beatmaker.upload.name_label')}
               </label>
               <input
@@ -1192,21 +1186,21 @@ const Beat = () => {
                 value={editBeatForm.name}
                 onChange={handleEditInputChange}
                 placeholder="Midnight Vibes"
-                className="w-full h-12 bg-[#4A4A3C] border border-[#D4D4B0] px-4 text-white font-bold focus:outline-none focus:border-[#FFD700] focus:ring-1 focus:ring-[#FFD700] transition-colors text-sm"
+                className="w-full h-11 bg-[#1E1E2A] border border-[#CBC895]/25 px-4 text-[#F6F4D3] font-bold focus:outline-none focus:border-[#CBC895]/70 transition-colors text-sm"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <GenreMultiSelect
                 genres={availableGenres}
                 value={editBeatForm.genre}
                 onChange={(genre) => setEditBeatForm((prev) => ({ ...prev, genre }))}
                 label={t('beatmaker.upload.genre_label')}
-                labelClassName="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest"
+                labelClassName="text-[9px] pixel-font uppercase text-[#CBC895]/80 tracking-widest"
               />
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
+              <div className="space-y-1.5">
+                <label className="block text-[9px] pixel-font uppercase text-[#CBC895]/80 tracking-widest">
                   {t('beatmaker.upload.category_label')}
                 </label>
                 <div className="relative">
@@ -1214,39 +1208,32 @@ const Beat = () => {
                     name="category"
                     value={editBeatForm.category}
                     onChange={handleEditInputChange}
-                    className="w-full h-12 bg-[#333] border border-[#D4D4B0] px-4 text-white focus:outline-none focus:border-[#FFD700] appearance-none cursor-pointer"
-                    style={{ fontFamily: "monospace" }}
+                    className="w-full h-11 bg-[#1E1E2A] border border-[#CBC895]/25 px-4 text-[#F6F4D3] focus:outline-none focus:border-[#CBC895]/70 appearance-none cursor-pointer text-sm font-bold"
                   >
                     {availableCategories.map((c) => (
-                      <option key={c._id} value={c.name}>
+                      <option key={c._id} value={c.name} className="bg-[#1E1E2A]">
                         {c.name.toUpperCase()}
                       </option>
                     ))}
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg width="12" height="8">
-                      <path
-                        d="M1 1L6 6L11 1"
-                        stroke="#FFD700"
-                        strokeWidth="2"
-                      />
-                    </svg>
+                    <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1L5 5L9 1" stroke="#CBC895" strokeWidth="1.5" strokeLinecap="round" /></svg>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Replace audio file — optional */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-[#D4D4B0] tracking-widest">
-                {t('beatmaker.edit_modal.replace_file') || "Replace Audio File (optional)"}
+            {/* Replace audio file */}
+            <div className="space-y-1.5">
+              <label className="block text-[9px] pixel-font uppercase text-[#CBC895]/80 tracking-widest">
+                {t('beatmaker.edit_modal.replace_file')}
               </label>
-              <label className="flex items-center gap-3 cursor-pointer bg-[#4A4A3C] border border-[#D4D4B0] px-4 py-3 hover:border-[#FFD700] transition-colors">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <label className="flex items-center gap-3 cursor-pointer bg-[#1E1E2A] border border-[#CBC895]/25 px-4 py-3 hover:border-[#CBC895]/60 transition-colors group">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#CBC895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                 </svg>
-                <span className="text-sm text-[#D4D4B0] font-bold truncate">
-                  {editBeatForm.beat ? editBeatForm.beat.name : (t('beatmaker.edit_modal.choose_file') || "Choose MP3/WAV to overwrite")}
+                <span className="text-xs text-[#B5B387] font-bold truncate group-hover:text-[#F6F4D3] transition-colors">
+                  {editBeatForm.beat ? editBeatForm.beat.name : t('beatmaker.edit_modal.choose_file')}
                 </span>
                 <input
                   type="file"
@@ -1262,25 +1249,33 @@ const Beat = () => {
                 <button
                   type="button"
                   onClick={() => setEditBeatForm(prev => ({ ...prev, beat: null }))}
-                  className="text-xs text-red-400 hover:text-red-300 font-bold"
+                  className="text-[10px] text-red-400 hover:text-red-300 font-bold uppercase tracking-widest"
                 >
-                  ✕ Remove selected file
+                  ✕ Remove
                 </button>
               )}
             </div>
 
-            <div className="pt-6 border-t border-[#4A4A3C] flex justify-end gap-4">
+            {/* Actions */}
+            <div className="pt-4 border-t border-[#CBC895]/15 flex justify-end gap-3">
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="px-6 py-2 bg-transparent border-2 border-[#D4D4B0] text-[#D4D4B0] font-bold uppercase tracking-widest hover:bg-[#4A4A3C] transition-colors text-xs"
+                className="px-5 py-2 bg-transparent border border-[#CBC895]/40 text-[#CBC895]/70 font-bold uppercase tracking-widest hover:border-[#CBC895]/80 hover:text-[#CBC895] transition-colors text-[10px]"
               >
                 {t('beatmaker.edit_modal.cancel')}
               </button>
               <button
                 onClick={handleEditBeat}
                 disabled={isCreating}
-                className="px-6 py-2 bg-[#FFD700] text-black font-black uppercase tracking-widest hover:bg-[#E4DA33] transition-colors border-2 border-[#FFD700] disabled:opacity-50 flex items-center gap-2 shadow-[0_0_15px_rgba(255,215,0,0.3)] text-xs"
+                className="px-5 py-2 bg-[#CBC895] text-[#191A22] font-black uppercase tracking-widest hover:bg-[#B5B387] transition-colors disabled:opacity-50 flex items-center gap-2 text-[10px]"
               >
+                {isCreating ? (
+                  <div className="w-3 h-3 border-2 border-[#191A22] border-t-transparent animate-spin rounded-full" />
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                )}
                 {isCreating ? t('beatmaker.edit_modal.updating') : t('beatmaker.edit_modal.save')}
               </button>
             </div>

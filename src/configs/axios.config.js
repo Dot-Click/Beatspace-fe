@@ -1,9 +1,13 @@
 import axios from "axios";
-// export const baseURL = "http://localhost:8000/api";
-export const baseURL = "https://beatspace-be-production-2.up.railway.app/api";
+// export const baseURL = "https://beatspace-be-production-2.up.railway.app/api";
+export const baseURL = "http://localhost:8000/api";
 
+// withCredentials is required globally — the backend uses better-auth (cookie/session based).
+// The Bearer token in Authorization header is declared in protectRoute but never read;
+// the session cookie is what actually authenticates requests.
 const custAxios = axios.create({
   baseURL: baseURL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -12,6 +16,7 @@ const custAxios = axios.create({
 
 const formAxios = axios.create({
   baseURL: baseURL,
+  withCredentials: true,
   headers: {
     "Content-Type": "multipart/form-data",
     Accept: "application/json",
@@ -27,11 +32,8 @@ custAxios.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
-
 
 formAxios.interceptors.request.use(
   (config) => {
@@ -41,44 +43,29 @@ formAxios.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 
-custAxios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Clear session storage on unauthorized
+// Routes that can return 401 without meaning the session has expired.
+// A 401 on these must NOT wipe the token or dispatch authChange.
+const SILENT_401_PATTERNS = [/\/notfs/];
+
+const handle401 = (error) => {
+  if (error.response?.status === 401) {
+    const url = error.config?.url || '';
+    const isSilent = SILENT_401_PATTERNS.some((p) => p.test(url));
+    if (!isSilent) {
       sessionStorage.removeItem('token');
       sessionStorage.removeItem('user');
-      // Dispatch auth change event to notify app
       window.dispatchEvent(new Event('authChange'));
     }
-    return Promise.reject(error);
   }
-);
+  return Promise.reject(error);
+};
 
-
-formAxios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Clear session storage on unauthorized
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user');
-      // Dispatch auth change event to notify app
-      window.dispatchEvent(new Event('authChange'));
-    }
-    return Promise.reject(error);
-  }
-);
+custAxios.interceptors.response.use((response) => response, handle401);
+formAxios.interceptors.response.use((response) => response, handle401);
 
 
 export const attachToken = () => {

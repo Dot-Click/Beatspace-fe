@@ -709,7 +709,9 @@
       "upload_success": "Merch created successfully",
       "upload_failed": "Failed to create merch",
       "delete_success": "Merch deleted successfully",
-      "delete_failed": "Failed to delete merch"
+      "delete_failed": "Failed to delete merch",
+      "update_success": "Merch item updated successfully",
+      "update_failed": "Failed to update merch item"
     }
   },
   "support_modal": {
@@ -734,6 +736,7 @@
     "merch_table": {
       "order_id": "ORDER ID",
       "customer": "CUSTOMER",
+      "items": "ITEMS",
       "date": "DATE",
       "amount": "AMOUNT",
       "payment": "PAYMENT",
@@ -752,8 +755,13 @@
       "customer_info": "Customer Information",
       "shipping_address": "Shipping Address",
       "items": "Items",
+      "order_items": "Order Items",
       "summary": "Summary",
       "total": "Total",
+      "payment_status": "Payment Status",
+      "fulfillment_status": "Fulfillment Status",
+      "placed": "Placed on {{date}}",
+      "close": "Close",
       "status": "Status"
     },
     "status": {

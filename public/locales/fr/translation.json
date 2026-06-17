@@ -44,7 +44,9 @@
         "actions": {
           "uploaded": "TÉLÉCHARGÉ",
           "edited": "MODIFIÉ",
-          "deleted": "SUPPRIMÉ"
+          "deleted": "SUPPRIMÉ",
+          "downloaded": "TÉLÉCHARGÉ",
+          "updated": "MIS À JOUR"
         }
       }
     }
@@ -211,6 +213,8 @@
     },
     "edit_modal": {
       "title": "MODIFIER LES DONNÉES DU BEAT",
+      "replace_file": "Remplacer le fichier audio (facultatif)",
+      "choose_file": "Choisir MP3/WAV pour remplacer",
       "cancel": "Annuler",
       "updating": "MISE À JOUR DE LA BDD...",
       "save": "ÉCRASER LA BDD"
@@ -710,7 +714,9 @@
       "upload_success": "Merch créé avec succès",
       "upload_failed": "Échec de la création du merch",
       "delete_success": "Merch supprimé avec succès",
-      "delete_failed": "Échec de la suppression du merch"
+      "delete_failed": "Échec de la suppression du merch",
+      "update_success": "Article merch mis à jour avec succès",
+      "update_failed": "Échec de la mise à jour de l'article merch"
     }
   },
   "support_modal": {
@@ -728,6 +734,7 @@
   },
   "orders": {
     "title": "COMMANDES & DONS",
+"subtitle":"Gérez vos commandes de produits dérivés et consultez les contributions des artistes.",
     "tabs": {
       "merch": "COMMANDES MERCH",
       "donations": "DONS"
@@ -735,6 +742,7 @@
     "merch_table": {
       "order_id": "ID COMMANDE",
       "customer": "CLIENT",
+      "items": "ARTICLES",
       "date": "DATE",
       "amount": "MONTANT",
       "payment": "PAIEMENT",
@@ -753,8 +761,13 @@
       "customer_info": "Informations client",
       "shipping_address": "Adresse de livraison",
       "items": "Articles",
+      "order_items": "Articles de la commande",
       "summary": "Résumé",
       "total": "Total",
+      "payment_status": "Statut du paiement",
+      "fulfillment_status": "Statut de livraison",
+      "placed": "Passée le {{date}}",
+      "close": "Fermer",
       "status": "Statut"
     },
     "status": {

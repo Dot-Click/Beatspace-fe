@@ -328,6 +328,10 @@ export default function MerchManagement() {
         .preview{width:57px;height:57px;object-fit:cover}
         .hover-overlay { opacity: 0; }
         div:hover > .hover-overlay { opacity: 1 !important; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
 
         /* Modal specific styles */
         .modal-overlay {
@@ -522,49 +526,50 @@ export default function MerchManagement() {
               </label>
               <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
                 <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.sizes_label')}</span>
-                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, maxWidth: 320 }}>
                   {AVAIL_SIZES.map((s) => {
                     const qty = newMerch.sizeQtys[s] || 0;
+                    const active = qty > 0;
                     return (
-                      <div key={s} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                        <span style={{
-                          minWidth: 36, textAlign: "center", padding: "0.4rem 0.5rem",
-                          background: qty > 0 ? "var(--yellow2)" : "#0f1016",
-                          color: qty > 0 ? "#191A22" : "var(--tan)",
-                          border: "2px solid var(--tan)", borderRadius: 6,
-                          fontWeight: 700, fontSize: 13,
-                        }}>{s}</span>
-                        <input
-                          type="number" min={0} step={1}
-                          value={qty}
-                          onChange={(e) => {
-                            const v = Math.max(0, parseInt(e.target.value) || 0);
-                            setNewMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: v } }));
-                          }}
-                          style={{
-                            width: 52, background: "#0f1016", color: "#fff",
-                            border: "2px solid var(--tan)", borderRadius: 6,
-                            padding: "0.4rem 0.4rem", textAlign: "center", fontSize: 13,
-                          }}
-                          placeholder="0"
-                        />
+                      <div key={s} style={{ display: "flex", alignItems: "center", background: "#0f1016", border: `1px solid ${active ? "var(--tan)" : "rgba(203,200,149,0.3)"}`, overflow: "hidden" }}>
+                        <div style={{ width: 36, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: active ? "var(--tan)" : "rgba(203,200,149,0.1)", color: active ? "#191A22" : "rgba(203,200,149,0.5)", fontFamily: '"Press Start 2P"', fontSize: 9, fontWeight: 700, flexShrink: 0, transition: "all 0.15s" }}>
+                          {s}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => { const v = Math.max(0, qty - 1); setNewMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: v } })); }}
+                          style={{ width: 32, height: 40, background: "transparent", border: "none", borderLeft: "1px solid rgba(203,200,149,0.15)", color: "var(--tan)", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, flexShrink: 0 }}
+                        >−</button>
+                        <div style={{ flex: 1, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: active ? "#fff" : "rgba(255,255,255,0.25)", fontWeight: 700, fontSize: 14, borderLeft: "1px solid rgba(203,200,149,0.15)", borderRight: "1px solid rgba(203,200,149,0.15)" }}>
+                          {qty}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setNewMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: qty + 1 } }))}
+                          style={{ width: 32, height: 40, background: "transparent", border: "none", color: "var(--tan)", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, flexShrink: 0 }}
+                        >+</button>
                       </div>
                     );
                   })}
                 </div>
-                <span style={{ fontSize: 9, color: "var(--tan)", opacity: 0.65, fontFamily: '"Press Start 2P"' }}>QTY PER SIZE (0 = not available)</span>
+                <span style={{ fontSize: 9, color: "var(--tan)", opacity: 0.65, fontFamily: '"Press Start 2P"' }}>QTY PER SIZE · 0 = UNAVAILABLE</span>
               </div>
-              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
+              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
                 <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Stock Status</span>
-                <select
-                  value={newMerch.stock || "in stock"}
-                  onChange={(e) => setNewMerch((m) => ({ ...m, stock: e.target.value }))}
-                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", cursor: "pointer" }}
-                >
-                  <option value="in stock">In Stock</option>
-                  <option value="out of stock">Out of Stock</option>
-                </select>
-              </label>
+                <div style={{ position: "relative", height: 44 }}>
+                  <select
+                    value={newMerch.stock || "in stock"}
+                    onChange={(e) => setNewMerch((m) => ({ ...m, stock: e.target.value }))}
+                    style={{ width: "100%", height: 44, background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", padding: "0 36px 0 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", appearance: "none", outline: "none" }}
+                  >
+                    <option value="in stock" style={{ background: "#0f1016" }}>In Stock</option>
+                    <option value="out of stock" style={{ background: "#0f1016" }}>Out of Stock</option>
+                  </select>
+                  <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 7L11 1" stroke="#CBC895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
@@ -686,207 +691,196 @@ export default function MerchManagement() {
 
       {/* Edit Modal */}
       {editModalOpen && editMerch && (
-        <div className="modal-overlay" onClick={() => setEditModalOpen(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setEditModalOpen(false)}>
-              <XIcon />
-            </button>
-            <h2 className="pixel" style={{ color: "var(--yellow)", marginBottom: "1.5rem" }}>{t('merch.modals.edit_title')}</h2>
-            
-            <div style={{ display: "grid", gap: "1rem" }}>
-              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.name_label')}</span>
-                <input
-                  value={editMerch.name}
-                  onChange={(e) => setEditMerch((m) => ({ ...m, name: e.target.value }))}
-                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
-                />                                                                                                                                                              
-              </label>
-              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.price_label')}</span>
-                <input
-                  type="number" min={0} step="0.01"
-                  value={editMerch.price}
-                  onChange={(e) => setEditMerch((m) => ({ ...m, price: Number(e.target.value) }))}
-                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%" }}
-                />                                                                                 
-              </label>
-              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.description_label')}</span>
-                <textarea
-                  value={editMerch.description}
-                  onChange={(e) => setEditMerch((m) => ({ ...m, description: e.target.value }))}
-                  rows={3}
-                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", resize: "vertical" }}
-                />
-              </label>
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.88)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000, padding: "1rem" }}
+          onClick={() => setEditModalOpen(false)}
+        >
+          <div
+            style={{ background: "#131319", border: "1px solid rgba(203,200,149,0.4)", width: "100%", maxWidth: 860, maxHeight: "92vh", overflowY: "auto", position: "relative", boxShadow: "0 25px 60px rgba(0,0,0,0.9)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* corner accents */}
+            {[["0","0"],["0","auto"],["auto","0"],["auto","auto"]].map(([t,r],i) => (
+              <div key={i} style={{ position:"absolute", top:t==="0"?0:"auto", bottom:t==="auto"?0:"auto", left:r==="0"?0:"auto", right:r==="auto"?0:"auto", width:8, height:8, background:"#CBC895" }} />
+            ))}
 
-              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.sizes_label')}</span>
-                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                  {AVAIL_SIZES.map((s) => {
-                    const qty = editMerch.sizeQtys[s] || 0;
-                    return (
-                      <div key={s} style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
-                        <span style={{
-                          minWidth: 36, textAlign: "center", padding: "0.4rem 0.5rem",
-                          background: qty > 0 ? "var(--yellow2)" : "#0f1016",
-                          color: qty > 0 ? "#191A22" : "var(--tan)",
-                          border: "2px solid var(--tan)", borderRadius: 6,
-                          fontWeight: 700, fontSize: 13,
-                        }}>{s}</span>
-                        <input
-                          type="number" min={0} step={1}
-                          value={qty}
-                          onChange={(e) => {
-                            const v = Math.max(0, parseInt(e.target.value) || 0);
-                            setEditMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: v } }));
-                          }}
-                          style={{
-                            width: 52, background: "#0f1016", color: "#fff",
-                            border: "2px solid var(--tan)", borderRadius: 6,
-                            padding: "0.4rem 0.4rem", textAlign: "center", fontSize: 13,
-                          }}
-                          placeholder="0"
-                        />
-                      </div>
-                    );
-                  })}
+            {/* Header */}
+            <div style={{ background: "#CBC895", padding: "12px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontFamily: '"Press Start 2P"', fontSize: 10, color: "#191A22", textTransform: "uppercase", letterSpacing: "0.12em" }}>
+                {t('merch.modals.edit_title')}
+              </span>
+              <button
+                onClick={() => setEditModalOpen(false)}
+                style={{ width: 28, height: 28, background: "#191A22", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#CBC895" strokeWidth="2" strokeLinecap="round"><path d="M10 2L2 10M2 2l8 8" /></svg>
+              </button>
+            </div>
+
+            {/* Body — 2 columns: LEFT=details, RIGHT=images+sizes */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
+
+              {/* LEFT — Details */}
+              <div style={{ padding: "20px", borderRight: "1px solid rgba(203,200,149,0.15)", display: "flex", flexDirection: "column", gap: 16 }}>
+
+                {/* Product Name */}
+                <div>
+                  <label style={{ display: "block", fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{t('merch.upload.name_label')}</label>
+                  <input
+                    value={editMerch.name}
+                    onChange={(e) => setEditMerch((m) => ({ ...m, name: e.target.value }))}
+                    style={{ width: "100%", height: 40, background: "#1E1E2A", border: "1px solid rgba(203,200,149,0.25)", color: "#F6F4D3", padding: "0 12px", fontSize: 13, fontWeight: 600, outline: "none" }}
+                  />
                 </div>
-                <span style={{ fontSize: 9, color: "var(--tan)", opacity: 0.65, fontFamily: '"Press Start 2P"' }}>QTY PER SIZE (0 = not available)</span>
+
+                {/* Price */}
+                <div>
+                  <label style={{ display: "block", fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{t('merch.upload.price_label')}</label>
+                  <div style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#CBC895", fontWeight: 700, fontSize: 14 }}>€</span>
+                    <input
+                      type="number" min={0} step="0.01"
+                      value={editMerch.price}
+                      onChange={(e) => setEditMerch((m) => ({ ...m, price: Number(e.target.value) }))}
+                      style={{ width: "100%", height: 40, background: "#1E1E2A", border: "1px solid rgba(203,200,149,0.25)", color: "#F6F4D3", padding: "0 12px 0 26px", fontSize: 13, fontWeight: 600, outline: "none" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label style={{ display: "block", fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>{t('merch.upload.description_label')}</label>
+                  <textarea
+                    value={editMerch.description}
+                    onChange={(e) => setEditMerch((m) => ({ ...m, description: e.target.value }))}
+                    rows={4}
+                    style={{ width: "100%", background: "#1E1E2A", border: "1px solid rgba(203,200,149,0.25)", color: "#F6F4D3", padding: "10px 12px", fontSize: 13, fontWeight: 500, outline: "none", resize: "none" }}
+                  />
+                </div>
+
+                {/* Stock Status */}
+                <div>
+                  <label style={{ display: "block", fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 6 }}>Stock Status</label>
+                  <div style={{ position: "relative", height: 40 }}>
+                    <select
+                      value={editMerch.stock || "in stock"}
+                      onChange={(e) => setEditMerch((m) => ({ ...m, stock: e.target.value }))}
+                      style={{ width: "100%", height: 40, background: "#1E1E2A", border: "1px solid rgba(203,200,149,0.25)", color: "#F6F4D3", padding: "0 36px 0 12px", fontSize: 13, fontWeight: 600, outline: "none", cursor: "pointer", appearance: "none" }}
+                    >
+                      <option value="in stock" style={{ background: "#1E1E2A" }}>In Stock</option>
+                      <option value="out of stock" style={{ background: "#1E1E2A" }}>Out of Stock</option>
+                    </select>
+                    <div style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
+                      <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1L5 5L9 1" stroke="#CBC895" strokeWidth="1.5" strokeLinecap="round" /></svg>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <label style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>Stock Status</span>
-                <select
-                  value={editMerch.stock || "in stock"}
-                  onChange={(e) => setEditMerch((m) => ({ ...m, stock: e.target.value }))}
-                  style={{ background: "#0f1016", color: "#fff", border: "2px solid var(--tan)", borderRadius: 6, padding: "0.7rem 0.85rem", width: "100%", cursor: "pointer" }}
-                >
-                  <option value="in stock">In Stock</option>
-                  <option value="out of stock">Out of Stock</option>
-                </select>
-              </label>
+              {/* RIGHT — Images + Sizes */}
+              <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 20 }}>
 
-              <div style={{ display: "grid", gap: "0.4rem", color: "var(--tan)" }}>
-                <span style={{ fontSize: 11, fontFamily: '"Press Start 2P", monospace', textTransform: "uppercase" }}>{t('merch.upload.merch_images_label') || "Merch Images"}</span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "center", width: "100%", margin: "0.5rem 0" }}>
-                  {editSelectedFiles.map((file, idx) => {
-                    const isMain = editCoverIndex === idx;
-                    const previewUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
-                    return (
-                      <div 
-                        key={idx}
-                        style={{ 
-                          width: "100px", 
-                          height: "100px", 
-                          border: isMain ? "3px solid var(--yellow)" : "2px solid var(--tan)", 
-                          position: "relative",
-                          background: "rgba(0,0,0,0.3)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          overflow: "hidden",
-                          borderRadius: "6px"
-                        }}
-                      >
-                        <img src={previewUrl} alt={`preview-${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        
-                        {/* Top Main Badge */}
-                        {isMain && (
-                          <span style={{ position: "absolute", top: "4px", left: "4px", background: "var(--yellow)", color: "var(--ink)", padding: "1px 4px", fontSize: "8px", fontFamily: '"Press Start 2P"', fontWeight: "bold", borderRadius: "3px" }}>
-                            MAIN
-                          </span>
-                        )}
-
-                        {/* Hover controls overlay */}
-                        <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "4px", opacity: 0, transition: "opacity 0.2s" }} className="hover-overlay">
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            {!isMain && (
-                              <button 
-                                type="button"
-                                onClick={() => setEditCoverIndex(idx)}
-                                style={{ background: "var(--yellow)", border: "none", color: "var(--ink)", fontSize: "9px", padding: "2px 4px", cursor: "pointer", fontWeight: "bold" }}
-                              >
-                                Set Main
-                              </button>
-                            )}
-                            <button 
-                              type="button"
-                              onClick={() => removeEditImage(idx)}
-                              style={{ background: "var(--red)", border: "none", color: "white", fontSize: "10px", padding: "2px 6px", cursor: "pointer", fontWeight: "bold", marginLeft: "auto" }}
-                            >
-                              X
-                            </button>
-                          </div>
-                          
-                          {/* Left/Right movement buttons */}
-                          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
-                            <button 
-                              type="button"
-                              disabled={idx === 0}
-                              onClick={() => moveEditImage(idx, -1)}
-                              style={{ background: idx === 0 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "20px", height: "20px", cursor: idx === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
-                            >
-                              &lt;
-                            </button>
-                            <button 
-                              type="button"
-                              disabled={idx === editSelectedFiles.length - 1}
-                              onClick={() => moveEditImage(idx, 1)}
-                              style={{ background: idx === editSelectedFiles.length - 1 ? "#555" : "var(--button)", color: "var(--ink)", border: "none", width: "20px", height: "20px", cursor: idx === editSelectedFiles.length - 1 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}
-                            >
-                              &gt;
-                            </button>
+                {/* Images */}
+                <div>
+                  <div style={{ fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 12 }}>
+                    Merch Images
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                    {editSelectedFiles.map((file, idx) => {
+                      const isMain = editCoverIndex === idx;
+                      const previewUrl = typeof file === "string" ? file : URL.createObjectURL(file);
+                      return (
+                        <div key={idx} style={{ width: 80, height: 80, border: isMain ? "2px solid #CBC895" : "1px solid rgba(203,200,149,0.3)", position: "relative", overflow: "hidden", background: "rgba(0,0,0,0.4)" }}>
+                          <img src={previewUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          {isMain && (
+                            <span style={{ position: "absolute", top: 3, left: 3, background: "#CBC895", color: "#191A22", padding: "1px 4px", fontSize: 7, fontFamily: '"Press Start 2P"', fontWeight: "bold" }}>MAIN</span>
+                          )}
+                          <div className="hover-overlay" style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.75)", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 4, opacity: 0, transition: "opacity 0.2s" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                              {!isMain && (
+                                <button type="button" onClick={() => setEditCoverIndex(idx)} style={{ background: "#CBC895", border: "none", color: "#191A22", fontSize: 7, padding: "2px 3px", cursor: "pointer", fontWeight: "bold", fontFamily: '"Press Start 2P"' }}>MAIN</button>
+                              )}
+                              <button type="button" onClick={() => removeEditImage(idx)} style={{ background: "#dc2626", border: "none", color: "white", fontSize: 10, padding: "1px 5px", cursor: "pointer", fontWeight: "bold", marginLeft: "auto" }}>✕</button>
+                            </div>
+                            <div style={{ display: "flex", gap: 4, justifyContent: "center" }}>
+                              <button type="button" disabled={idx === 0} onClick={() => moveEditImage(idx, -1)} style={{ background: idx===0?"#444":"#CBC895", color: "#191A22", border: "none", width: 20, height: 20, cursor: idx===0?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize: 12 }}>‹</button>
+                              <button type="button" disabled={idx === editSelectedFiles.length-1} onClick={() => moveEditImage(idx, 1)} style={{ background: idx===editSelectedFiles.length-1?"#444":"#CBC895", color: "#191A22", border: "none", width: 20, height: 20, cursor: idx===editSelectedFiles.length-1?"not-allowed":"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"bold", fontSize: 12 }}>›</button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                  
-                  {/* "+ Add Image" button */}
-                  <div 
-                    onClick={() => document.getElementById("edit-file-input")?.click()}
-                    style={{ 
-                      width: "100px", 
-                      height: "100px", 
-                      border: "2px dashed var(--tan)", 
-                      display: "flex", 
-                      flexDirection: "column",
-                      alignItems: "center", 
-                      justifyContent: "center", 
-                      cursor: "pointer", 
-                      borderRadius: "6px",
-                      background: "rgba(197,194,116,0.1)",
-                      transition: "background 0.2s"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.2)"}
-                    onMouseLeave={(e) => e.currentTarget.style.background = "rgba(197,194,116,0.1)"}
-                  >
-                    <span style={{ fontSize: "24px", color: "var(--tan)", lineHeight: 1 }}>+</span>
-                    <span style={{ fontSize: "8px", fontFamily: '"Press Start 2P"', color: "var(--tan)", marginTop: "4px" }}>ADD IMAGE</span>
+                      );
+                    })}
+                    <div
+                      onClick={() => document.getElementById("edit-file-input")?.click()}
+                      style={{ width: 80, height: 80, border: "1px dashed rgba(203,200,149,0.4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", cursor: "pointer", background: "rgba(203,200,149,0.05)", transition: "background 0.2s" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "rgba(203,200,149,0.12)"}
+                      onMouseLeave={e => e.currentTarget.style.background = "rgba(203,200,149,0.05)"}
+                    >
+                      <span style={{ fontSize: 20, color: "#CBC895", lineHeight: 1 }}>+</span>
+                      <span style={{ fontSize: 7, fontFamily: '"Press Start 2P"', color: "rgba(203,200,149,0.6)", marginTop: 4 }}>ADD IMAGE</span>
+                    </div>
                   </div>
+                  <input id="edit-file-input" type="file" accept="image/png,image/jpeg" multiple onChange={handleEditFileSelect} hidden />
+                  {editSelectedFiles.length > 0 && (
+                    <div style={{ marginTop: 8, fontSize: 9, color: "#55DF55", fontFamily: '"Press Start 2P"' }}>
+                      {editSelectedFiles.length} IMAGE{editSelectedFiles.length !== 1 ? "S" : ""}
+                    </div>
+                  )}
                 </div>
-                <input
-                  id="edit-file-input"
-                  type="file" accept="image/png,image/jpeg" multiple
-                  onChange={handleEditFileSelect}
-                  hidden
-                />
-                {editSelectedFiles.length > 0 && (
-                  <div style={{ textAlign: "center", color: "var(--green2)", fontSize: 12 }}>
-                    {t('merch.upload.files_selected', { count: editSelectedFiles.length }).toUpperCase()}
-                  </div>
-                )}
-              </div>
 
-              <button 
-                className="btn" 
-                onClick={handleEditUpload} 
-                disabled={isUpdatingMerch}
-                style={{ marginTop: "1rem", background: "var(--yellow)", color: "var(--ink)", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.8rem", fontSize: 14, opacity: isUpdatingMerch ? 0.7 : 1 }}
+                {/* Sizes */}
+                <div>
+                  <label style={{ display: "block", fontFamily: '"Press Start 2P"', fontSize: 9, color: "rgba(203,200,149,0.7)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>{t('merch.upload.sizes_label')}</label>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    {AVAIL_SIZES.map((s) => {
+                      const qty = editMerch.sizeQtys[s] || 0;
+                      const active = qty > 0;
+                      return (
+                        <div key={s} style={{ display: "flex", alignItems: "center", background: "#1E1E2A", border: `1px solid ${active ? "#CBC895" : "rgba(203,200,149,0.2)"}`, overflow: "hidden" }}>
+                          <div style={{ width: 36, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: active ? "#CBC895" : "rgba(203,200,149,0.1)", color: active ? "#191A22" : "rgba(203,200,149,0.5)", fontFamily: '"Press Start 2P"', fontSize: 9, fontWeight: 700, flexShrink: 0, transition: "all 0.15s" }}>
+                            {s}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => { const v = Math.max(0, qty - 1); setEditMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: v } })); }}
+                            style={{ width: 32, height: 40, background: "transparent", border: "none", borderLeft: "1px solid rgba(203,200,149,0.15)", color: "#CBC895", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, flexShrink: 0 }}
+                          >−</button>
+                          <div style={{ flex: 1, height: 40, display: "flex", alignItems: "center", justifyContent: "center", color: active ? "#F6F4D3" : "rgba(246,244,211,0.3)", fontWeight: 700, fontSize: 14, borderLeft: "1px solid rgba(203,200,149,0.15)", borderRight: "1px solid rgba(203,200,149,0.15)" }}>
+                            {qty}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setEditMerch(m => ({ ...m, sizeQtys: { ...m.sizeQtys, [s]: qty + 1 } }))}
+                            style={{ width: 32, height: 40, background: "transparent", border: "none", color: "#CBC895", fontSize: 18, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1, flexShrink: 0 }}
+                          >+</button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 8, fontFamily: '"Press Start 2P"', color: "rgba(203,200,149,0.4)" }}>QTY PER SIZE · 0 = UNAVAILABLE</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div style={{ padding: "14px 20px", borderTop: "1px solid rgba(203,200,149,0.15)", display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                onClick={() => setEditModalOpen(false)}
+                style={{ padding: "8px 20px", background: "transparent", border: "1px solid rgba(203,200,149,0.4)", color: "rgba(203,200,149,0.7)", fontWeight: 700, fontSize: 10, fontFamily: '"Press Start 2P"', textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer" }}
               >
-                <PencilIcon /> {isUpdatingMerch ? t('merch.modals.updating') : t('merch.modals.save_changes')}
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={handleEditUpload}
+                disabled={isUpdatingMerch}
+                style={{ padding: "8px 20px", background: "#CBC895", border: "none", color: "#191A22", fontWeight: 900, fontSize: 10, fontFamily: '"Press Start 2P"', textTransform: "uppercase", letterSpacing: "0.1em", cursor: isUpdatingMerch ? "not-allowed" : "pointer", opacity: isUpdatingMerch ? 0.6 : 1, display: "flex", alignItems: "center", gap: 8 }}
+              >
+                {isUpdatingMerch ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 1s linear infinite" }}><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                )}
+                {isUpdatingMerch ? t('merch.modals.updating') : t('merch.modals.save_changes')}
               </button>
             </div>
           </div>

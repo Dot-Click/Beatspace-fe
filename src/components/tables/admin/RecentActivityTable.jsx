@@ -5,12 +5,45 @@ import {
   MusicIcon,
   ShirtIcon,
   ComicsIcon,
-  UploadIcon,
-  EditIcon,
-  DeleteIcon,
 } from "../../../customIcons";
-
 import { useTranslation } from "react-i18next";
+
+const ACTION_ICONS = {
+  UPLOADED: ({ color }) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
+  ),
+  EDITED: ({ color }) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  ),
+  DELETED: ({ color }) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+    </svg>
+  ),
+  DOWNLOADED: ({ color }) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  ),
+  UPDATED: ({ color }) => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 4 23 10 17 10" />
+      <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+    </svg>
+  ),
+};
 
 const RecentActivityTable = ({ activity = [] }) => {
   const { t } = useTranslation();
@@ -114,43 +147,30 @@ const RecentActivityTable = ({ activity = [] }) => {
         size: 140,
         Cell: ({ cell }) => {
           const action = cell.getValue();
-          let color = "";
-          let ActionIcon = null;
-          let actionLabel = action;
-
-          switch (action) {
-            case "UPLOADED":
-              color = "#12E008";
-              ActionIcon = UploadIcon;
-              actionLabel = t('dashboard.activity.table.actions.uploaded');
-              break;
-            case "EDITED":
-              color = "#51F6D2";
-              ActionIcon = EditIcon;
-              actionLabel = t('dashboard.activity.table.actions.edited');
-              break;
-            case "DELETED":
-              color = "#FF2222";
-              ActionIcon = DeleteIcon;
-              actionLabel = t('dashboard.activity.table.actions.deleted');
-              break;
-            default:
-              color = "#";
-          }
+          const CONFIG = {
+            UPLOADED:   { color: "#22C55E", label: t('dashboard.activity.table.actions.uploaded') },
+            EDITED:     { color: "#38BDF8", label: t('dashboard.activity.table.actions.edited') },
+            DELETED:    { color: "#F87171", label: t('dashboard.activity.table.actions.deleted') },
+            DOWNLOADED: { color: "#FB923C", label: t('dashboard.activity.table.actions.downloaded') },
+            UPDATED:    { color: "#A78BFA", label: t('dashboard.activity.table.actions.updated') },
+          };
+          const cfg = CONFIG[action] || { color: "#B5B387", label: action };
+          const IconSvg = ACTION_ICONS[action] || null;
 
           return (
-            <Box style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              {ActionIcon && <ActionIcon />}
+            <Box style={{ display: "flex", alignItems: "center", gap: "7px" }}>
+              {IconSvg && <IconSvg color={cfg.color} />}
               <Text
                 className="alexandria-font"
                 style={{
-                  color: color,
-                  fontSize: "12px",
-                  fontWeight: 600,
+                  color: cfg.color,
+                  fontSize: "11px",
+                  fontWeight: 700,
                   textTransform: "uppercase",
+                  letterSpacing: "0.05em",
                 }}
               >
-                {actionLabel}
+                {cfg.label}
               </Text>
             </Box>
           );

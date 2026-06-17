@@ -4,8 +4,8 @@ import { HiChevronDown } from 'react-icons/hi';
 import './LanguageSwitcher.css';
 
 const LANGUAGES = [
-  { code: 'en', label: 'English', flag: '🇬🇧' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'en', label: 'ENGLISH', short: 'EN' },
+  { code: 'fr', label: 'FRANCAIS', short: 'FR' },
 ];
 
 export function LanguageSwitcher() {
@@ -34,12 +34,12 @@ export function LanguageSwitcher() {
 
   return (
     <div className="language-switcher-container" ref={dropdownRef}>
-      <button 
+      <button
         className="language-switcher-toggle"
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
       >
-        <span className="lang-flag">{currentLanguage.flag}</span>
+        <span className="lang-badge">{currentLanguage.short}</span>
         <span className="lang-label">{currentLanguage.label}</span>
         <HiChevronDown className={`chevron-icon ${isOpen ? 'open' : ''}`} />
       </button>
@@ -52,7 +52,7 @@ export function LanguageSwitcher() {
               className={`language-option ${currentLanguageCode === lang.code ? 'active' : ''}`}
               onClick={() => handleLanguageChange(lang.code)}
             >
-              <span className="lang-flag">{lang.flag}</span>
+              <span className="lang-badge">{lang.short}</span>
               <span className="lang-label">{lang.label}</span>
             </button>
           ))}

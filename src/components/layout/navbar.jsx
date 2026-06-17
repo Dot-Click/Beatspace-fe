@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaSignOutAlt, FaUser, FaCog } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutAction } from "../../store/actions/authActions";
@@ -50,7 +50,7 @@ const Navbar = ({ opened, toggle }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, isNotifOpen]);
 
   const handleOpenDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -160,42 +160,6 @@ const Navbar = ({ opened, toggle }) => {
             )}
           </div>
 
-          <button
-            onClick={() => navigate("/admin/settings")}
-            className="transition-opacity hover:opacity-80 flex items-center justify-center"
-          >
-            <svg
-              className="!h-7 md:!h-9"
-              width="38"
-              height="39"
-              viewBox="0 0 38 39"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="0.75"
-                y="1.25"
-                width="36.5"
-                height="36.5"
-                fill="#191A22"
-                fillOpacity="0.12"
-              />
-              <rect
-                x="0.75"
-                y="1.25"
-                width="36.5"
-                height="36.5"
-                stroke="#191A22"
-                strokeWidth="1.5"
-              />
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M19.0001 8.98535C18.3421 8.98535 17.7701 9.40635 16.6271 10.2494L14.9061 11.5184C14.7261 11.6514 14.6361 11.7174 14.5391 11.7734C14.4421 11.8294 14.3391 11.8734 14.1341 11.9634L12.1751 12.8194C10.8731 13.3894 10.2221 13.6734 9.89308 14.2424C9.56408 14.8114 9.64308 15.5184 9.80208 16.9304L10.0401 19.0554C10.0651 19.2774 10.0771 19.3884 10.0771 19.5004C10.0771 19.6124 10.0651 19.7234 10.0401 19.9454L9.80208 22.0704C9.64408 23.4824 9.56508 24.1884 9.89308 24.7584C10.2231 25.3284 10.8731 25.6124 12.1751 26.1814L14.1351 27.0374C14.3391 27.1274 14.4421 27.1714 14.5391 27.2274C14.6351 27.2833 14.7261 27.3494 14.9061 27.4824L16.6261 28.7514C17.7711 29.5944 18.3431 30.0154 19.0001 30.0154C19.6571 30.0154 20.2301 29.5944 21.3731 28.7514L23.0941 27.4824C23.2741 27.3494 23.3641 27.2833 23.4611 27.2274C23.5581 27.1714 23.6611 27.1274 23.8661 27.0374L25.8251 26.1814C27.1271 25.6114 27.7781 25.3274 28.1071 24.7584C28.4361 24.1894 28.3571 23.4824 28.1971 22.0704L27.9601 19.9454C27.9351 19.7234 27.9221 19.6124 27.9221 19.5004C27.9221 19.3884 27.9351 19.2774 27.9601 19.0554L28.1981 16.9304C28.3561 15.5184 28.4351 14.8124 28.1071 14.2424C27.7771 13.6724 27.1271 13.3884 25.8251 12.8194L23.8651 11.9634C23.727 11.9076 23.5921 11.8442 23.4611 11.7734C23.3341 11.6953 23.2116 11.6101 23.0941 11.5184L21.3741 10.2494C20.2281 9.40635 19.6561 8.98535 19.0001 8.98535ZM19.0001 23.5004C20.0609 23.5004 21.0784 23.0789 21.8285 22.3288C22.5787 21.5786 23.0001 20.5612 23.0001 19.5004C23.0001 18.4395 22.5787 17.4221 21.8285 16.6719C21.0784 15.9218 20.0609 15.5004 19.0001 15.5004C17.9392 15.5004 16.9218 15.9218 16.1717 16.6719C15.4215 17.4221 15.0001 18.4395 15.0001 19.5004C15.0001 20.5612 15.4215 21.5786 16.1717 22.3288C16.9218 23.0789 17.9392 23.5004 19.0001 23.5004Z"
-                fill="#191A22"
-              />
-            </svg>
-          </button>
           <div className="relative flex items-center" ref={notifRef}>
             <button
               onClick={handleOpenNotif}

@@ -44,7 +44,9 @@
         "actions": {
           "uploaded": "UPLOADED",
           "edited": "EDITED",
-          "deleted": "DELETED"
+          "deleted": "DELETED",
+          "downloaded": "DOWNLOADED",
+          "updated": "UPDATED"
         }
       }
     }
@@ -211,6 +213,8 @@
     },
     "edit_modal": {
       "title": "EDIT BEAT DATA",
+      "replace_file": "Replace Audio File (optional)",
+      "choose_file": "Choose MP3/WAV to overwrite",
       "cancel": "Cancel",
       "updating": "UPDATING DB...",
       "save": "OVERWRITE DB"
@@ -229,7 +233,8 @@
       "file_size_error": "File size exceeds 50MB",
       "invalid_file": "Invalid file type. Please upload MP3 or WAV.",
       "file_selected": "File selected: {{name}}",
-      "missing_fields": "Please provide at least a name and an audio file"
+      "missing_fields": "Please provide at least a name and an audio file",
+      "name_required": "Name is required"
     }
   },
   "merch": {
@@ -710,7 +715,9 @@
       "upload_success": "Merch created successfully",
       "upload_failed": "Failed to create merch",
       "delete_success": "Merch deleted successfully",
-      "delete_failed": "Failed to delete merch"
+      "delete_failed": "Failed to delete merch",
+      "update_success": "Merch item updated successfully",
+      "update_failed": "Failed to update merch item"
     }
   },
   "support_modal": {
@@ -728,6 +735,8 @@
   },
   "orders": {
     "title": "ORDERS & DONATIONS",
+ "subtitle": "Manage your merch orders and view support artist contributions.",
+
     "tabs": {
       "merch": "MERCH ORDERS",
       "donations": "DONATIONS"
@@ -735,6 +744,7 @@
     "merch_table": {
       "order_id": "ORDER ID",
       "customer": "CUSTOMER",
+      "items": "ITEMS",
       "date": "DATE",
       "amount": "AMOUNT",
       "payment": "PAYMENT",
@@ -753,8 +763,13 @@
       "customer_info": "Customer Information",
       "shipping_address": "Shipping Address",
       "items": "Items",
+      "order_items": "Order Items",
       "summary": "Summary",
       "total": "Total",
+      "payment_status": "Payment Status",
+      "fulfillment_status": "Fulfillment Status",
+      "placed": "Placed on {{date}}",
+      "close": "Close",
       "status": "Status"
     },
     "status": {

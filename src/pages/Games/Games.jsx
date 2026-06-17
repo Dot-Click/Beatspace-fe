@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { Box, Image, Skeleton, Text } from "@mantine/core";
+import { Box, Image } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import UserHeader from "../../components/common/UserHeader";
 import { useTranslation } from "react-i18next";
 import { publicAxios } from "../../configs/axios.config";
-
-const VISION = { fontFamily: '"Vision Font", monospace, sans-serif' };
 
 const getGamesFromResponse = (response) => {
   const payload = response?.data;
@@ -17,20 +15,125 @@ const getGamesFromResponse = (response) => {
   return [];
 };
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  try {
-    return new Date(dateStr).toLocaleDateString("en-GB", {
-      day: "2-digit", month: "short", year: "numeric",
-    });
-  } catch {
-    return "";
+// Scoped styles — `!important` is required to beat the global App.css rule
+// that forces font-size:36px / Vision font onto every span & div.
+const GAMES_STYLES = `
+  @keyframes pixelBounce {
+    0%, 100% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-14px); opacity: 0.4; }
   }
+  .gm-pixel {
+    font-family: "Press Start 2P", monospace !important;
+    font-weight: 400 !important;
+  }
+  .gm-loading  { font-size: 9px !important;  letter-spacing: 0.1em;  color: rgba(246,244,211,0.55); }
+  .gm-empty    { font-size: 11px !important; letter-spacing: 0.1em;  color: rgba(246,244,211,0.4); line-height: 1.8; text-align: center; }
+  .gm-play     { font-size: 10px !important; color: #F6F4D3; text-shadow: 2px 2px 0 #000; }
+  .gm-title    { font-size: 14px !important;  line-height: 1.6; text-align: center; text-shadow: 1px 1px 0 #000;
+                 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+                 overflow: hidden; word-break: break-word; }
+  @media (max-width: 600px) { .gm-title { font-size: 7px !important; } }
+`;
+
+// ── Loader ──────────────────────────────────────────────────────────────────
+const PixelLoader = () => (
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh", gap: "2rem" }}>
+    <div style={{ display: "flex", gap: "10px" }}>
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          style={{
+            width: "12px",
+            height: "12px",
+            background: "#F6F4D3",
+            imageRendering: "pixelated",
+            boxShadow: "0 0 10px rgba(246,244,211,0.5)",
+            animation: `pixelBounce 0.9s ease-in-out ${i * 0.15}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+    <span className="gm-pixel gm-loading">LOADING</span>
+  </div>
+);
+
+// ── Card ─────────────────────────────────────────────────────────────────────
+const GameCard = ({ game, onClick }) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onTouchStart={() => setHovered(true)}
+      onTouchEnd={() => setHovered(false)}
+      style={{
+        cursor: "pointer",
+        position: "relative",
+        background: "#0a0f2e",
+        border: "3px solid",
+        borderColor: hovered ? "#F6F4D3" : "rgba(246,244,211,0.35)",
+        boxShadow: hovered
+          ? "0 0 0 2px #0a0f2e, 0 0 18px rgba(246,244,211,0.35), 8px 8px 0 rgba(0,0,0,0.5)"
+          : "6px 6px 0 rgba(0,0,0,0.45)",
+        transition: "transform 0.15s steps(2), border-color 0.15s, box-shadow 0.15s",
+        transform: hovered ? "translate(-2px,-2px)" : "none",
+        display: "flex",
+        flexDirection: "column",
+        imageRendering: "pixelated",
+      }}
+    >
+      {/* ── Thumbnail (white frame) ── */}
+      <div style={{ position: "relative", aspectRatio: "1 / 1", background: "#fff", padding: "6px", borderBottom: "3px solid rgba(246,244,211,0.35)" }}>
+        <div style={{ width: "100%", height: "100%", overflow: "hidden", background: "#fff" }}>
+          {game.image ? (
+            <img
+              src={game.image}
+              alt={game.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                transition: "transform 0.2s steps(3)",
+                transform: hovered ? "scale(1.05)" : "scale(1)",
+                display: "block",
+                imageRendering: "auto",
+              }}
+            />
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0f2e" }}>
+              <span className="gm-pixel gm-play">?</span>
+            </div>
+          )}
+        </div>
+
+        {/* Play overlay on hover */}
+        <div style={{
+          position: "absolute", inset: "6px",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          background: hovered ? "rgba(10,15,46,0.55)" : "transparent",
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.15s, background 0.15s",
+          pointerEvents: "none",
+        }}>
+          <span className="gm-pixel gm-play">▶ PLAY</span>
+        </div>
+      </div>
+
+      {/* ── Title bar ── */}
+      <div style={{ padding: "10px 8px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "44px" }}>
+        <span className="gm-pixel gm-title" style={{ color: hovered ? "#F6F4D3" : "rgba(246,244,211,0.8)" }}>
+          {game.name}
+        </span>
+      </div>
+    </div>
+  );
 };
 
+// ── Page ─────────────────────────────────────────────────────────────────────
 const Games = () => {
   const { t } = useTranslation();
-  const [hoveredId, setHoveredId] = useState(null);
   const navigate = useNavigate();
 
   const { data: games = [], isLoading } = useQuery({
@@ -46,184 +149,49 @@ const Games = () => {
 
   return (
     <>
+      <style>{GAMES_STYLES}</style>
       <UserHeader title={t("games_page.title")} />
 
-      <Box style={{ position: "relative", minHeight: "100vh", padding: "1rem", paddingTop: "clamp(1rem, 8vh, 2rem)", marginTop: "clamp(60px, 10vh, 100px)", zIndex: 3 }}>
-
-        {/* ── floating clouds ── */}
+      <Box
+        style={{
+          position: "relative",
+          zIndex: 3,
+          minHeight: "100%",
+          paddingTop: "24vh",   // clear the fixed header (bottom edge ~23vh)
+          paddingBottom: "5rem",
+        }}
+      >
+        {/* floating clouds */}
         {[
-          { style: { left: "-2rem", top: "40%", width: "7rem", height: "4.5rem", animation: "floatCloud1 8s ease-in-out infinite" }, className: "max-sm:!left-[-6.5rem] max-sm:!h-24 max-sm:!w-24 min-md:!left-20 min-md:!h-32 min-md:!w-32 min-lg:!left-32 min-lg:!h-32 min-lg:!w-36 min-xl:!left-44 min-xl:!h-40 min-xl:!w-40" },
-          { style: { right: "1rem", top: "25%", width: "3.5rem", height: "2rem", animation: "floatCloud2 6s ease-in-out infinite" }, className: "max-sm:!right-[-10%] min-md:!right-[16%] min-md:!h-16 min-md:!w-16 min-lg:!right-[20%] min-lg:!h-20 min-lg:!w-20 min-xl:!right-[20%] min-xl:!h-28 min-xl:!w-28" },
-          { style: { right: "0%", top: "90%", width: "8rem", height: "5rem", transform: "scaleX(-1)", animation: "floatCloud3 10s ease-in-out infinite" }, className: "max-sm:!right-[-6rem] max-sm:!h-24 max-sm:!w-24 min-md:!right-[20%] min-md:!top-[90%] min-lg:!right-[0%] min-lg:!h-32 min-lg:!w-32 min-xl:!right-[0%] min-xl:!h-40 min-xl:!w-40" },
+          { style: { left: "-2rem", top: "40%", width: "7rem", height: "4.5rem", animation: "floatCloud1 8s ease-in-out infinite" }, className: "max-sm:!left-[-6.5rem] max-sm:!h-24 max-sm:!w-24 min-md:!left-20 min-md:!h-32 min-md:!w-32" },
+          { style: { right: "1rem", top: "25%", width: "3.5rem", height: "2rem", animation: "floatCloud2 6s ease-in-out infinite" }, className: "max-sm:!right-[-10%] min-md:!right-[16%] min-md:!h-16 min-md:!w-16" },
         ].map((cloud, i) => (
-          <Image
-            key={i}
-            src="/assets/Cloud.webp"
-            alt="Cloud"
-            style={{ position: "fixed", opacity: 0.9, filter: "drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))", zIndex: 1, pointerEvents: "none", ...cloud.style }}
-            className={cloud.className}
-          />
+          <Image key={i} src="/assets/Cloud.webp" alt="" style={{ position: "fixed", opacity: 0.7, zIndex: 1, pointerEvents: "none", ...cloud.style }} className={cloud.className} />
         ))}
 
-        {/* ── grid ── */}
-        <Box style={{ maxWidth: "1200px", width: "100%", margin: "clamp(20px, 5vh, 80px) auto", position: "relative", zIndex: 2, paddingInline: "20px" }}>
-
+        <Box style={{ maxWidth: "1000px", width: "100%", margin: "0 auto", padding: "0 clamp(14px, 4vw, 32px)", position: "relative", zIndex: 2 }}>
           {isLoading ? (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))", gap: "1.5rem" }}>
-              {[1, 2, 3].map((i) => (
-                <div key={i} style={{ borderRadius: "16px", overflow: "hidden", background: "rgba(8,18,55,.85)" }}>
-                  <Skeleton height={190} radius={0} />
-                  <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                    <Skeleton height={18} width="40%" radius="xl" />
-                    <Skeleton height={22} width="70%" />
-                    <Skeleton height={36} />
-                    <Skeleton height={42} mt={6} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
+            <PixelLoader />
           ) : games.length === 0 ? (
-            <Box style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px" }}>
-              <Text style={{ ...VISION, fontSize: "1.4rem", color: "#9CA3AF", letterSpacing: "0.05em" }}>
-                {t("games_page.no_games") || "No games available"}
-              </Text>
-            </Box>
-
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "40vh" }}>
+              <span className="gm-pixel gm-empty">
+                {t("games_page.no_games") || "NO GAMES YET"}
+              </span>
+            </div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "28px" }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(clamp(120px, 24vw, 180px), 1fr))",
+              gap: "clamp(14px, 3vw, 24px)",
+            }}>
               {games.map((game) => {
                 const gameId = game._id || game.id || game.slug || game.name;
-                const isHovered = hoveredId === gameId;
-
                 return (
-                  <div
+                  <GameCard
                     key={gameId}
-                    onMouseEnter={() => setHoveredId(gameId)}
-                    onMouseLeave={() => setHoveredId(null)}
+                    game={game}
                     onClick={() => handleGameClick(game)}
-                    style={{
-                      ...VISION,
-                      cursor: "pointer",
-                      borderRadius: "16px",
-                      overflow: "hidden",
-                      background: isHovered
-                        ? "rgba(12, 24, 68, 0.97)"
-                        : "rgba(8, 15, 45, 0.92)",
-                      border: isHovered
-                        ? "1px solid rgba(246,244,211,0.55)"
-                        : "1px solid rgba(246,244,211,0.12)",
-                      transition: "all 0.3s ease",
-                      transform: isHovered ? "translateY(-6px)" : "translateY(0)",
-                      backdropFilter: "blur(14px)",
-                      boxShadow: isHovered
-                        ? "0 20px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(246,244,211,0.1)"
-                        : "0 6px 24px rgba(0,0,0,0.4)",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    {/* ── thumbnail ── */}
-                    <div style={{ position: "relative", aspectRatio: "16/9", overflow: "hidden", background: "#fff", borderRadius: "20px", padding: "8px" }}>
-                      <div style={{ width: "100%", height: "100%", borderRadius: "16px", overflow: "hidden", background: "#fff" }}>
-                        {game.image ? (
-                          <img
-                            src={game.image}
-                            alt={game.name}
-                            style={{
-                              width: "100%", height: "100%", objectFit: "contain",
-                              transition: "transform 0.45s ease",
-                              transform: isHovered ? "scale(1.02)" : "scale(1)",
-                              background: "#fff",
-                            }}
-                          />
-                        ) : (
-                        <div style={{
-                          width: "100%", height: "100%",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          background: "linear-gradient(135deg,#0b1640 0%,#111f5c 100%)",
-                        }}>
-                          <span style={{ ...VISION, fontSize: "2.5rem", opacity: 0.3 }}>▶</span>
-                        </div>
-                      )}
-
-                      {/* genre badge overlay */}
-                      {/* <div style={{
-                        position: "absolute", top: "12px", left: "12px",
-                        background: "rgba(0,0,0,0.62)",
-                        backdropFilter: "blur(6px)",
-                        border: "1px solid rgba(246,244,211,0.22)",
-                        borderRadius: "6px",
-                        padding: "4px 10px",
-                      }}>
-                        <span style={{ ...VISION, color: "#F6F4D3", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                          {game.category || "Game"}
-                        </span>
-                      </div> */}
-                    </div>
-                  </div>
-
-                    {/* ── card body ── */}
-                    <div style={{ padding: "18px 20px 20px", display: "flex", flexDirection: "column", flex: 1, gap: "8px" }}>
-
-                      {/* title */}
-                      <div className="pixel-font !text-[14px] md:!text-[20px]" style={{
-                        ...VISION,
-                        fontSize: "17px",
-                        fontWeight: 700,
-                        color: "#F6F4D3",
-                        letterSpacing: "0.04em",
-                        lineHeight: 1.3,
-                      }}>
-                        {game.name}
-                      </div>
-
-                      {/* description */}
-                      <div  className="pixel-font !text-[12px] md:!text-[16px]"  style={{
-                        ...VISION,
-                        color: "#94A3B8",
-                        fontSize: "8px",
-                        lineHeight: 1.6,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        letterSpacing: "0.02em",
-                      }}>
-                        {game.description || "No description available"}
-                      </div>
-
-                      {/* divider */}
-                      <div style={{ height: "1px", background: "rgba(246,244,211,0.08)", margin: "6px 0" }} />
-
-                      {/* footer */}
-                      <div >
-                        <span className="pixel-font !text-[12px] md:!text-[16px]"  style={{ ...VISION, color: "#64748B", letterSpacing: "0.04em" }}>
-                          {formatDate(game.createdAt)}
-                        </span>
-
-                        <button
-                          onClick={(e) => { e.stopPropagation(); handleGameClick(game); }}
-                          className="pixel-font !text-[12px] text-nowrap md:!text-[16px]" 
-                          style={{ 
-                            height: "30px", 
-                            borderRadius: "8px",
-                            padding: "0 16px",
-                            border: "1px solid rgba(246,244,211,0.3)",
-                            background: isHovered ? "#F6F4D3" : "rgba(246,244,211,0.1)",
-                            color: isHovered ? "#091237" : "#F6F4D3",   
-                            cursor: "pointer",
-                            transition: "all 0.25s ease",
-                            display: "flex",
-                            alignItems: "center", 
-
-                          }}
-                        >
-                          <span className="!text-[20px] mr-2" >▶</span> Play Now
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  />
                 );
               })}
             </div>

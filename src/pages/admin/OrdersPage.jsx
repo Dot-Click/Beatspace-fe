@@ -251,7 +251,7 @@ const OrdersPage = () => {
       {/* Header */}
       <Box className="bg-[#2F2E24] border border-[#B5B387]/30 p-6 relative overflow-hidden mb-6">
         <CornerAccents />
-        <h1 className="text-[#F6F4D3] vision-font text-2xl mb-8 tracking-widest">
+        <h1 className="text-[#F6F4D3] alexandria-font text-2xl mb-4 tracking-widest">
           {t('orders.title')}
         </h1>
         <Text color="dimmed" size="sm" className="alexandria-font">
@@ -268,25 +268,38 @@ const OrdersPage = () => {
           variant="pills"
           p="md"
           styles={{
+            list: {
+              backgroundColor: "rgba(246, 244, 211, 0.03)",
+              padding: "6px",
+              borderRadius: "12px",
+              display: "inline-flex",
+              border: "1px solid rgba(246, 244, 211, 0.08)",
+              gap: "8px",
+            },
             tab: {
-              color: "#F6F4D3 !important",
+              color: "rgba(246, 244, 211, 0.6) !important",
               backgroundColor: "transparent",
-              transition: "all 0.2s ease",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              borderRadius: "8px",
+              padding: "10px 24px",
+              "&:hover:not([data-active])": {
+                color: "#F6F4D3 !important",
+                backgroundColor: "rgba(246, 244, 211, 0.08) !important",
+              },
               "&[data-active]": {
                 backgroundColor: "#F6F4D3 !important",
                 color: "#1A1A23 !important",
-              },
-              "&:hover:not([data-active])": {
-                backgroundColor: "rgba(246, 244, 211, 0.1) !important",
+                boxShadow: "0 4px 15px rgba(246, 244, 211, 0.15)",
               },
             },
             tabLabel: {
               fontWeight: 600,
               letterSpacing: "1px",
+              fontSize: "11px",
             },
           }}
         >
-          <Tabs.List mb="md">
+          <Tabs.List mb="xl">
             <Tabs.Tab value="merch" className="alexandria-font">
               {t('orders.tabs.merch')}
             </Tabs.Tab>
