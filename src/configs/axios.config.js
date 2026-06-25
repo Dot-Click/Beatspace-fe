@@ -1,5 +1,5 @@
 import axios from "axios";
-export const baseURL = "https://beatspace-be-production-2.up.railway.app/api";
+export const baseURL = "https://global-network-backend.up.railway.app/api";
 // export const baseURL = "http://localhost:8000/api";
 
 // withCredentials is required globally — the backend uses better-auth (cookie/session based).
